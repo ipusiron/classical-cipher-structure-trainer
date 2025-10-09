@@ -1,0 +1,640 @@
+/* =========================================================
+   Classical Cipher Structure Trainer - Stylesheet
+   - デザインシステム: CSS Custom Properties（CSS変数）
+   - レスポンシブ: clamp()、メディアクエリ
+   - アクセシビリティ: フォーカス表示、ARIA対応
+   ========================================================= */
+
+/* ============================================================
+   デザイントークン（CSS変数）
+   ============================================================
+   色、影、角丸などをCSS変数で一元管理
+   変更時は:root内の値を修正するだけで全体に反映される */
+:root{
+  --bg: #ffffff;           /* 背景色 */
+  --fg: #1b1f24;           /* テキスト色 */
+  --muted: #6b7280;        /* 補足テキスト色 */
+  --card: #f8fafc;         /* カード背景色 */
+  --border: #e5e7eb;       /* ボーダー色 */
+  --brand: #0ea5e9;        /* ブランドカラー（青） */
+  --brand-weak: #bae6fd;   /* ブランドカラー（薄め） */
+  --accent: #10b981;       /* アクセントカラー（緑：正解） */
+  --warn: #f59e0b;         /* 警告色（黄） */
+  --danger: #ef4444;       /* 危険色（赤：不正解） */
+  --shadow: 0 6px 20px rgba(0,0,0,0.06);  /* 影 */
+  --radius: 14px;          /* 角丸の半径 */
+}
+
+/* ============================================================
+   基本リセット＆デフォルトスタイル
+   ============================================================ */
+*{ box-sizing: border-box; } /* 全要素にborder-boxを適用（paddingとborderを幅に含める） */
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--fg);
+  /* システムフォントスタック: OS標準フォントを使用（高速レンダリング） */
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+/* ============================================================
+   ヘッダー
+   ============================================================ */
+.app-header{
+  padding: 36px 20px 16px;
+  text-align: center;
+}
+h1{
+  margin: 0;
+  /* clamp()でレスポンシブなフォントサイズ: 最小22px、最大34px、中間は3.6vw */
+  font-size: clamp(22px, 3.6vw, 34px);
+  letter-spacing: 0.2px;
+}
+.subtitle{
+  margin: 6px 0 0;
+  color: var(--muted); /* 控えめな色でサブタイトルを表示 */
+  font-size: 15px;
+}
+
+/* ============================================================
+   タブナビゲーション
+   ============================================================ */
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:10px 12px 6px;
+  flex-wrap:wrap; /* 小画面でタブを折り返し */
+}
+.tab{
+  border:1px solid var(--border);
+  background:#fff;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+.tab:hover{
+  background: #f0f9ff; /* ホバー時に薄い青色 */
+}
+.tab:focus{
+  /* キーボードフォーカス時の視覚的フィードバック（アクセシビリティ） */
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.tab.active{
+  /* アクティブなタブを強調表示 */
+  background: var(--brand-weak);
+  border-color: var(--brand);
+}
+
+/* ============================================================
+   メインコンテンツエリア
+   ============================================================ */
+main{
+  max-width: 980px; /* 最大幅を制限して読みやすく */
+  margin: 0 auto;   /* 中央揃え */
+  padding: 18px 14px 60px;
+}
+
+/* タブパネルの表示切り替え */
+.tab-panel{ display:none; } /* デフォルトで非表示 */
+.tab-panel.active{ display:block; } /* アクティブなパネルのみ表示 */
+
+/* ============================================================
+   概念タブのグリッドレイアウト
+   ============================================================ */
+.intro-grid{
+  display:grid;
+  gap:16px;
+  grid-template-columns: 1fr; /* 1カラム（モバイルファースト） */
+}
+
+/* ============================================================
+   カードコンポーネント
+   ============================================================ */
+.card{
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow); /* 軽い影で浮き上がり効果 */
+  padding: 16px;
+}
+.card h3{
+  margin-top:2px;
+  margin-bottom:12px;
+}
+
+/* ============================================================
+   概念リスト（箇条書き）
+   ============================================================ */
+.concept-list{
+  list-style: disc; /* 通常の箇条書きマーカー */
+  padding-left: 24px;
+  margin: 0 0 16px 0;
+}
+.concept-list li{
+  padding: 6px 0;
+  line-height: 1.6; /* 読みやすい行間 */
+}
+.concept-list li::marker{
+  color: var(--brand); /* マーカーをブランドカラーに */
+}
+
+/* ============================================================
+   ヒントボックス（概念タブ用）
+   ============================================================ */
+.concept-hint{
+  padding: 12px 16px;
+  background: #f0f9ff; /* 薄い青色の背景 */
+  border-left: 4px solid var(--brand); /* 左側に太いアクセント線 */
+  border-radius: 6px;
+  font-size: 13px;
+  color: #0c4a6e; /* 濃い青色のテキスト */
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   タブイントロ（各タブの冒頭説明）
+   ============================================================ */
+.tab-intro{
+  padding: 16px 20px;
+  /* グラデーション背景: 左上から右下に向かって青→水色 */
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 12px;
+  font-size: 15px;
+  color: #0c4a6e;
+  margin-bottom: 24px;
+  border-left: 4px solid var(--brand); /* 左側にアクセント線 */
+  line-height: 1.6;
+}
+
+/* ============================================================
+   用語ヒント（概念タブ下部の黄色いボックス）
+   ============================================================ */
+.terminology-tip{
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: #fffbeb; /* 薄い黄色の背景 */
+  border: 2px solid #fbbf24; /* 黄色の枠線 */
+  border-radius: 12px;
+  color: #78350f; /* 濃い茶色のテキスト */
+  font-size: 14px;
+  line-height: 1.6;
+}
+.terminology-tip strong{
+  color: #92400e; /* 強調部分をさらに濃く */
+}
+
+/* ============================================================
+   マッピング図・シャッフル図のコンテナ
+   ============================================================ */
+.mapping-figure, .shuffle-figure{
+  margin: 14px 0;
+  border:1px dashed var(--border); /* 破線でコンテナを強調 */
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  position: relative; /* SVG線の絶対配置の基準 */
+  min-height: 140px;
+}
+.mapping-figure.large{
+  padding: 16px;
+  min-height: 160px; /* 大きめの図用 */
+}
+
+/* ============================================================
+   マッピング図の行（上段・下段）
+   ============================================================ */
+.row{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap; /* 小画面で折り返し */
+}
+.row-top{
+  margin-bottom: 50px; /* 上段と下段の間にスペース（SVG線のため） */
+}
+.row-bottom{
+  margin-top: 50px;
+}
+.row .cell{
+  width: 36px;
+  height: 36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#fff;
+  font-weight:600;
+}
+
+/* SVG線のコンテナ（マッピング図の対応関係を描画） */
+#map-lines,#viz-map-lines{
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  pointer-events:none; /* SVG線をクリックできないように */
+}
+
+.note{
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* ============================================================
+   シャッフル図のブロック要素
+   ============================================================ */
+/* 元の文字列表示用（ドラッグ不可） */
+.blocks{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap; /* モバイルで折り返し */
+  font-weight: 700;
+}
+@media (min-width: 640px){
+  .blocks{
+    flex-wrap:nowrap; /* デスクトップで1行表示 */
+  }
+}
+.blocks::before, .sortable::before{
+  content:""; /* FlexboxのバグWorkaround（一部ブラウザー向け） */
+}
+
+/* ドロップゾーン（ドラッグ可能なブロックを配置） */
+.sortable{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:12px;
+  min-height: 48px;
+  padding: 8px;
+  background: #fafafa;
+  border:1px solid var(--border);
+  border-radius: 12px;
+  transition: background-color 0.2s; /* ドラッグオーバー時のアニメーション */
+}
+@media (min-width: 640px){
+  .sortable{
+    flex-wrap:nowrap; /* デスクトップで1行表示 */
+  }
+}
+.sortable.drag-over{
+  /* ドラッグオーバー時の視覚的フィードバック */
+  background: #e0f2fe; /* 薄い青色 */
+  border-color: var(--brand);
+}
+
+/* ドラッグ可能なブロック */
+.block{
+  width: 40px;
+  height: 40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius: 10px;
+  cursor:grab; /* ドラッグ可能を示すカーソル */
+  user-select:none; /* テキスト選択を無効化 */
+  transition: transform 0.15s, box-shadow 0.15s; /* ホバー時のアニメーション */
+}
+.block:hover{
+  transform: translateY(-2px); /* 浮き上がり効果 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.block:focus{
+  /* キーボードフォーカス時の視覚的フィードバック */
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.block:active{
+  cursor:grabbing; /* ドラッグ中のカーソル */
+}
+.block.dragging{
+  opacity: 0.5; /* ドラッグ中は半透明 */
+  transform: scale(1.05); /* 少し拡大 */
+}
+.block.drop-indicator{
+  /* ドロップ位置のインジケーター（未使用だが将来用） */
+  border: 2px dashed var(--brand);
+  background: #e0f2fe;
+}
+
+/* ============================================================
+   ボタンコンポーネント
+   ============================================================ */
+.btn{
+  border:1px solid var(--border);
+  background:#fff;
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:14px;
+  cursor:pointer;
+}
+.btn:hover:not(:disabled){
+  background: #f0f9ff; /* ホバー時に薄い青色 */
+  border-color: var(--brand);
+}
+.btn:focus{
+  /* キーボードフォーカス時の視覚的フィードバック */
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.btn:disabled{
+  opacity: 0.5; /* 無効化ボタンは半透明 */
+  cursor: not-allowed;
+}
+.btn.secondary{
+  background: #f8fafc; /* セカンダリボタンはグレー背景 */
+}
+
+/* ボタングループ（シャッフル、マッピング、クイズ用） */
+.shuffle-actions, .mapping-actions, .quiz-actions{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+  flex-wrap:wrap; /* 小画面でボタンを折り返し */
+}
+
+/* ============================================================
+   可視化モード切り替えボタン（未使用だが将来用）
+   ============================================================ */
+.viz-switch{
+  display:flex;
+  gap:10px;
+  margin-bottom: 16px;
+  flex-wrap:wrap;
+}
+.mode-btn{
+  border:1px solid var(--border);
+  padding:8px 12px;
+  border-radius: 999px; /* ピル型ボタン */
+  background:#fff;
+  cursor:pointer;
+}
+.mode-btn:hover{
+  background: #f0f9ff;
+}
+.mode-btn:focus{
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.mode-btn.active{
+  background:#eef9ff;
+  border-color: var(--brand);
+}
+
+.viz-panel.hidden{ display:none; }
+
+.muted{ color: var(--muted); }
+
+/* ============================================================
+   クイズエリア
+   ============================================================ */
+.quiz-area{
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+.loader{
+  color: var(--muted); /* 読み込み中のテキスト */
+}
+.loader.error{
+  color: var(--danger); /* エラー時は赤色 */
+}
+.hidden{ display:none; }
+
+/* ============================================================
+   クイズコンテナ
+   ============================================================ */
+.quiz-container{
+  margin-top: 10px;
+}
+.quiz-progress{
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.quiz-question h3{
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+
+/* ============================================================
+   選択肢ボタン
+   ============================================================ */
+.choices{
+  display: flex;
+  flex-direction: column; /* 縦に並べる */
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.choice-btn{
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s; /* ホバー時のアニメーション */
+}
+.choice-btn:hover:not(:disabled){
+  background: #f0f9ff; /* ホバー時に薄い青色 */
+  border-color: var(--brand);
+}
+.choice-btn:focus{
+  /* キーボードフォーカス時の視覚的フィードバック */
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.choice-btn:disabled{
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.choice-btn.correct{
+  /* 正解の選択肢を緑色で表示 */
+  background: #d1fae5;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.choice-btn.incorrect{
+  /* 不正解の選択肢を赤色で表示 */
+  background: #fee2e2;
+  border-color: var(--danger);
+}
+
+/* ============================================================
+   クイズフィードバック（正解/不正解の表示）
+   ============================================================ */
+.quiz-feedback{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.quiz-feedback.correct{
+  /* 正解時は緑色の背景 */
+  background: #d1fae5;
+  border: 2px solid var(--accent);
+  color: #065f46; /* 濃い緑色のテキスト */
+}
+.quiz-feedback.incorrect{
+  /* 不正解時は赤色の背景 */
+  background: #fee2e2;
+  border: 2px solid var(--danger);
+  color: #991b1b; /* 濃い赤色のテキスト */
+}
+.feedback-icon{
+  font-size: 24px;
+  font-weight: bold;
+}
+.feedback-text{
+  font-size: 16px;
+}
+
+/* ============================================================
+   クイズ結果画面
+   ============================================================ */
+.quiz-result{
+  margin-top: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  border:1px solid var(--border);
+  background: #fff;
+}
+.quiz-result .score{
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.quiz-result .msg{
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.quiz-result .btn{
+  margin-top: 8px;
+}
+
+/* ============================================================
+   暗号カード（古典暗号の例タブ）
+   ============================================================ */
+.cipher-category{
+  margin-bottom: 40px;
+}
+.category-title{
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: var(--fg);
+}
+.category-desc{
+  margin-bottom: 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* グリッドレイアウト: 最小240px幅のカードを自動配置 */
+.cipher-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* 各暗号へのリンクカード */
+.cipher-card{
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.2s; /* ホバー時のアニメーション */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+.cipher-card:hover{
+  /* ホバー時に浮き上がり効果 */
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+  border-color: var(--brand);
+}
+.cipher-info{
+  flex: 1;
+  min-width: 0; /* テキストの折り返しを許可 */
+}
+.cipher-card h4{
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--fg);
+}
+.cipher-card p{
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* 外部リンクボタン（矢印アイコン） */
+.cipher-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--brand);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 50%; /* 円形ボタン */
+  font-size: 18px;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex-shrink: 0; /* ボタンサイズを固定 */
+}
+.cipher-btn:hover{
+  background: #0284c7; /* ホバー時に少し濃く */
+  transform: translateX(4px) scale(1.1); /* 右に移動＆拡大 */
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); /* 影で浮き上がり */
+}
+.cipher-btn:focus{
+  /* キーボードフォーカス時の視覚的フィードバック */
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   フッター
+   ============================================================ */
+.app-footer{
+  padding: 18px 12px 30px;
+  text-align: center;
+  color: var(--muted);
+  border-top:1px solid var(--border);
+}
+
+/* リンクのグローバルスタイル */
+a{
+  color: #0369a1; /* 青色のリンク */
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: underline; /* ホバー時に下線 */
+}

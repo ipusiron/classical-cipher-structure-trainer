@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="260" viewBox="0 0 720 260">
+  <style>
+    .cell { font: 700 18px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto; }
+  </style>
+  <rect x="0" y="0" width="720" height="260" fill="#ffffff"/>
+  <g transform="translate(40,30)">
+    <!-- top row -->
+    <g transform="translate(0,0)">
+      <rect x="0" y="0" width="640" height="60" fill="#f8fafc" stroke="#e5e7eb"/>
+      <!-- A..H -->
+      <g class="cell" text-anchor="middle" dominant-baseline="middle">
+        <rect x="20" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="50" y="30">A</text>
+        <rect x="100" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="130" y="30">B</text>
+        <rect x="180" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="210" y="30">C</text>
+        <rect x="260" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="290" y="30">D</text>
+        <rect x="340" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="370" y="30">E</text>
+        <rect x="420" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="450" y="30">F</text>
+        <rect x="500" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="530" y="30">G</text>
+        <rect x="580" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="610" y="30">H</text>
+      </g>
+    </g>
+
+    <!-- bottom row -->
+    <g transform="translate(0,140)">
+      <rect x="0" y="0" width="640" height="60" fill="#f8fafc" stroke="#e5e7eb"/>
+      <g class="cell" text-anchor="middle" dominant-baseline="middle">
+        <!-- offset=3 -->
+        <rect x="20" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="50" y="30">D</text>
+        <rect x="100" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="130" y="30">E</text>
+        <rect x="180" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="210" y="30">F</text>
+        <rect x="260" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="290" y="30">G</text>
+        <rect x="340" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="370" y="30">H</text>
+        <rect x="420" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="450" y="30">A</text>
+        <rect x="500" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="530" y="30">B</text>
+        <rect x="580" y="10" width="60" height="40" fill="#fff" stroke="#e5e7eb" rx="10"/>
+        <text x="610" y="30">C</text>
+      </g>
+    </g>
+
+    <!-- lines -->
+    <path d="M50,60 C50,110 450,110 450,140" stroke="#0ea5e9" stroke-width="3" fill="none" opacity="0.9"/>
+    <path d="M130,60 C130,110 530,110 530,140" stroke="#0ea5e9" stroke-width="3" fill="none" opacity="0.9"/>
+    <path d="M210,60 C210,110 610,110 610,140" stroke="#0ea5e9" stroke-width="3" fill="none" opacity="0.9"/>
+    <path d="M290,60 C290,110 50,110 50,140" stroke="#0ea5e9" stroke-width="3" fill="none" opacity="0.9"/>
+    <path d="M370,60 C370,110 130,110 130,140" stroke="#0ea5e9" stroke-width="3" fill="none" opacity="0.9"/>
+    <path d="M450,60 C450,110 210,110 210,140" stroke="#0ea5e9" stroke-width="3" fill="none" opacity="0.9"/>
+    <path d="M530,60 C530,110 290,110 290,140" stroke="#0ea5e9" stroke-width="3" fill="none" opacity="0.9"/>
+    <path d="M610,60 C610,110 370,110 370,140" stroke="#0ea5e9" stroke-width="3" fill="none" opacity="0.9"/>
+  </g>
+</svg>
