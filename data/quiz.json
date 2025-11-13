@@ -20,7 +20,7 @@
     {
       "id": "q003",
       "category": "basic",
-      "prompt": "換字式暗号の"鍵"の本質にもっとも近い説明はどれ？",
+      "prompt": "換字式暗号の\"鍵\"の本質にもっとも近い説明はどれ？",
       "choices": ["乱数の列", "対応表（どの文字を何に置き換えるか）", "巨大素数の積", "時間とともに増加するカウンタ"],
       "answer_index": 1,
       "explanation": "換字は対応表そのものが鍵。"
@@ -28,7 +28,7 @@
     {
       "id": "q004",
       "category": "basic",
-      "prompt": "転置式暗号の"鍵"の本質にもっとも近い説明はどれ？",
+      "prompt": "転置式暗号の\"鍵\"の本質にもっとも近い説明はどれ？",
       "choices": ["並べ替え方（順列）", "画像の解像度", "鍵長（ビット長）", "CRC多項式"],
       "answer_index": 0,
       "explanation": "転置は順序だけを変える。その順列が鍵。"
@@ -68,7 +68,7 @@
     {
       "id": "q009",
       "category": "mixed",
-      "prompt": "「全体を見ると、文字自体を変えずに並びだけを入れ替えた」これはどちら？",
+      "prompt": "「全体を見ると、文字自体を変えずに並びだけを入れ替えた」という処理はどれ？",
       "choices": ["Substitution（換字）", "Transposition（転置）", "Both（混合）", "None"],
       "answer_index": 1,
       "explanation": "文字そのものは不変→転置。"
@@ -76,7 +76,7 @@
     {
       "id": "q010",
       "category": "mixed",
-      "prompt": "「同じ位置の文字でも、鍵により別の文字へ置換される」これはどちら？",
+      "prompt": "「同じ位置の文字でも、鍵により別の文字へ置換される」という処理はどれ？",
       "choices": ["Substitution（換字）", "Transposition（転置）", "Both（混合）", "None"],
       "answer_index": 0,
       "explanation": "位置ではなく対応表が決める→換字。"

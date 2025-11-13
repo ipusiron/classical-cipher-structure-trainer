@@ -29,7 +29,7 @@ The application abstracts classical ciphers into two fundamental operations:
 ### File Structure
 
 ```
-index.html          # Main HTML structure with 4 tabs (Introduction, Examples, Visualization, Quiz)
+index.html          # Main HTML structure with 3 tabs (Introduction, Examples, Quiz)
 script.js           # All interactive logic (tab switching, mapping visualization, drag-and-drop, quiz)
 style.css           # Styling with CSS variables for theming
 data/quiz.json      # Quiz questions (10 questions in Japanese)
@@ -40,7 +40,6 @@ data/quiz.json      # Quiz questions (10 questions in Japanese)
 The application uses a simple tab navigation pattern:
 - **Introduction**: Static explanations with interactive demos for mapping (SVG lines) and shuffle (drag-and-drop blocks)
 - **Examples**: Links to external cipher tools (Caesar, Vigenère, Permutation, etc.)
-- **Visualization**: Larger interactive demos with mode switching (Mapping/Shuffle)
 - **Quiz**: 10 single-choice questions loaded from `data/quiz.json`
 
 ### Key Components in script.js
