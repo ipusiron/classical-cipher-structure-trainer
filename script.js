@@ -42,15 +42,18 @@ tabs.forEach(btn => {
  * @param {string} svgId - SVG要素のID
  * @param {number} offset - シフト量（規則的な対応の場合）
  * @param {Array|null} customMapping - カスタムマッピング配列（ランダム対応の場合）
+ * @param {string} bottomCharSet - 下段の文字セット: 'letters' (A-H) または 'numbers' (1-8)
  */
-function buildMappingFigure(topId, bottomId, svgId, offset=3, customMapping=null){
+function buildMappingFigure(topId, bottomId, svgId, offset=3, customMapping=null, bottomCharSet='letters'){
   const top = document.getElementById(topId);
   const bottom = document.getElementById(bottomId);
   const svg = document.getElementById(svgId);
   if(!top || !bottom || !svg) return;
 
-  // A-Hの文字セルを生成（上下とも同じ文字列）
+  // 上段は常にA-H、下段は文字セットに応じて変更
   const letters = ['A','B','C','D','E','F','G','H'];
+  const bottomChars = bottomCharSet === 'numbers' ? ['1','2','3','4','5','6','7','8'] : letters;
+
   top.innerHTML = '';
   bottom.innerHTML = '';
 
@@ -63,7 +66,7 @@ function buildMappingFigure(topId, bottomId, svgId, offset=3, customMapping=null
   });
 
   // 下段（暗号文）の文字セルを生成
-  letters.forEach(ch => {
+  bottomChars.forEach(ch => {
     const c = document.createElement('div');
     c.className = 'cell';
     c.textContent = ch;
@@ -117,12 +120,13 @@ function buildMappingFigure(topId, bottomId, svgId, offset=3, customMapping=null
 // マッピング図の状態管理
 let vizOffset = 5; // 初期シフト量（A→F）
 let vizRandomMapping = null; // ランダムマッピング配列（nullの場合は規則的シフト）
+let vizBottomCharSet = 'letters'; // 下段の文字セット: 'letters' (A-H) または 'numbers' (1-8)
 
 /**
  * マッピング図を描画（ラッパー関数）
  */
 function drawMappingFigure(){
-  buildMappingFigure('viz-map-top','viz-map-bottom','viz-map-lines', vizOffset, vizRandomMapping);
+  buildMappingFigure('viz-map-top','viz-map-bottom','viz-map-lines', vizOffset, vizRandomMapping, vizBottomCharSet);
 }
 
 // 初期化処理
@@ -164,10 +168,17 @@ document.getElementById('btn-map-random')?.addEventListener('click', ()=>{
   drawMappingFigure();
 });
 
+// 「暗号文: A-H ⇄ 1-8」ボタン: 下段の文字セットを切り替え
+document.getElementById('btn-map-toggle-charset')?.addEventListener('click', ()=>{
+  vizBottomCharSet = vizBottomCharSet === 'letters' ? 'numbers' : 'letters';
+  drawMappingFigure();
+});
+
 // 「リセット」ボタン: 初期状態（A→F）に戻す
 document.getElementById('btn-map-reset')?.addEventListener('click', ()=>{
   vizRandomMapping = null; // ランダムマッピングをクリア
   vizOffset = 5; // A→F（シフト5）
+  vizBottomCharSet = 'letters'; // 文字セットもリセット
   drawMappingFigure();
 });
 
