@@ -47,8 +47,8 @@ The application uses a simple tab navigation pattern:
 **Mapping Visualization** (`buildMappingFigure` function):
 - Draws SVG curves connecting top row (plaintext) to bottom row (ciphertext)
 - Uses Bézier curves for visual appeal
-- Two instances: small (Introduction tab) and large (Visualization tab)
-- Controlled by offset parameters (`introOffset`, `vizOffset`)
+- Controlled by `vizOffset` (shift amount) and `vizRandomMapping` (Fisher-Yates shuffle result)
+- Supports switching ciphertext character set between A-H and 1-8 via `vizBottomCharSet`
 
 **Shuffle Visualization** (drag-and-drop):
 - Uses native HTML5 drag-and-drop API
@@ -90,3 +90,4 @@ The application uses a simple tab navigation pattern:
 - The application is part of a "100 Security Tools with AI" project (Day 097)
 - No external dependencies or frameworks - vanilla JavaScript only
 - Responsive design with mobile support via flexbox/grid and media queries
+- See `TECHNICAL.md` for detailed implementation documentation (algorithms, security measures, accessibility)

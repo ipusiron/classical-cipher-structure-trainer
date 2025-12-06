@@ -1,11 +1,41 @@
 <!--
 ---
-title: Classical Cipher Structure Trainer
-category: education
-difficulty: 1
-description: Educational web tool focused on classical ciphers only — explaining substitution (mapping) vs. transposition (shuffle) with visuals and a short quiz.
-tags: [classical-cipher, education, visualization, javascript]
-demo: https://ipusiron.github.io/classical-cipher-structure-trainer/
+id: day097
+slug: classical-cipher-structure-trainer
+
+title: "Classical Cipher Structure Trainer"
+
+subtitle_ja: "古典暗号の構造理解の教育ツール"
+subtitle_en: "Educational Tool for Understanding Classical Cipher Structures"
+
+description_ja: "古典暗号の2大構造「換字（Substitution）」と「転置（Transposition）」を、マッピングとシャッフルという直感的な概念でインタラクティブに学べる教育ツール。SVG曲線による対応関係の可視化、ドラッグ＆ドロップによる並べ替え体験、10問のクイズで理解を確認。"
+description_en: "An interactive educational tool that teaches the two fundamental structures of classical cryptography—Substitution (mapping) and Transposition (shuffle)—through intuitive visualizations. Features SVG curve mapping, drag-and-drop shuffle experience, and a 10-question quiz."
+
+category_ja:
+  - 古典暗号
+  - 換字式暗号
+  - 転置式暗号
+category_en:
+  - Classical Cryptography
+  - Substitution Cipher
+  - Transposition Cipher
+
+difficulty: 3
+
+tags:
+  - classical-cipher
+  - substitution
+  - transposition
+  - education
+  - visualization
+  - interactive
+  - quiz
+  - javascript
+
+repo_url: "https://github.com/ipusiron/classical-cipher-structure-trainer"
+demo_url: "https://ipusiron.github.io/classical-cipher-structure-trainer/"
+
+hub: true
 ---
 -->
 
