@@ -7,7 +7,7 @@ const root = path.join(__dirname, '..');
 const read = rel => fs.readFileSync(path.join(root, rel), 'utf8');
 const list = dir => fs.readdirSync(path.join(root, dir)).filter(f => f.endsWith('.js')).map(f => `${dir}/${f}`);
 
-const codeFiles = ['script.js', 'style.css', ...list('js'), ...list('test')];
+const codeFiles = ['script.js', 'style.css', ...list('js'), ...list('test'), ...list('tools')];
 const textFiles = [...codeFiles, 'index.html', 'package.json', '.github/workflows/test.yml', 'data/favicon.svg',
   'README.md', 'TECHNICAL.md', 'SECURITY.md', 'CLAUDE.md'];
 

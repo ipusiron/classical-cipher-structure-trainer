@@ -340,43 +340,49 @@ npm test
 
 ```
 classical-cipher-structure-trainer/
-├── index.html               # 画面（概念・古典暗号の例・クイズの3タブ）
-├── script.js                # 画面の動き（対応図・並べ替え・タブ・クイズ・カードの描画）
-├── style.css                # 見た目（ライト／ダークの配色、レスポンシブ）
-├── js/                      # 画面から読むスクリプト
-│   ├── structure-core.js    # 計算部（対応表・順列・乱数・差し込み位置・クイズの検査）
-│   ├── messages.js          # script.jsが組み立てる文言の辞書
-│   ├── quiz-data.js         # クイズの10問（解説つき）
-│   ├── catalog.js           # 古典暗号の例のツール22本の一覧
-│   └── theme.js             # 配色の初期値と切り替え（描画の前に読む）
-├── data/                    # 素材
-│   ├── favicon.svg          # ファビコン
-│   └── diagram-mapping.svg  # 対応図の静的な見本（画面では使わない）
-├── assets/                  # READMEの画像
-│   ├── screenshot.png       # 概念タブ
-│   ├── screenshot2.png      # クイズタブ（解説の表示）
-│   ├── screenshot3.png      # 古典暗号の例タブ
-│   └── screenshot4.png      # ダーク表示
-├── test/                    # node:testのテスト
-│   ├── core.test.js         # 計算部
-│   ├── quiz.test.js         # クイズのデータ
-│   ├── catalog.test.js      # 古典暗号の例の一覧
-│   ├── html.test.js         # index.html（CSP・ARIA・読み込むスクリプト）
-│   ├── contrast.test.js     # 配色のコントラスト比
-│   ├── messages.test.js     # 文言の辞書
-│   ├── format.test.js       # ファイルの書式
-│   └── readme.test.js       # READMEの例・数値・構造
-├── .github/                 # GitHubの設定
-│   └── workflows/           # GitHub Actions
-│       └── test.yml         # pushとpull requestでnpm test
-├── package.json             # npm testの定義（依存なし）
-├── README.md                # 本ドキュメント
-├── TECHNICAL.md             # 実装の説明
-├── SECURITY.md              # セキュリティ対策
-├── CLAUDE.md                # Claude Code向けの案内
-├── LICENSE                  # MIT License
-├── .gitignore               # Gitの除外設定
-└── .nojekyll                # GitHub PagesでJekyllを使わない
+├── index.html                     # 画面（概念・古典暗号の例・クイズの3タブ）
+├── script.js                      # 画面の動き（対応図・並べ替え・タブ・クイズ・カードの描画）
+├── style.css                      # 見た目（ライト／ダークの配色、レスポンシブ）
+├── js/                            # 画面から読むスクリプト
+│   ├── structure-core.js          # 計算部（対応表・順列・乱数・差し込み位置・クイズの検査）
+│   ├── messages.js                # script.jsが組み立てる文言の辞書
+│   ├── quiz-data.js               # クイズの10問（解説つき）
+│   ├── catalog.js                 # 古典暗号の例のツール22本の一覧
+│   ├── lab-core.js                # 実験室の計算部（換字・転置・多表式・統計・見分け）
+│   ├── english-freq.js            # 英語の文字の出現回数（見分けの基準）
+│   └── theme.js                   # 配色の初期値と切り替え（描画の前に読む）
+├── data/                          # 素材
+│   ├── favicon.svg                # ファビコン
+│   └── diagram-mapping.svg        # 対応図の静的な見本（画面では使わない）
+├── assets/                        # READMEの画像
+│   ├── screenshot.png             # 概念タブ
+│   ├── screenshot2.png            # クイズタブ（解説の表示）
+│   ├── screenshot3.png            # 古典暗号の例タブ
+│   └── screenshot4.png            # ダーク表示
+├── test/                          # node:testのテスト
+│   ├── core.test.js               # 計算部
+│   ├── quiz.test.js               # クイズのデータ
+│   ├── catalog.test.js            # 古典暗号の例の一覧
+│   ├── lab.test.js                # 実験室の計算部と見分けのしきい値
+│   ├── html.test.js               # index.html（CSP・ARIA・読み込むスクリプト）
+│   ├── contrast.test.js           # 配色のコントラスト比
+│   ├── messages.test.js           # 文言の辞書
+│   ├── format.test.js             # ファイルの書式
+│   └── readme.test.js             # READMEの例・数値・構造
+├── tools/                         # 作業用のスクリプト
+│   ├── eval-classify.js           # 見分けのしきい値を決め、当たり具合を測る
+│   └── eval-classify-result.json  # その結果（READMEの表の元）
+├── .github/                       # GitHubの設定
+│   └── workflows/                 # GitHub Actions
+│       └── test.yml               # pushとpull requestでnpm test
+├── package.json                   # npm testの定義（依存なし）
+├── README.md                      # 本ドキュメント
+├── TECHNICAL.md                   # 実装の説明
+├── SECURITY.md                    # セキュリティ対策
+├── CLAUDE.md                      # Claude Code向けの案内
+├── LICENSE                        # MIT License
+├── .gitignore                     # Gitの除外設定
+└── .nojekyll                      # GitHub PagesでJekyllを使わない
 ```
 
 ---
