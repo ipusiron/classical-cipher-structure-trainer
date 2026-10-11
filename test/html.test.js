@@ -43,7 +43,8 @@ test('インラインのスクリプト・イベント属性・style 属性が�
     assert.ok(!/type="module"/.test(attrs), 'file:// で動かすため module にしない');
   }
   assert.deepEqual(scripts.map(m => m[1].match(/src="([^"]+)"/)[1]),
-    ['js/theme.js', 'js/structure-core.js', 'js/messages.js', 'js/quiz-data.js', 'js/catalog.js', 'script.js']);
+    ['js/theme.js', 'js/structure-core.js', 'js/messages.js', 'js/quiz-data.js', 'js/catalog.js', 'js/english-freq.js',
+      'js/lab-core.js', 'js/classify-accuracy.js', 'js/i18n.js', 'js/i18n-en.js', 'script.js']);
   for (const src of scripts.map(m => m[1].match(/src="([^"]+)"/)[1])) assert.ok(fs.existsSync(path.join(root, src)), src);
 });
 
@@ -62,7 +63,7 @@ test('target="_blank" のリンクは rel="noopener noreferrer"', () => {
 
 test('タブとパネルの ARIA が対応し、選択中のタブだけが tabindex 0', () => {
   const tabs = [...html.matchAll(/<button[^>]*role="tab"[^>]*>/g)].map(m => m[0]);
-  const names = ['intro', 'examples', 'quiz'];
+  const names = ['intro', 'lab', 'detect', 'examples', 'quiz'];
   assert.equal(tabs.length, names.length);
   names.forEach((name, i) => {
     const tab = tabs.find(t => t.includes(`id="btn-${name}"`));
@@ -81,11 +82,17 @@ test('script.js が探す id が index.html にある', () => {
   for (const id of used) assert.ok(ids.has(id), id);
 });
 
+test('入力欄に label があり、文字は16px（iOS の拡大を防ぐ）', () => {
+  const fields = [...html.matchAll(/<(?:textarea|input|select)\s[^>]*id="([^"]+)"/g)].map(m => m[1]);
+  assert.ok(fields.length >= 9);
+  for (const id of fields) assert.match(html, new RegExp(`<label[^>]*for="${id}"`), id);
+});
+
 test('ボタンは type="button"、動的な表示に aria-live', () => {
   const buttons = [...html.matchAll(/<button\s[^>]*>/g)].map(m => m[0]);
   assert.ok(buttons.length >= 12);
   for (const b of buttons) assert.match(b, /type="button"/, b);
-  for (const id of ['shuffle-status', 'quiz-feedback', 'quiz-result', 'map-charset']) {
+  for (const id of ['shuffle-status', 'quiz-feedback', 'quiz-result', 'map-charset', 'lab-explain', 'mix-verdict', 'detect-result']) {
     assert.match(html, new RegExp(`id="${id}"[^>]*aria-live="polite"`), id);
   }
 });

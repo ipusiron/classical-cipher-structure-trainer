@@ -23,7 +23,7 @@
   });
   const DEFAULT_OFFSET = 5; // A→F
   const SHUFFLE_WORD = 'EDUCATION';
-  const QUIZ_CATEGORIES = Object.freeze(['definition', 'basic', 'classification', 'mixed']);
+  const QUIZ_CATEGORIES = Object.freeze(['definition', 'basic', 'classification', 'invariant', 'mixed']);
 
   const mod = (a, n) => ((a % n) + n) % n;
 

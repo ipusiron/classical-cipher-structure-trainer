@@ -8,8 +8,8 @@ title: "Classical Cipher Structure Trainer"
 subtitle_ja: "古典暗号の構造理解の教育ツール"
 subtitle_en: "Educational Tool for Understanding Classical Cipher Structures"
 
-description_ja: "古典暗号の2大構造「換字（Substitution）」と「転置（Transposition）」を、マッピングとシャッフルという直感的な概念で学べる教育ツール。対応表のSVG図、マウス・タッチ・キーボードで動かす並べ替え、シリーズの古典暗号ツール22本への案内、解説つきの10問クイズで、換字は文字の種類を、転置は文字の位置を並べ替える仕組みだと理解できる。"
-description_en: "An educational tool that teaches the two fundamental structures of classical cryptography, Substitution (mapping) and Transposition (shuffle). It offers an SVG mapping diagram, a block reordering exercise that works with mouse, touch and keyboard, a guide to 22 classical cipher tools in the series, and a 10-question quiz with explanations, showing that substitution permutes the kinds of letters while transposition permutes their positions."
+description_ja: "古典暗号の2大構造「換字（Substitution）」と「転置（Transposition）」を、マッピングとシャッフルという直感的な概念で学べる教育ツール。対応表のSVG図と並べ替え、英文に暗号を掛けて保たれるものを数える実験室、暗号文の頻度と一致指数で転置・単一換字・多表式を見分ける機能、シリーズの古典暗号ツール42本の案内、解説つきの20問クイズで、換字は文字の種類を、転置は文字の位置を並べ替える仕組みだと理解できる。"
+description_en: "An educational tool that teaches the two fundamental structures of classical cryptography, Substitution (mapping) and Transposition (shuffle). It offers an SVG mapping diagram and a reordering exercise, a lab that applies ciphers to English text and counts what is preserved, a detector that tells transposition, simple substitution and polyalphabetic ciphers apart from letter frequencies and the index of coincidence, a guide to 42 classical cipher tools in the series, and a 20-question quiz with explanations."
 
 category_ja:
   - 古典暗号
@@ -39,6 +39,8 @@ hub: true
 ---
 -->
 
+[English](README.en.md) · 日本語
+
 # Classical Cipher Structure Trainer - 古典暗号の構造理解の教育ツール
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/ipusiron/classical-cipher-structure-trainer?style=social)
@@ -51,7 +53,7 @@ hub: true
 
 **Classical Cipher Structure Trainer**は、古典暗号を構成する2大要素「換字（Substitution）」と「転置（Transposition）」を、マッピング（対応表）とシャッフル（並べ替え）という直感的な概念で学べる教育ツールです。
 
-対応表の図と、文字のブロックの並べ替えで2つの仕組みを体験し、最後に解説つきのクイズで確かめます。シリーズで作った古典暗号のツール22本へのカードから、個々の暗号を実際に動かせます。
+対応表の図と文字のブロックの並べ替えで2つの仕組みを体験し、実験室では英文に暗号を掛けて「何が保たれ、何が崩れるか」を数えます。暗号文だけから転置・単一換字・多表式を見分け、最後に解説つきのクイズで確かめます。シリーズで作った古典暗号のツール42本へのカードから、個々の暗号を実際に動かせます。画面は日本語と英語で切り替えられます。
 
 ---
 
@@ -69,15 +71,23 @@ hub: true
 >
 >*概念タブ。上はシフト5の対応表（A→F）の図、下はEDUCATIONに偶奇入れ替えを1回掛けた並び*
 
->![クイズタブ。不正解のときに正解と解説を表示](assets/screenshot2.png)
+>![実験室タブ。縦列転置で保たれたものの表と棒グラフ](assets/screenshot2.png)
+>
+>*実験室タブ。縦列転置を掛けると、文字ごとの回数は保たれ、位置の型は崩れる*
+
+>![見分けるタブ。多表式と判定した理由と次のツール](assets/screenshot3.png)
+>
+>*見分けるタブ。カイ二乗とICで多表式と判定し、暗号文を渡せるツールを示す*
+
+>![古典暗号の例タブ。分類で絞り込めるカード](assets/screenshot4.png)
+>
+>*古典暗号の例タブ。42本のカードを、換字・転置・混合などで絞り込める*
+
+>![クイズタブ。不正解のときに正解と解説を表示](assets/screenshot5.png)
 >
 >*クイズタブ。答えると正解・不正解を色と印と文字で示し、解説を表示する*
 
->![古典暗号の例タブ。分類つきのカード](assets/screenshot3.png)
->
->*古典暗号の例タブ。分類のタグ（単一換字・多表式など）つきのカード*
-
->![概念タブのダーク表示](assets/screenshot4.png)
+>![概念タブのダーク表示](assets/screenshot6.png)
 >
 >*ダーク表示。OSの設定に従い、右上のボタンでも切り替えられる*
 
@@ -132,6 +142,8 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 - 「逆順にする」「偶奇を入れ替え」：いまの並びに掛ける。どちらも2回で元に戻る（EDUCATION → DECUTAOIN → EDUCATION）。
 - 「リセット」：EDUCATIONに戻す。
 
+図と並べ替えの下には、鍵そのものを示します。対応表には逆の表（復号に使う）と対応表の数、並べ替えには鍵（いまのi番目に元の何番目を置くか）と元に戻す鍵、並べ方の数を出します。偶奇入れ替えの鍵（2 1 4 3 6 5 8 7 9）は、自分自身が元に戻す鍵になります。
+
 #### 用語のヒント
 
 「換字」「転置」の漢字がイメージしにくいときは、「マッピング」と「シャッフル」に置き換えて考えるとわかりやすくなります。古典暗号の多くは、この2つと、その組み合わせ（混合）で整理できます。
@@ -140,9 +152,65 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 
 ---
 
-### 2️⃣ 古典暗号の例（Examples）
+### 2️⃣ 実験室（Lab）
 
-生成AIで作るセキュリティツール100の古典暗号のツール22本へのリンク集です。カード全体を押すと、新しいタブで開きます。カードには、換字式の中の分け方（単一換字・多表式・多字換字）のタグを付けています。
+英文に暗号を掛けて、何が保たれ、何が崩れるかを数えます。使うのは英字（A〜Z）だけで、ほかの文字は除きます（入力は5,000文字まで）。
+
+- 掛けられる暗号：単一換字（シフト・キーワード換字表・ランダムな換字表）、多表式（ヴィジュネル暗号）、転置（逆順・レールフェンス・縦列転置）
+- 比べるもの：文字ごとの回数、回数を多い順に並べた形、同じ文字が現れる位置の型、一致指数（IC）、英語の頻度とのカイ二乗
+- 図：文字ごとの出現回数の棒グラフ（平文と暗号文で縦の目盛りをそろえる）と、同じ数値の表
+- 縦列転置とレールフェンスは、Columnar CipherLab（Day043）とRailFence CipherLab（Day034）と同じ結果になる
+
+実験室の例文（『Pride and Prejudice』の冒頭、英字302文字。平文のICは0.0643）に掛けた結果は次のとおりです。
+
+| 掛けた暗号 | 文字ごとの回数 | 多い順の形 | 位置の型 | IC |
+|------|------|------|------|------|
+| 単一換字（キーワードZEBRA） | 変わる | 保たれる | 保たれる | 0.0643 |
+| 多表式（ヴィジュネルLEMON） | 変わる | 変わる | 変わる | 0.0398 |
+| 転置（縦列転置ZEBRAS） | 保たれる | 保たれる | 変わる | 0.0643 |
+
+「重ねる（混合）と順番」では、換字と転置を続けて掛け、2つの順番を入れ替えた結果を比べます。単一換字と転置は、どちらを先に掛けても同じ暗号文になります（Shannon 1949, p.672）。ヴィジュネル暗号と転置では、順番によって結果が変わります。
+
+---
+
+### 3️⃣ 見分ける（Detect）
+
+英文の暗号文だけから、転置・単一換字・多表式のどれに近いかを見分けます。判定の流れと、使った値を段で示します。
+
+1. 英字が30文字未満なら見分けない。
+2. 英語の頻度とのカイ二乗が115未満なら、文字の頻度が普通の英語と同じなので「転置」（平文のままの英文も同じ結果になる）。
+3. それ以外で、一致指数（IC）が0.052以上なら、頻度の偏りが大きいので「単一換字」、未満なら頻度がならされているので「多表式など」。
+
+例のボタンで、『二都物語』の冒頭（英字217文字）に暗号を掛けた文を入れられます。
+
+| 例 | カイ二乗 | IC | 判定 |
+|------|------|------|------|
+| 転置（縦列転置ZEBRAS） | 70.8 | 0.0789 | 転置 |
+| 単一換字（キーワードZEBRA） | 3666.6 | 0.0789 | 単一換字 |
+| 多表式（ヴィジュネルLEMON） | 616.8 | 0.0493 | 多表式など |
+
+判定のあとに、次に試すツールを示します。暗号文を受け取れるツール（Permutation CipherLab、Anagram Hunter、Frequency Analyzer、IC Learning Visualizer、AlphaLoom）には、URLの`#text=`で暗号文を渡して開きます。各ツールの上限（400〜10,000文字）を超えるときは、ページだけを開きます。
+
+しきい値と当たり具合は、次のように決めて測りました（`tools/eval-classify.js`）。
+
+- しきい値：Project Gutenberg #1342『Pride and Prejudice』の英文から100文字の抜き出しを3種類×300件作り、正答率の平均が最も高くなる値を選んだ
+- 当たり具合：別の本（Project Gutenberg #98『A Tale of Two Cities』）から抜き出した英文に暗号を掛け、長さごとに3種類×300件で測った
+- 暗号の種類：転置は5〜9文字のキーワードの縦列転置、単一換字はランダムな換字表、多表式は3〜8文字の鍵のヴィジュネル暗号
+
+| 英字の長さ | 転置 | 単一換字 | 多表式 |
+|------|------|------|------|
+| 50文字 | 100% | 88.3% | 85.7% |
+| 100文字 | 99.7% | 100% | 93.7% |
+| 200文字 | 100% | 100% | 95.3% |
+| 400文字 | 100% | 100% | 98.7% |
+
+鍵の短いヴィジュネル暗号は頻度の偏りが残るので、単一換字と出ることがあります。英語以外の言語、数字や記号の暗号、プレイフェアなどの多字換字は、この表の対象外です。
+
+---
+
+### 4️⃣ 古典暗号の例（Examples）
+
+生成AIで作るセキュリティツール100の古典暗号のツール42本へのリンク集です。カード全体を押すと、新しいタブで開きます。換字式・転置式・混合・その他（分置式・コード）・解く道具と学ぶ道具に分け、ラジオボタンで絞り込めます。カードには、換字式の中の分け方（単一換字・多表式・多字換字）などのタグを付けています。
 
 | 種別 | 暗号 | 説明 | ツール |
 |------|------|------|--------|
@@ -156,9 +224,14 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 | 換字（単一換字） | 忍びいろは | ひらがなを、漢字の偏と旁を組み合わせた字に置き換える | [Shinobi Iroha Cipher](https://ipusiron.github.io/shinobi_iroha_cipher/)（Day014） |
 | 換字（単一換字） | ベーコン暗号 | 1文字をaとbの5文字に置き換え、書体の違いとして文章に隠す | [Bacon CipherLab](https://ipusiron.github.io/bacon-cipherlab/)（Day055） |
 | 換字（単一換字） | ジグザグ暗号 | 文字を鍵の列の位置に置き換え、折れ線で描く。英語のzigzag cipher（レールフェンス）とは別物 | [Zigzag CipherLab](https://ipusiron.github.io/zigzag-cipherlab/)（Day072） |
+| 換字（単一換字） | ROT13 | 英字を13文字ずらす。同じ操作を2回掛けると元に戻る | [ROT13 Encoder](https://ipusiron.github.io/rot13-encoder/)（Day005） |
+| 換字（単一換字） | ROT47 | ASCIIの記号・数字を含む94文字を、47文字ずらす | [QuickROT47](https://ipusiron.github.io/quick-rot47/)（Day037） |
+| 換字（単一換字） | 絵文字の暗号 | 暗号文の文字を絵文字に置き換える。見た目が変わっても頻度の偏りは残る | [Crypto Emoji Translator](https://ipusiron.github.io/crypto-emoji-translator/)（Day076） |
+| 換字（単一換字） | シーザー暗号による難読化 | JavaScriptのコードをシーザー暗号で置き換え、実行するときに戻して動かす | [Classic JS Obfuscator](https://ipusiron.github.io/classic-js-obfuscator/)（Day042） |
 | 換字（多表式） | ヴィジュネル暗号 | 鍵の文字ごとに、別のずらし量の対応表を順に使う | [Vigenere Cipher Tool](https://ipusiron.github.io/vigenere-cipher-tool/)（Day017） |
 | 換字（多表式） | ビューフォート暗号 | 鍵の文字から平文の文字を引く多表式。暗号化と復号が同じ操作 | [Beaufort CipherLab](https://ipusiron.github.io/beaufort-cipherlab/)（Day078） |
 | 換字（多表式） | ストリップ暗号 | アルファベットを並べた帯を何本も並べ、平文の行とは別の行を読む | [Strip CipherLab](https://ipusiron.github.io/strip-cipherlab/)（Day071） |
+| 換字（多表式） | ワンタイムパッド | 平文と同じ長さの使い捨ての鍵とXORする。鍵を繰り返さない | [OTP Animation](https://ipusiron.github.io/otp-animation/)（Day029） |
 | 換字（多字換字） | プレイフェア暗号 | 5×5の表で、2文字を別の2文字に置き換える | [Playfair CipherLab](https://ipusiron.github.io/playfair-cipherlab/)（Day027） |
 | 換字（多字換字） | ポルタの二文字式暗号 | 1563年の表で、2文字を表の1マス（記号）に置き換える | [Porta CipherLab](https://ipusiron.github.io/porta-cipherlab/)（Day080） |
 | 換字（多字換字） | ヒル暗号 | 行列の掛け算で、n文字をまとめて別のn文字に置き換える | [Hill CipherLab](https://ipusiron.github.io/hill-cipherlab/)（Day093） |
@@ -167,21 +240,37 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 | 転置 | レールフェンス暗号 | 文字をジグザグに書き、行ごとに読む | [RailFence CipherLab](https://ipusiron.github.io/railfence-cipherlab/)（Day034） |
 | 転置 | 縦列転置式暗号 | 表に横に書き、鍵の順に列を縦に読む | [Columnar CipherLab](https://ipusiron.github.io/columnar-cipherlab/)（Day043） |
 | 転置 | 回転グリル暗号 | 穴のあいた型紙を回しながら書き込み、表を埋める | [Grille CipherLab](https://ipusiron.github.io/grille-cipherlab/)（Day024） |
+| 転置 | ミラー暗号（逆転置） | 文字の並びを逆にする（全文・語・行など）。字形の鏡像と組み合わせる | [Mirror CipherLab](https://ipusiron.github.io/mirror-cipherlab/)（Day084） |
+| 混合 | SPN（換字と転置の繰り返し） | S-Box（換字）とP層（転置）に鍵の加算を挟んで繰り返す。現代のブロック暗号の骨組み | [ToySPN Builder](https://ipusiron.github.io/toyspn-builder/)（Day094） |
 | その他（分置式） | 分置式暗号 | ふつうの文章の中に、本文の文字を決まった位置に散らして隠す | [Hidden Message Challenge](https://ipusiron.github.io/hidden-message-challenge/)（Day036） |
+| その他（分置式） | トレヴァニオン暗号 | 手紙の句読点の直後から数えて3文字目を拾い集めて読む（Null暗号） | [Trevanion CipherLab](https://ipusiron.github.io/trevanion-cipherlab/)（Day069） |
+| その他（分置式） | クロノグラム | 文の中のローマ数字に当たる文字を足して、年号を表す | [Epigraph Chronogrammer](https://ipusiron.github.io/epigraph-chronogrammer/)（Day086） |
+| その他（コード） | 書籍暗号（ブックコード） | 語を、本の中の位置（ページ・行・語の番号）で表すコード | [Book Code Builder](https://ipusiron.github.io/book-code-builder/)（Day099） |
+| 解く（解析・解読） | 暗号方式の推定 | 暗号文の特徴から、どの古典暗号が使われたかを推定する | [Cipher Clairvoyance](https://ipusiron.github.io/cipher-clairvoyance/)（Day044） |
+| 解く（解析・解読） | 頻度分析 | 英語の頻度・一致指数・n-gramで、単一換字を手で解く | [Frequency Analyzer](https://ipusiron.github.io/frequency-analyzer/)（Day009） |
+| 解く（解析・解読） | シーザー暗号の総当たり | 25通りのずらし量をすべて試し、英単語と頻度で候補を選ぶ | [Caesar Cipher Breaker](https://ipusiron.github.io/caesar-cipher-breaker/)（Day008） |
+| 解く（解析・解読） | 山登り法による解読 | 換字表を少しずつ変え、英語らしさが上がる方へ進めて解く | [Cipher Climb](https://ipusiron.github.io/cipherclimb/)（Day018） |
+| 解く（解析・解読） | 一致指数（IC） | ICで単一換字と多表式を見分け、周期ごとのICで鍵の長さを推定する | [IC Learning Visualizer](https://ipusiron.github.io/ic-learning-visualizer/)（Day047） |
+| 解く（解析・解読） | 繰り返しの解析（カシスキー） | 暗号文の繰り返しの間隔と列のICから、多表式の鍵の長さを推定する | [RepeatSeq Analyzer](https://ipusiron.github.io/repeatseq-analyzer/)（Day028） |
+| 解く（解析・解読） | 列への分割 | 暗号文を周期ごとの列に分け、多表式を単一換字の集まりにして解く | [Modular Text Divider](https://ipusiron.github.io/modular-text-divider/)（Day030） |
+| 解く（解析・解読） | 鍵の候補の探索 | 鍵の位置ごとに来そうな文字を並べ、辞書の語で多表式の鍵の候補を採点する | [AlphaLoom](https://ipusiron.github.io/alphaloom/)（Day046） |
+| 解く（解析・解読） | アナグラムの探索 | 文字を並べ替えて作れる語やフレーズを探す。転置を手で解くときに使える | [Anagram Hunter](https://ipusiron.github.io/anagram-hunter/)（Day045） |
+| 学ぶ | 2回で元に戻る操作 | 換字・転置・ビット反転で、同じ操作を2回掛けると元に戻る性質を学ぶ | [Involution Studio](https://ipusiron.github.io/involution-studio/)（Day051） |
 
 - ジグザグ暗号（Day072）は、文字を鍵の列の位置に置き換える換字の一種である。英語でzigzag cipherというとレールフェンス暗号（転置）の別名を指すことが多いが、別の暗号である。
 - ヒル暗号（Day093）とポルタの二文字式暗号（Day080）は、複数の文字をまとめて置き換える多字換字である。位置ごとに別の対応表を使う多表式（ヴィジュネル暗号など）とは別の分け方である。
 
 ---
 
-### 3️⃣ クイズ（Quiz）
+### 5️⃣ クイズ（Quiz）
 
 - 問題形式：一問一答形式（単一選択）
-- 問題数：10問（定義2・基礎2・分類4・混合2）
+- 問題数：20問（定義3・基礎4・分類6・性質3・混合4）
 - 問題データ：`js/quiz-data.js`（スクリプトとして読むので、`index.html`をファイルから直接開いても動く）
 - 回答後の表示：正解・不正解を色と印（✓✗）と文字で示し、解説を出す
-- 分類の4問：選択肢がそろっており、単一換字・多表式・転置・混合がそれぞれ1回ずつ正解になる
-- 最終結果：正解数と正答率、3段階のメッセージ
+- 正解の位置：4つの位置に5・5・6・4問ずつ分け、毎回同じ位置を選んでも3割までしか取れない
+- 順番と選択肢を混ぜる：オンにすると、出題順と選択肢の並びを一様な順列で混ぜる
+- 最終結果：正解数と正答率、3段階のメッセージ、間違えた問題の見直し（選んだ答え・正解・解説）
 
 例題：
 
@@ -199,6 +288,8 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 - 「2回で元に戻る操作」を体感する：逆順と偶奇入れ替えは、同じ操作を2回かけると元に戻る（EDUCATION → DECUTAOIN → EDUCATION）。トグルの機能や往復の変換（ROT13など）を設計するとき、同じ操作で元に戻るかを確かめる考え方の入口になる。Involution Studio（Day051）で、この性質をさらに調べられる。
 - 鍵の数と安全性が別の話だと示す：A〜Hの対応表は8! = 40,320通り、26文字なら26! = 403,291,461,126,605,635,584,000,000通り（約4.03×10^26）ある。それでも単一換字は文字の頻度で破れる。パスワードの「組み合わせの数」だけで強さを語らない、という話の導入に使える。頻度の実際はFrequency Analyzer（Day009）で確かめられる。
 - 謎解きの問題を設計する：作る暗号が「文字が変わる（換字）」のか「並びが変わる（転置）」のかを先に決めると、解き手に渡すヒント（対応表か、並べ方か）が決まる。EDUCATIONの9文字の並べ方は9! = 362,880通りあるが、意味のある単語ならアナグラムとして解ける。転置の手がかりは並べ方の数ではなく、残った文字にある。
+- 仮名化と並べ替えで何が残るかを考える：表の値を対応表で別の記号に置き換える仮名化は単一換字と同じ形で、同じ値は同じ記号になる（HELLOをキーワードZEBRAで置き換えるとFAJJMになり、LLの繰り返しはJJとして残る）。行を並べ替えるだけの処理は転置と同じ形で、値ごとの件数はそのまま残る。実験室の「保たれたもの」の表を、匿名化の手法で何が漏れうるかを考える入口に使える（個人情報の安全性を判定するものではない）。
+- 処理の順番を入れ替えてよいかを確かめる：単一換字と縦列転置は、どちらを先に掛けても同じ結果になる。ヴィジュネル暗号に替えると、実験室の例文では1文字目から食い違う。データの前処理（正規化と並べ替えなど）の順番を入れ替えてよいか、という問いを、手を動かして確かめる教材になる。
 
 ### 教育・自習
 
@@ -217,13 +308,14 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 
 ### ほかのツールとの組み合わせ
 
-- 暗号文の方式を推定する：Cipher Clairvoyance（Day044）
+- 暗号文の方式を推定する：Cipher Clairvoyance（Day044）。本ツールの見分けるタブより多くの方式（オートキー・プレイフェアなど）を扱う
 - 文字の頻度を数える：Frequency Analyzer（Day009）、一致指数（IC）を学ぶ：IC Learning Visualizer（Day047）
 - 転置の鍵を順列として扱う：Permutation CipherLab（Day095）
 
 ### 限界
 
-- 本ツールは仕組みを学ぶ教材であり、任意の文を暗号化・復号する道具ではない（対応表はA〜Hの8文字、並べ替えはEDUCATIONの9文字）。実際の暗号化と解読は、古典暗号の例タブのツールで行う。
+- 本ツールは仕組みを学ぶ教材である。実験室は英文に暗号を掛けて数を比べるが、復号や鍵の管理の機能はない。実際の暗号化と解読は、古典暗号の例タブのツールで行う。
+- 見分けるタブは、英文に掛けた3種類（転置・単一換字・多表式）だけを対象にした目安である。暗号の種類を確定するものではない。
 - 古典暗号の安全性を保証するものではない。古典暗号は、いまの通信の秘密を守る用途には使えない。
 
 ---
@@ -282,6 +374,8 @@ Q3: 頻度が大きく偏っている（多い文字がはっきりある）？
 
 ### ツールで見分ける
 
+本ツールの見分けるタブは、2️⃣の頻度（カイ二乗）と一致指数で判定します。詳しい推定や解読には次のツールを使います。
+
 - [Frequency Analyzer - 頻度分析ツール](https://ipusiron.github.io/frequency-analyzer/)
 - [Cipher Clairvoyance - 暗号化方式推定ツール](https://ipusiron.github.io/cipher-clairvoyance/)
 - [IC Learning Visualizer - 一致指数の学習ツール](https://ipusiron.github.io/ic-learning-visualizer/)
@@ -300,11 +394,13 @@ Q3: 頻度が大きく偏っている（多い文字がはっきりある）？
 ## 🔬 技術情報
 
 - HTML／CSS／JavaScript（クライアントサイドで完結。ライブラリー・CDN・外部への通信なし）
-- 計算部`js/structure-core.js`は画面に依存しない純粋関数で、Node.jsのテストから同じコードを読む
+- 計算部`js/structure-core.js`（対応表・順列）と`js/lab-core.js`（実験室・見分け）は画面に依存しない純粋関数で、Node.jsのテストから同じコードを読む
+- 英語の頻度は`js/english-freq.js`（Gutenberg #1342のA〜Zの回数）、見分けの当たり具合は`tools/eval-classify.js`が書き出す`js/classify-accuracy.js`
 - 対応図はSVG（viewBoxの座標で描き、画面の寸法を測らない）
 - 並べ替えはPointer Events（マウス・タッチ・ペン）とキーボード操作。差し込み位置は行（折り返し）を先に決めてから列を比べる
 - 乱数は`crypto.getRandomValues`。2^32を割り切れない端を引き直す一様な整数とFisher–Yatesで、偏りのない順列を作る
 - WAI-ARIAのタブ（←→・Home・End）、aria-liveでの読み上げ、ボタンの高さ44px以上
+- 日本語と英語の切り替え（右上のボタン）。初めの言語は`?lang=ja`・`?lang=en`、保存した選択、ブラウザーの言語の順で決める。index.htmlは日本語で書き、`js/i18n.js`が読み込み直後に日本語の文字列を控えて`js/i18n-en.js`の対応表で入れ替える
 - ライト／ダークの配色（OSの設定と切り替えボタン）。文字4.5:1、枠とフォーカス3:1以上をテストで検査する
 - MIT License
 
@@ -319,7 +415,8 @@ Q3: 頻度が大きく偏っている（多い文字がはっきりある）？
 - meta要素のContent Security Policyで、スクリプト・スタイル・画像を同じオリジンに限り、通信（connect-src）とフォームの送信先を禁止している。
 - 画面の文字はすべて`textContent`で入れ、`innerHTML`への代入はない。
 - 外部へのリンクは`rel="noopener noreferrer"`で開き、referrerは送らない（no-referrer）。
-- 保存するのは配色の選択（localStorage）だけで、使えない環境でも動く。
+- ほかのツールへ暗号文を渡すときは、URLの`#text=`に入れる。`#`より後ろはサーバーへ送られない。ブラウザーの閲覧履歴には残る。
+- 保存するのは配色と言語の選択（localStorage）だけで、使えない環境でも動く。
 - GitHub Pagesでは応答ヘッダーを設定できないので、クリックジャッキング対策（frame-ancestors）は入れていない。meta要素のframe-ancestorsは仕様上無視される。
 
 ---
@@ -332,7 +429,7 @@ npm test
 
 - Node.js 22以上で動き、依存パッケージはない（`node --test`）。
 - GitHub Actionsで、pushとpull requestのたびに自動で実行する。
-- 計算部（対応表・順列・乱数の一様さ・差し込み位置）、クイズのデータ、古典暗号の例の一覧、index.htmlのCSPとARIA、配色のコントラスト比、文言の辞書、ファイルの書式、READMEの例と数値を検査する。READMEの表と数値は、テストが計算部から計算し直して一致を確かめる。
+- 計算部（対応表・順列・乱数の一様さ・差し込み位置）、実験室の計算（既知解答・保たれるもの・順番の入れ替え・見分けのしきい値）、クイズのデータ、古典暗号の例の一覧、index.htmlのCSPとARIA、配色のコントラスト比、文言の辞書と日英の対応（英語の文言・クイズ・カタログに日本語が残らない）、ファイルの書式、READMEの例と数値を検査する。READMEの表と数値は、テストが計算部から計算し直して一致を確かめる。
 
 ---
 
@@ -340,50 +437,69 @@ npm test
 
 ```
 classical-cipher-structure-trainer/
-├── index.html               # 画面（概念・古典暗号の例・クイズの3タブ）
-├── script.js                # 画面の動き（対応図・並べ替え・タブ・クイズ・カードの描画）
-├── style.css                # 見た目（ライト／ダークの配色、レスポンシブ）
-├── js/                      # 画面から読むスクリプト
-│   ├── structure-core.js    # 計算部（対応表・順列・乱数・差し込み位置・クイズの検査）
-│   ├── messages.js          # script.jsが組み立てる文言の辞書
-│   ├── quiz-data.js         # クイズの10問（解説つき）
-│   ├── catalog.js           # 古典暗号の例のツール22本の一覧
-│   └── theme.js             # 配色の初期値と切り替え（描画の前に読む）
-├── data/                    # 素材
-│   ├── favicon.svg          # ファビコン
-│   └── diagram-mapping.svg  # 対応図の静的な見本（画面では使わない）
-├── assets/                  # READMEの画像
-│   ├── screenshot.png       # 概念タブ
-│   ├── screenshot2.png      # クイズタブ（解説の表示）
-│   ├── screenshot3.png      # 古典暗号の例タブ
-│   └── screenshot4.png      # ダーク表示
-├── test/                    # node:testのテスト
-│   ├── core.test.js         # 計算部
-│   ├── quiz.test.js         # クイズのデータ
-│   ├── catalog.test.js      # 古典暗号の例の一覧
-│   ├── html.test.js         # index.html（CSP・ARIA・読み込むスクリプト）
-│   ├── contrast.test.js     # 配色のコントラスト比
-│   ├── messages.test.js     # 文言の辞書
-│   ├── format.test.js       # ファイルの書式
-│   └── readme.test.js       # READMEの例・数値・構造
-├── .github/                 # GitHubの設定
-│   └── workflows/           # GitHub Actions
-│       └── test.yml         # pushとpull requestでnpm test
-├── package.json             # npm testの定義（依存なし）
-├── README.md                # 本ドキュメント
-├── TECHNICAL.md             # 実装の説明
-├── SECURITY.md              # セキュリティ対策
-├── CLAUDE.md                # Claude Code向けの案内
-├── LICENSE                  # MIT License
-├── .gitignore               # Gitの除外設定
-└── .nojekyll                # GitHub PagesでJekyllを使わない
+├── index.html                # 画面（概念・実験室・見分ける・古典暗号の例・クイズの5タブ）
+├── script.js                 # 画面の動き（対応図・並べ替え・実験室・見分ける・カード・クイズ）
+├── style.css                 # 見た目（ライト／ダークの配色、レスポンシブ）
+├── js/                       # 画面から読むスクリプト
+│   ├── structure-core.js     # 計算部（対応表・順列・乱数・差し込み位置・クイズの検査）
+│   ├── messages.js           # script.jsが組み立てる文言の辞書
+│   ├── quiz-data.js          # クイズの20問（解説つき）
+│   ├── catalog.js            # 古典暗号の例のツール42本の一覧
+│   ├── lab-core.js           # 実験室の計算部（換字・転置・多表式・統計・見分け）
+│   ├── english-freq.js       # 英語の文字の出現回数（見分けの基準）
+│   ├── classify-accuracy.js  # 見分けの当たり具合（tools/eval-classify.jsの出力）
+│   ├── i18n.js               # 日英の切り替え（index.htmlの日本語を控えて入れ替える）
+│   ├── i18n-en.js            # index.htmlの英語の対応表
+│   └── theme.js              # 配色の初期値と切り替え（描画の前に読む）
+├── data/                     # 素材
+│   ├── favicon.svg           # ファビコン
+│   └── diagram-mapping.svg   # 対応図の静的な見本（画面では使わない）
+├── assets/                   # READMEの画像
+│   ├── screenshot.png        # 概念タブ
+│   ├── screenshot2.png       # 実験室タブ
+│   ├── screenshot3.png       # 見分けるタブ
+│   ├── screenshot4.png       # 古典暗号の例タブ
+│   ├── screenshot5.png       # クイズタブ（解説の表示）
+│   ├── screenshot6.png       # ダーク表示
+│   └── en/                   # 英語の画面の画像（README.en.md用、同じ6枚）
+│       ├── screenshot.png    # 概念タブ
+│       ├── screenshot2.png   # 実験室タブ
+│       ├── screenshot3.png   # 見分けるタブ
+│       ├── screenshot4.png   # 古典暗号の例タブ
+│       ├── screenshot5.png   # クイズタブ
+│       └── screenshot6.png   # ダーク表示
+├── test/                     # node:testのテスト
+│   ├── core.test.js          # 計算部
+│   ├── quiz.test.js          # クイズのデータ
+│   ├── catalog.test.js       # 古典暗号の例の一覧
+│   ├── lab.test.js           # 実験室の計算部と見分けのしきい値
+│   ├── html.test.js          # index.html（CSP・ARIA・読み込むスクリプト）
+│   ├── contrast.test.js      # 配色のコントラスト比
+│   ├── messages.test.js      # 文言の辞書
+│   ├── i18n.test.js          # 日英の切り替えと英語の文言・クイズ・カタログ
+│   ├── format.test.js        # ファイルの書式
+│   └── readme.test.js        # READMEの例・数値・構造
+├── tools/                    # 作業用のスクリプト
+│   └── eval-classify.js      # 見分けのしきい値を決め、当たり具合を測る（js/classify-accuracy.jsを書き出す）
+├── .github/                  # GitHubの設定
+│   └── workflows/            # GitHub Actions
+│       └── test.yml          # pushとpull requestでnpm test
+├── package.json              # npm testの定義（依存なし）
+├── README.md                 # 本ドキュメント
+├── README.en.md              # 英語版のREADME
+├── TECHNICAL.md              # 実装の説明
+├── SECURITY.md               # セキュリティ対策
+├── CLAUDE.md                 # Claude Code向けの案内
+├── LICENSE                   # MIT License
+├── .gitignore                # Gitの除外設定
+└── .nojekyll                 # GitHub PagesでJekyllを使わない
 ```
 
 ---
 
 ## 💻 動作環境
 
-- ブラウザー：Chrome・Edge・Firefoxの最新版で確認した。Safariとスマートフォンの実機は未確認である。
+- ブラウザー：PlaywrightのChromium（ChromeとEdgeと同じエンジン）とFirefoxで確認した。Safari・Edge・スマートフォンの実機は未確認である。
 - `index.html`をファイルから直接開いても、すべての機能が動く（クイズの問題もスクリプトとして読む）。
 - ローカルのサーバーで試す場合は、リポジトリのフォルダーで`python -m http.server 8000`を実行し、`http://localhost:8000/`を開く。
 

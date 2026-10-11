@@ -14,6 +14,11 @@ used.add('map.charset.numbers');
 for (const k of ['quiz.grade.low', 'quiz.grade.mid', 'quiz.grade.high', 'quiz.error.empty', 'quiz.error.field']) used.add(k);
 // カタログの見出しと分け方（`catalog.kind.${kind}` の形で組み立てる）
 const Cat = require('../js/catalog.js');
+// 実験室・見分けるで組み立てるキー
+for (const f of ['substitution', 'transposition', 'polyalphabetic']) used.add(`lab.explain.${f}`);
+for (const k of ['short', 'transposition', 'mono', 'poly']) used.add(`detect.kind.${k}`);
+for (const k of ['keyEmpty', 'keyChars', 'keyShort', 'keyLong']) used.add(`lab.error.${k}`);
+for (const kind of ['all', ...Cat.KINDS]) used.add(`catalog.filter.${kind}`);
 for (const kind of Cat.KINDS) {
   used.add(`catalog.kind.${kind}`);
   used.add(`catalog.kind.${kind}.desc`);
@@ -24,7 +29,12 @@ test('script.js に日本語の文字列リテラルがない（文言は辞書�
   // コメントを除いてから、引用符の中の日本語を探す
   const code = script.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
   const literals = [...code.matchAll(/(['"`])((?:\\.|(?!\1).)*)\1/g)].map(m => m[2]);
-  const ja = literals.filter(s => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(s));
+  // 全角の句読点・中点・全角形（Unicode の文字種では Common に入るので別に見る）
+  const wide = s => [...s].some(ch => {
+    const cp = ch.codePointAt(0);
+    return (cp >= 0x3000 && cp <= 0x303f) || cp === 0x30fb || (cp >= 0xff00 && cp <= 0xffef);
+  });
+  const ja = literals.filter(s => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(s) || wide(s));
   assert.deepEqual(ja, []);
 });
 
