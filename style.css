@@ -18,6 +18,9 @@
   --border: #e5e7eb;       /* ボーダー色 */
   --brand: #0ea5e9;        /* ブランドカラー（青） */
   --brand-weak: #bae6fd;   /* ブランドカラー（薄め） */
+  --brand-strong: #0369a1; /* 線・枠の濃い青（白地で5.93:1） */
+  --border-strong: #7b8494; /* 操作できる枠（白地で3.77:1、#fafafa で3.61:1） */
+  --focus: #0369a1;        /* フォーカスの枠（白地で5.93:1） */
   --accent: #10b981;       /* アクセントカラー（緑：正解） */
   --warn: #f59e0b;         /* 警告色（黄） */
   --danger: #ef4444;       /* 危険色（赤：不正解） */
@@ -198,49 +201,59 @@ main{
   border-radius: 12px;
   padding: 12px;
   background: #fff;
-  position: relative; /* SVG線の絶対配置の基準 */
-  min-height: 140px;
-}
-.mapping-figure.large{
-  padding: 16px;
-  min-height: 160px; /* 大きめの図用 */
 }
 
 /* ============================================================
-   マッピング図の行（上段・下段）
-   ============================================================ */
-.row{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap; /* 小画面で折り返し */
+   マッピング図（SVG）
+   ============================================================
+   viewBox の座標で描くので、幅に合わせて拡大・縮小されるだけで折り返さない。
+   幅320pxでも文字の高さは約12px（最大幅420pxで約25px）。 */
+.map-svg{
+  display:block;
+  width:100%;
+  max-width: 420px;
+  height:auto;
+  margin: 0 auto;
 }
-.row-top{
-  margin-bottom: 50px; /* 上段と下段の間にスペース（SVG線のため） */
+.map-cell rect{
+  fill:#fff;
+  stroke: var(--border-strong);
+  stroke-width: 1;
 }
-.row-bottom{
-  margin-top: 50px;
+.map-cell text{
+  fill: var(--fg);
+  font-size: 18px;
+  font-weight: 700;
 }
-.row .cell{
-  width: 36px;
-  height: 36px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid var(--border);
-  border-radius:10px;
-  background:#fff;
-  font-weight:600;
+.map-line{
+  fill:none;
+  stroke: var(--brand-strong);
+  stroke-width: 2;
+}
+.map-key{
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+.map-charset{
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
 }
 
-/* SVG線のコンテナ（マッピング図の対応関係を描画） */
-#map-lines,#viz-map-lines{
+/* 画面には出さず、読み上げにだけ渡す */
+.sr-only{
   position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
-  pointer-events:none; /* SVG線をクリックできないように */
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip: rect(0 0 0 0);
+  white-space:nowrap;
+  border:0;
 }
 
 .note{
@@ -252,82 +265,80 @@ main{
 /* ============================================================
    シャッフル図のブロック要素
    ============================================================ */
-/* 元の文字列表示用（ドラッグ不可） */
-.blocks{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap; /* モバイルで折り返し */
+/* 元の文字列 */
+.shuffle-source{
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+.source-word{
+  color: var(--fg);
   font-weight: 700;
-}
-@media (min-width: 640px){
-  .blocks{
-    flex-wrap:nowrap; /* デスクトップで1行表示 */
-  }
-}
-.blocks::before, .sortable::before{
-  content:""; /* FlexboxのバグWorkaround（一部ブラウザー向け） */
+  letter-spacing: 0.3em;
 }
 
-/* ドロップゾーン（ドラッグ可能なブロックを配置） */
+/* 並べ替える領域（ol） */
 .sortable{
+  list-style: none;
   display:flex;
-  gap:10px;
+  gap:8px;
   justify-content:center;
-  flex-wrap:wrap;
-  margin-top:12px;
-  min-height: 48px;
+  flex-wrap:wrap; /* 狭い画面では折り返す（差し込み位置は行と列で決める） */
+  margin: 12px 0 0;
+  min-height: 60px;
   padding: 8px;
   background: #fafafa;
   border:1px solid var(--border);
   border-radius: 12px;
-  transition: background-color 0.2s; /* ドラッグオーバー時のアニメーション */
 }
-@media (min-width: 640px){
-  .sortable{
-    flex-wrap:nowrap; /* デスクトップで1行表示 */
-  }
-}
-.sortable.drag-over{
-  /* ドラッグオーバー時の視覚的フィードバック */
-  background: #e0f2fe; /* 薄い青色 */
-  border-color: var(--brand);
+.slot{
+  display:flex;
 }
 
-/* ドラッグ可能なブロック */
+/* ドラッグ・キー操作で動かすブロック（button） */
 .block{
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display:flex;
   align-items:center;
   justify-content:center;
   background:#fff;
-  border:1px solid var(--border);
+  color: var(--fg);
+  border:1px solid var(--border-strong);
   border-radius: 10px;
-  cursor:grab; /* ドラッグ可能を示すカーソル */
+  font: inherit;
+  font-weight: 700;
+  font-size: 18px;
+  cursor:grab; /* ドラッグできることを示すカーソル */
   user-select:none; /* テキスト選択を無効化 */
-  transition: transform 0.15s, box-shadow 0.15s; /* ホバー時のアニメーション */
+  touch-action: none; /* ブロックの上ではスクロールより並べ替えを優先（枠の余白ではスクロールできる） */
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 .block:hover{
   transform: translateY(-2px); /* 浮き上がり効果 */
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-.block:focus{
-  /* キーボードフォーカス時の視覚的フィードバック */
-  outline: 2px solid var(--brand);
+.block:focus-visible{
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
-.block:active{
-  cursor:grabbing; /* ドラッグ中のカーソル */
+.slot.dragging .block{
+  cursor:grabbing;
+  opacity: 0.6;
+  border-style: dashed;
 }
-.block.dragging{
-  opacity: 0.5; /* ドラッグ中は半透明 */
-  transform: scale(1.05); /* 少し拡大 */
+.slot.grabbed .block{
+  /* キーボードで持ち上げている */
+  background: var(--brand-weak);
+  border: 2px solid var(--brand-strong);
+  transform: translateY(-4px);
 }
-.block.drop-indicator{
-  /* ドロップ位置のインジケーター（未使用だが将来用） */
-  border: 2px dashed var(--brand);
-  background: #e0f2fe;
+.shuffle-now{
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--fg);
 }
 
 /* ============================================================

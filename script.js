@@ -1,10 +1,18 @@
 /* =========================================================
    Classical Cipher Structure Trainer
    - Tabs: 3タブ構成（概念、古典暗号の例、クイズ）
-   - Mapping: SVG Bézier曲線による対応関係の可視化
-   - Shuffle: HTML5 Drag & Drop + タッチイベント対応
+   - Mapping: 対応表を SVG で描く（配置は計算部 figureLayout が決め、画面の寸法を測らない）
+   - Shuffle: Pointer Events（マウス・タッチ・ペン共通）とキーボードで並べ替え
    - Quiz: data/quiz.jsonから10問読み込み（一問一答形式）
+   計算は js/structure-core.js、文言は js/messages.js に置く。
    ========================================================= */
+
+const Core = window.StructureCore;
+const T = (key, params) => window.Messages.t(key, params);
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/** 暗号に使う乱数（偏りのない整数は計算部の randomInt が作る） */
+const fillRandom = buf => window.crypto.getRandomValues(buf);
 
 // ============================================================
 // タブ切り替え機能
@@ -22,391 +30,330 @@ tabs.forEach(btn => {
     btn.classList.add('active');
     const panel = document.getElementById(btn.getAttribute('aria-controls'));
     panel.classList.add('active');
-
-    // 概念タブに切り替えた際にSVGを再描画
-    // 理由: 非表示状態では getBoundingClientRect() が正しい値を返さないため
-    if(btn.id === 'btn-intro'){
-      setTimeout(drawMappingFigure, 50); // DOM更新完了を待つ
-    }
   });
 });
 
 // ============================================================
-// マッピング図（換字暗号の対応関係をSVG線で可視化）
+// マッピング図（換字暗号の対応関係を SVG で可視化）
 // ============================================================
+// 上段＝平文の文字 A〜H、下段＝暗号文の文字（A〜H か 1〜8）。
+// 鍵 map は「上段の i 番目 → 下段の map[i] 番目」。シフトもランダムも同じ形で持つ。
 
-/**
- * マッピング図を構築してSVG線を描画
- * @param {string} topId - 上段（平文）のコンテナID
- * @param {string} bottomId - 下段（暗号文）のコンテナID
- * @param {string} svgId - SVG要素のID
- * @param {number} offset - シフト量（規則的な対応の場合）
- * @param {Array|null} customMapping - カスタムマッピング配列（ランダム対応の場合）
- * @param {string} bottomCharSet - 下段の文字セット: 'letters' (A-H) または 'numbers' (1-8)
- */
-function buildMappingFigure(topId, bottomId, svgId, offset=3, customMapping=null, bottomCharSet='letters'){
-  const top = document.getElementById(topId);
-  const bottom = document.getElementById(bottomId);
-  const svg = document.getElementById(svgId);
-  if(!top || !bottom || !svg) return;
+const mapState = {
+  offset: Core.DEFAULT_OFFSET, // シフト量（A→F）
+  random: null,                // ランダムな対応表（null ならシフト）
+  charset: 'letters',          // 下段の文字: 'letters'（A〜H）か 'numbers'（1〜8）
+};
 
-  // 上段は常にA-H、下段は文字セットに応じて変更
-  const letters = ['A','B','C','D','E','F','G','H'];
-  const bottomChars = bottomCharSet === 'numbers' ? ['1','2','3','4','5','6','7','8'] : letters;
-
-  top.innerHTML = '';
-  bottom.innerHTML = '';
-
-  // 上段（平文）の文字セルを生成
-  letters.forEach(ch => {
-    const c = document.createElement('div');
-    c.className = 'cell';
-    c.textContent = ch; // textContent使用でXSS対策
-    top.appendChild(c);
-  });
-
-  // 下段（暗号文）の文字セルを生成
-  bottomChars.forEach(ch => {
-    const c = document.createElement('div');
-    c.className = 'cell';
-    c.textContent = ch;
-    bottom.appendChild(c);
-  });
-
-  // SVG Bézier曲線で対応関係を描画
-  const rect = svg.getBoundingClientRect();
-  svg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`); // レスポンシブ対応
-  svg.innerHTML = '';
-  const topCells = Array.from(top.children);
-  const bottomCells = Array.from(bottom.children);
-
-  // 各上段文字に対して対応する下段文字への線を描画
-  topCells.forEach((tc, i) => {
-    let bc; // 対応する下段の文字セル
-
-    if(customMapping){
-      // ランダム対応モード: Fisher-Yatesシャッフル配列を使用
-      const targetLetter = customMapping[i];
-      const targetIndex = letters.indexOf(targetLetter);
-      bc = bottomCells[targetIndex];
-    } else {
-      // 規則的シフトモード: オフセット値を使用
-      bc = bottomCells[(i + offset) % bottomCells.length];
-    }
-
-    // 各セルの中心座標を計算
-    const tcr = tc.getBoundingClientRect();
-    const bcr = bc.getBoundingClientRect();
-    const svgR = svg.getBoundingClientRect();
-    const x1 = tcr.left + tcr.width/2 - svgR.left; // 上段セルの中心X
-    const y1 = tcr.bottom - svgR.top + 4;           // 上段セルの下端Y
-    const x2 = bcr.left + bcr.width/2 - svgR.left; // 下段セルの中心X
-    const y2 = bcr.top - svgR.top - 4;              // 下段セルの上端Y
-
-    // Cubic Bézier曲線のパスを生成
-    // 制御点を中間Y座標に配置することでS字カーブを作成
-    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    const midY = (y1 + y2) / 2;
-    const d = `M ${x1},${y1} C ${x1},${midY} ${x2},${midY} ${x2},${y2}`;
-    path.setAttribute('d', d);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke','#0ea5e9');
-    path.setAttribute('stroke-width','2');
-    path.setAttribute('opacity','0.85');
-    svg.appendChild(path);
-  });
+function currentMap(){
+  return mapState.random || Core.shiftMap(Core.TOP_LETTERS.length, mapState.offset);
 }
 
-// マッピング図の状態管理
-let vizOffset = 5; // 初期シフト量（A→F）
-let vizRandomMapping = null; // ランダムマッピング配列（nullの場合は規則的シフト）
-let vizBottomCharSet = 'letters'; // 下段の文字セット: 'letters' (A-H) または 'numbers' (1-8)
-
-/**
- * マッピング図を描画（ラッパー関数）
- */
-function drawMappingFigure(){
-  buildMappingFigure('viz-map-top','viz-map-bottom','viz-map-lines', vizOffset, vizRandomMapping, vizBottomCharSet);
+/** SVG の要素を作る（属性は setAttribute。style 属性は使わない） */
+function svgEl(name, attrs){
+  const el = document.createElementNS(SVG_NS, name);
+  for(const [k, v] of Object.entries(attrs)) el.setAttribute(k, String(v));
+  return el;
 }
 
-// 初期化処理
-window.addEventListener('load', () => {
-  drawMappingFigure();
-  setupShuffleViz();
-  setupQuiz();
+/** 1つのセル（角丸の四角と文字） */
+function svgCell(cx, y, size, ch){
+  const g = svgEl('g', { class: 'map-cell' });
+  g.appendChild(svgEl('rect', { x: cx - size / 2, y, width: size, height: size, rx: 9 }));
+  const text = svgEl('text', { x: cx, y: y + size / 2, 'text-anchor': 'middle', 'dominant-baseline': 'central' });
+  text.textContent = ch; // textContent で描く
+  g.appendChild(text);
+  return g;
+}
+
+/**
+ * マッピング図を描く。
+ * viewBox の座標で描くので、幅が変わっても拡大・縮小されるだけで折り返さない。
+ * 非表示のタブの中でも同じ図になる（以前のような再描画は要らない）。
+ */
+function renderMapping(){
+  const svg = document.getElementById('map-figure');
+  const key = document.getElementById('map-key');
+  const desc = document.getElementById('map-figure-desc');
+  const charset = document.getElementById('map-charset');
+  if(!svg || !key || !desc) return;
+
+  const top = Core.TOP_LETTERS;
+  const bottom = Core.BOTTOM_SETS[mapState.charset];
+  const map = currentMap();
+  const g = Core.figureLayout(top.length);
+
+  svg.setAttribute('viewBox', `0 0 ${g.width} ${g.height}`);
+  svg.replaceChildren();
+
+  // 線（セルの下に置く）
+  const lines = svgEl('g', { class: 'map-lines' });
+  map.forEach((j, i) => {
+    const d = Core.curvePath(g.xs[i], g.topY + g.cell + 4, g.xs[j], g.bottomY - 4);
+    lines.appendChild(svgEl('path', { d, class: 'map-line' }));
+  });
+  svg.appendChild(lines);
+
+  top.forEach((ch, i) => svg.appendChild(svgCell(g.xs[i], g.topY, g.cell, ch)));
+  bottom.forEach((ch, i) => svg.appendChild(svgCell(g.xs[i], g.bottomY, g.cell, ch)));
+
+  // 図の中身を文字でも示す（読み上げ・図が見えない人のため）
+  const pairs = Core.mappingPairs(map, top, bottom).map(([from, to]) => T('map.pair', { from, to })).join(' ');
+  const offset = Core.shiftOf(map);
+  const kind = offset === null ? T('map.kind.random') : T('map.kind.shift', { offset });
+  key.textContent = T('map.key', { kind, pairs });
+  desc.textContent = T('map.figure', { pairs });
+  if(charset) charset.textContent = T(`map.charset.${mapState.charset}`);
+}
+
+// 「対応表を回す」: シフト量を1つずつ増やす（A→B→C…→H→A）
+document.getElementById('btn-map-rotate')?.addEventListener('click', () => {
+  mapState.random = null;
+  mapState.offset = (mapState.offset + 1) % Core.TOP_LETTERS.length;
+  renderMapping();
 });
 
-// ウィンドウリサイズ時にSVG再描画
-window.addEventListener('resize', drawMappingFigure);
-
-// ============================================================
-// マッピング図の操作ボタン
-// ============================================================
-
-// 「対応表を回す」ボタン: シフト量を1つずつ増やす（A→B→C...→H→A）
-document.getElementById('btn-map-rotate')?.addEventListener('click', ()=>{
-  vizRandomMapping = null; // ランダムマッピングをクリア
-  vizOffset = (vizOffset + 1) % 8; // 0-7でループ
-  drawMappingFigure();
+// 「ランダムに対応させる」: 一様な順列（Fisher–Yates、乱数は crypto.getRandomValues）
+document.getElementById('btn-map-random')?.addEventListener('click', () => {
+  mapState.random = Core.randomPermutation(Core.TOP_LETTERS.length, fillRandom);
+  renderMapping();
 });
 
-// 「ランダムに対応させる」ボタン: Fisher-Yatesシャッフルで完全にランダムな対応を生成
-document.getElementById('btn-map-random')?.addEventListener('click', ()=>{
-  const letters = ['A','B','C','D','E','F','G','H'];
-  const shuffled = [...letters];
-
-  // Fisher-Yatesシャッフルアルゴリズム
-  // - 配列を後ろから順に処理
-  // - 各要素を未処理部分のランダム位置の要素と交換
-  // - O(n)の時間計算量で一様分布を保証
-  for(let i = shuffled.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // ES6分割代入で交換
-  }
-
-  vizRandomMapping = shuffled; // ランダムマッピング配列をセット
-  drawMappingFigure();
+// 下段の文字を A〜H と 1〜8 で切り替える（対応表はそのまま）
+document.getElementById('btn-map-toggle-charset')?.addEventListener('click', () => {
+  mapState.charset = mapState.charset === 'letters' ? 'numbers' : 'letters';
+  renderMapping();
 });
 
-// 「暗号文: A-H ⇄ 1-8」ボタン: 下段の文字セットを切り替え
-document.getElementById('btn-map-toggle-charset')?.addEventListener('click', ()=>{
-  vizBottomCharSet = vizBottomCharSet === 'letters' ? 'numbers' : 'letters';
-  drawMappingFigure();
-});
-
-// 「リセット」ボタン: 初期状態（A→F）に戻す
-document.getElementById('btn-map-reset')?.addEventListener('click', ()=>{
-  vizRandomMapping = null; // ランダムマッピングをクリア
-  vizOffset = 5; // A→F（シフト5）
-  vizBottomCharSet = 'letters'; // 文字セットもリセット
-  drawMappingFigure();
+// 「リセット」: 初期状態（シフト5、A〜H）に戻す
+document.getElementById('btn-map-reset')?.addEventListener('click', () => {
+  mapState.random = null;
+  mapState.offset = Core.DEFAULT_OFFSET;
+  mapState.charset = 'letters';
+  renderMapping();
 });
 
 // ============================================================
 // シャッフル図（転置暗号の順序入れ替えを体験）
 // ============================================================
-// ドラッグ＆ドロップでブロックの順序を自由に入れ替え可能
-// マウス操作、タッチ操作、キーボード操作の3つに対応
+// 鍵 order は「並べ替えたあとの i 番目に、元の order[i] 番目の文字を置く」（取り出す向き）。
+// 画面は order だけから描く。ドラッグ・キー操作・ボタンはどれも order を変えて描き直す。
+// マウス・タッチ・ペンは Pointer Events、キーボードは「Space で持ち上げ→←→→Space で置く」。
 
-let touchDragEl = null; // タッチ操作時のドラッグ中要素を保持
+const shuffleLetters = [...Core.SHUFFLE_WORD];
+const shuffle = {
+  order: Core.identity(shuffleLetters.length),
+  focus: 0,        // Tab で入ったときにフォーカスするブロック（元の番号）
+  grabbed: null,   // キーボードで持ち上げているブロック（元の番号）
+  before: null,    // 持ち上げる前の並び（Esc で戻す）
+  drag: null,      // ポインターで動かしている最中の情報
+  rendering: false,
+};
+const shuffleItems = []; // 元の番号 → li 要素
 
-/**
- * ドラッグ可能なブロック要素を生成
- * @param {string} ch - 表示する文字
- * @return {HTMLElement} ドラッグ可能なブロック要素
- */
-function makeBlock(ch){
-  const el = document.createElement('div');
-  el.className = 'block';
-  el.textContent = ch; // textContent使用でXSS対策
-  el.draggable = true; // HTML5 Drag & Drop API有効化
-  el.setAttribute('role','button'); // スクリーンリーダー対応
-  el.setAttribute('aria-grabbed','false'); // ARIA: ドラッグ状態
-  el.setAttribute('tabindex','0'); // キーボードフォーカス可能に
-
-  // ============================================================
-  // マウス操作: HTML5 Drag & Drop API
-  // ============================================================
-  el.addEventListener('dragstart', e=>{
-    e.dataTransfer.setData('text/plain', ch); // ドラッグデータをセット
-    el.classList.add('dragging'); // 視覚的フィードバック
-    el.setAttribute('aria-grabbed','true');
-  });
-  el.addEventListener('dragend', ()=>{
-    el.classList.remove('dragging');
-    el.setAttribute('aria-grabbed','false');
-  });
-
-  // ============================================================
-  // タッチ操作: スマートフォン・タブレット対応
-  // ============================================================
-  // 理由: Drag & Drop APIはタッチデバイスで動作しないため独自実装
-  el.addEventListener('touchstart', e=>{
-    touchDragEl = el; // グローバル変数にドラッグ中要素を保存
-    el.classList.add('dragging');
-    el.setAttribute('aria-grabbed','true');
-  });
-  el.addEventListener('touchend', ()=>{
-    if(touchDragEl === el){
-      el.classList.remove('dragging');
-      el.setAttribute('aria-grabbed','false');
-      touchDragEl = null;
-    }
-  });
-
-  // ============================================================
-  // キーボード操作: アクセシビリティ対応
-  // ============================================================
-  // 左右矢印キーでブロックを移動
-  el.addEventListener('keydown', e=>{
-    if(e.key === 'ArrowLeft' || e.key === 'ArrowRight'){
-      e.preventDefault();
-      const parent = el.parentElement;
-      if(!parent) return;
-      const blocks = Array.from(parent.querySelectorAll('.block'));
-      const idx = blocks.indexOf(el);
-
-      // ArrowLeft: 左へ移動（前の要素と位置を交換）
-      if(e.key === 'ArrowLeft' && idx > 0){
-        parent.insertBefore(el, blocks[idx - 1]);
-      }
-      // ArrowRight: 右へ移動（次の要素の後ろに挿入）
-      else if(e.key === 'ArrowRight' && idx < blocks.length - 1){
-        parent.insertBefore(blocks[idx + 1], el);
-      }
-    }
-  });
-
-  return el;
+function shuffleWord(){
+  return Core.applyOrder(shuffleLetters, shuffle.order).join('');
 }
 
-/**
- * ドロップゾーンのイベントハンドラを設定
- * @param {HTMLElement} zone - ドロップ対象のコンテナ要素
- */
-function setupDropZone(zone){
-  // ============================================================
-  // マウス操作: dragoverイベントでリアルタイム挿入
-  // ============================================================
-  zone.addEventListener('dragover', e=>{
-    e.preventDefault(); // デフォルト動作（ドロップ禁止）を解除
-    const dragging = document.querySelector('.block.dragging');
-    const after = getDragAfterElement(zone, e.clientX, e.clientY);
-    if(!dragging) return;
-
-    zone.classList.add('drag-over'); // 視覚的フィードバック
-
-    // ドラッグ中の要素を適切な位置に挿入
-    if(after == null) zone.appendChild(dragging); // 末尾に追加
-    else zone.insertBefore(dragging, after); // afterの前に挿入
-  });
-
-  // ドロップゾーンから離れた時の視覚的フィードバックを解除
-  zone.addEventListener('dragleave', e=>{
-    if(e.target === zone){
-      zone.classList.remove('drag-over');
-    }
-  });
-
-  // ドロップ完了時の処理
-  zone.addEventListener('drop', e=>{
-    zone.classList.remove('drag-over');
-  });
-
-  // ============================================================
-  // タッチ操作: touchmoveイベントでリアルタイム挿入
-  // ============================================================
-  zone.addEventListener('touchmove', e=>{
-    e.preventDefault(); // スクロール防止
-    if(!touchDragEl) return;
-
-    const touch = e.touches[0]; // 最初のタッチ座標を取得
-    const after = getDragAfterElement(zone, touch.clientX, touch.clientY);
-    zone.classList.add('drag-over');
-
-    // ドラッグ中の要素を適切な位置に挿入
-    if(after == null) zone.appendChild(touchDragEl);
-    else zone.insertBefore(touchDragEl, after);
-  }, {passive: false}); // passiveをfalseにしてpreventDefault()を有効化
-
-  // タッチ終了時の視覚的フィードバックを解除
-  zone.addEventListener('touchend', ()=>{
-    zone.classList.remove('drag-over');
-  });
+function announceShuffle(key, params = {}){
+  const status = document.getElementById('shuffle-status');
+  if(status) status.textContent = T(key, { word: shuffleWord(), ...params });
 }
 
-/**
- * カーソル位置にもっとも近い挿入先要素を取得
- * @param {HTMLElement} container - コンテナ要素
- * @param {number} x - カーソルのX座標
- * @param {number} y - カーソルのY座標
- * @return {HTMLElement|undefined} 挿入先の次の要素（末尾の場合はundefined）
- */
-function getDragAfterElement(container, x, y){
-  // ドラッグ中でない全ブロックを取得
-  const els = [...container.querySelectorAll('.block:not(.dragging)')];
+/** order のとおりに li を並べ直す。並べ直しで外れたフォーカスは戻す */
+function renderShuffle(){
+  const list = document.getElementById('shuffle-list');
+  const now = document.getElementById('shuffle-now');
+  if(!list) return;
+  const active = list.contains(document.activeElement) ? document.activeElement : null;
+  shuffle.rendering = true;
+  shuffle.order.forEach((src, pos) => {
+    const li = shuffleItems[src];
+    if(list.children[pos] !== li) list.insertBefore(li, list.children[pos] || null);
+    const btn = li.firstElementChild;
+    btn.setAttribute('aria-label', T('shuffle.block', { ch: shuffleLetters[src], from: src + 1, to: pos + 1 }));
+    btn.setAttribute('aria-pressed', String(shuffle.grabbed === src));
+    btn.tabIndex = src === shuffle.focus ? 0 : -1;
+    li.classList.toggle('grabbed', shuffle.grabbed === src);
+  });
+  if(active && document.activeElement !== active) active.focus({ preventScroll: true });
+  shuffle.rendering = false;
+  if(now) now.textContent = T('shuffle.now', { word: shuffleWord() });
+}
 
-  // reduce()でもっとも近い要素を探索
-  // アルゴリズム: カーソルがブロック中心より左にあり、かつ距離が最小の要素を選択
-  return els.reduce((closest, child)=>{
-    const rect = child.getBoundingClientRect();
-    const offset = x - rect.left - rect.width/2; // ブロック中心からの距離
+/** ボタン操作で並びを変える（持ち上げ中なら置いてから） */
+function setShuffleOrder(order){
+  shuffle.grabbed = null;
+  shuffle.before = null;
+  shuffle.order = order;
+  renderShuffle();
+  announceShuffle('shuffle.changed');
+}
 
-    // カーソルがブロックの左側にあり、かつ現在の最小距離より近い場合
-    if(offset < 0 && Math.abs(offset) < closest.offset){
-      return { offset: Math.abs(offset), element: child };
+function dropGrabbed(){
+  if(shuffle.grabbed === null) return;
+  const src = shuffle.grabbed;
+  shuffle.grabbed = null;
+  shuffle.before = null;
+  renderShuffle();
+  announceShuffle('shuffle.dropped', { ch: shuffleLetters[src], pos: shuffle.order.indexOf(src) + 1 });
+}
+
+function onShuffleKeydown(e){
+  const btn = e.target.closest('.block');
+  if(!btn) return;
+  const src = Number(btn.dataset.src);
+  const pos = shuffle.order.indexOf(src);
+  const last = shuffle.order.length - 1;
+
+  if(e.key === ' ' || e.key === 'Enter'){
+    e.preventDefault();
+    if(shuffle.grabbed === src){
+      dropGrabbed();
     }else{
-      return closest;
+      shuffle.grabbed = src;
+      shuffle.before = [...shuffle.order];
+      renderShuffle();
+      announceShuffle('shuffle.grabbed', { ch: shuffleLetters[src], pos: pos + 1 });
     }
-  }, { offset: Number.POSITIVE_INFINITY }).element; // 初期値: 無限大の距離
+    return;
+  }
+  if(e.key === 'Escape' && shuffle.grabbed !== null){
+    e.preventDefault();
+    shuffle.order = shuffle.before;
+    shuffle.grabbed = null;
+    shuffle.before = null;
+    renderShuffle();
+    announceShuffle('shuffle.cancelled');
+    return;
+  }
+
+  const target = { ArrowLeft: pos - 1, ArrowRight: pos + 1, Home: 0, End: last }[e.key];
+  if(target === undefined) return;
+  e.preventDefault();
+  const to = Math.max(0, Math.min(last, target));
+  if(shuffle.grabbed === src){
+    // 持ち上げている: ブロックを動かす（フォーカスはこのブロックのまま）
+    if(to === pos) return;
+    shuffle.order = Core.moveIndex(shuffle.order, pos, to);
+    renderShuffle();
+    announceShuffle('shuffle.moved', { ch: shuffleLetters[src], pos: to + 1 });
+  }else{
+    // 持ち上げていない: フォーカスだけ隣のブロックへ
+    shuffle.focus = shuffle.order[to];
+    renderShuffle();
+    shuffleItems[shuffle.focus].firstElementChild.focus();
+  }
+}
+
+function onShufflePointerDown(e){
+  const btn = e.target.closest('.block');
+  if(!btn || !e.isPrimary || e.button !== 0) return;
+  const list = e.currentTarget;
+  dropGrabbed();
+  shuffle.focus = Number(btn.dataset.src);
+  shuffle.drag = { src: shuffle.focus, id: e.pointerId, x: e.clientX, y: e.clientY, moved: false };
+  // 捕捉は li ではなく ol に置く（li は並べ直しで動くので、捕捉が外れないように）
+  list.setPointerCapture(e.pointerId);
+}
+
+function onShufflePointerMove(e){
+  const d = shuffle.drag;
+  if(!d || e.pointerId !== d.id) return;
+  if(!d.moved){
+    if(Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6) return;
+    d.moved = true;
+    shuffleItems[d.src].classList.add('dragging');
+  }
+  const others = shuffle.order.filter(s => s !== d.src);
+  const boxes = others.map(s => shuffleItems[s].getBoundingClientRect());
+  const next = [...others];
+  next.splice(Core.insertionIndex(boxes, e.clientX, e.clientY), 0, d.src);
+  if(next.join() !== shuffle.order.join()){
+    shuffle.order = next;
+    renderShuffle();
+  }
+}
+
+function onShufflePointerEnd(e){
+  const d = shuffle.drag;
+  if(!d || e.pointerId !== d.id) return;
+  shuffle.drag = null;
+  shuffleItems[d.src].classList.remove('dragging');
+  if(d.moved) announceShuffle('shuffle.dropped', { ch: shuffleLetters[d.src], pos: shuffle.order.indexOf(d.src) + 1 });
 }
 
 /**
  * シャッフル図の初期化とボタンイベント設定
  */
 function setupShuffleViz(){
-  const src = document.getElementById('viz-shuffle-source');
-  const tgt = document.getElementById('viz-shuffle-target');
-  if(!src || !tgt) return;
+  const list = document.getElementById('shuffle-list');
+  if(!list) return;
 
-  // 元テキスト「EDUCATION」を取得（空白除去、大文字化）
-  const text = src.textContent.replace(/\s+/g,'').toUpperCase();
+  shuffleLetters.forEach((ch, src) => {
+    const li = document.createElement('li');
+    li.className = 'slot';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'block';
+    btn.dataset.src = String(src);
+    btn.textContent = ch; // textContent で描く
+    li.appendChild(btn);
+    shuffleItems.push(li);
+  });
 
-  /**
-   * 文字列からブロック要素を生成してドロップゾーンに配置
-   * @param {string} str - 表示する文字列
-   */
-  function fillFrom(str){
-    tgt.innerHTML = ''; // 既存ブロックをクリア
-    [...str].forEach(ch => tgt.appendChild(makeBlock(ch))); // 各文字をブロック化
-  }
+  list.addEventListener('keydown', onShuffleKeydown);
+  list.addEventListener('pointerdown', onShufflePointerDown);
+  list.addEventListener('pointermove', onShufflePointerMove);
+  list.addEventListener('pointerup', onShufflePointerEnd);
+  list.addEventListener('pointercancel', onShufflePointerEnd);
+  list.addEventListener('lostpointercapture', onShufflePointerEnd);
+  list.addEventListener('focusin', e => {
+    const btn = e.target.closest('.block');
+    if(btn && !shuffle.rendering && shuffle.focus !== Number(btn.dataset.src)){
+      shuffle.focus = Number(btn.dataset.src);
+      renderShuffle();
+    }
+  });
+  // 持ち上げたまま Tab などで外へ出たら、その場に置く
+  list.addEventListener('focusout', e => {
+    if(!shuffle.rendering && !list.contains(e.relatedTarget)) dropGrabbed();
+  });
 
-  // 初期配置: "EDUCATION"
-  fillFrom(text);
-  setupDropZone(tgt); // ドラッグ＆ドロップ有効化
+  renderShuffle();
 
   // ============================================================
-  // シャッフルボタンのイベントハンドラ
+  // シャッフルボタンのイベントハンドラ（どれも「いまの並び」に掛ける）
   // ============================================================
 
-  // 「ランダム並べ替え」ボタン: Fisher-Yatesシャッフル
-  document.getElementById('btn-viz-shuffle-random')?.addEventListener('click', ()=>{
-    const arr = [...text];
-    // Fisher-Yatesシャッフルアルゴリズム（マッピング図と同じ）
-    for(let i=arr.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [arr[i],arr[j]] = [arr[j],arr[i]];
-    }
-    fillFrom(arr.join(''));
+  // 「ランダムに並べ替え」: 一様な順列（Fisher–Yates、乱数は crypto.getRandomValues）
+  document.getElementById('btn-shuffle-random')?.addEventListener('click', () => {
+    setShuffleOrder(Core.randomPermutation(shuffleLetters.length, fillRandom));
   });
 
-  // 「逆順に並べ替え」ボタン: 単純な反転
-  document.getElementById('btn-viz-shuffle-reverse')?.addEventListener('click', ()=>{
-    const arr = [...text].reverse();
-    fillFrom(arr.join(''));
+  // 「逆順にする」: いまの並びを反転（2回で元に戻る）
+  document.getElementById('btn-shuffle-reverse')?.addEventListener('click', () => {
+    setShuffleOrder(Core.reverseOrder(shuffle.order));
   });
 
-  // 「偶奇入れ替え」ボタン: 隣接ペアを交換（involution）
-  // 理由: 2回実行すると元に戻る性質（自己逆写像）を体験できる
-  document.getElementById('btn-viz-shuffle-evenodd')?.addEventListener('click', ()=>{
-    // 現在の状態を取得（ユーザーがドラッグで並べ替えた結果を反映）
-    const blocks = Array.from(tgt.querySelectorAll('.block'));
-    const currentText = blocks.map(b => b.textContent).join('');
-    const arr = [...currentText];
-
-    // 偶数インデックスと奇数インデックスを交換: 0↔1, 2↔3, 4↔5, ...
-    // 例: EDUCATION → DEUACTION → EDUCATION（2回で元通り）
-    for(let i = 0; i < arr.length - 1; i += 2){
-      [arr[i], arr[i+1]] = [arr[i+1], arr[i]];
-    }
-    fillFrom(arr.join(''));
+  // 「偶奇を入れ替え」: 1・2番目、3・4番目…を交換（2回で元に戻る）
+  // 例: EDUCATION → DECUTAOIN → EDUCATION
+  document.getElementById('btn-shuffle-evenodd')?.addEventListener('click', () => {
+    setShuffleOrder(Core.swapPairs(shuffle.order));
   });
 
-  // 「リセット」ボタン: 初期状態に戻す
-  document.getElementById('btn-viz-shuffle-reset')?.addEventListener('click', ()=>{
-    fillFrom(text); // "EDUCATION"に戻す
+  // 「リセット」: 元の並び（EDUCATION）に戻す
+  document.getElementById('btn-shuffle-reset')?.addEventListener('click', () => {
+    setShuffleOrder(Core.identity(shuffleLetters.length));
   });
 }
+
+// 初期化処理
+window.addEventListener('load', () => {
+  renderMapping();
+  setupShuffleViz();
+  setupQuiz();
+});
 
 // ============================================================
 // クイズシステム（一問一答形式・10問）

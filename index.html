@@ -37,17 +37,18 @@
           <div class="concept-hint">
             💡 上段＝平文文字、下段＝暗号文文字。線が「対応」を示します。重複なく対応（一対一対応）。
           </div>
-          <div class="mapping-figure large">
-            <div class="row row-top" id="viz-map-top"></div>
-            <svg id="viz-map-lines" aria-hidden="true"></svg>
-            <div class="row row-bottom" id="viz-map-bottom"></div>
-          </div>
+          <figure class="mapping-figure">
+            <svg id="map-figure" class="map-svg" role="img" aria-labelledby="map-figure-desc"></svg>
+            <figcaption class="map-key" id="map-key"></figcaption>
+            <p class="sr-only" id="map-figure-desc"></p>
+          </figure>
           <div class="mapping-actions">
-            <button class="btn" id="btn-map-rotate">対応表を回す</button>
-            <button class="btn" id="btn-map-random">ランダムに対応させる</button>
-            <button class="btn" id="btn-map-toggle-charset">暗号文文字の切り替え: A-H ⇄ 1-8</button>
-            <button class="btn" id="btn-map-reset">リセット</button>
+            <button type="button" class="btn" id="btn-map-rotate">対応表を回す</button>
+            <button type="button" class="btn" id="btn-map-random">ランダムに対応させる</button>
+            <button type="button" class="btn" id="btn-map-toggle-charset" aria-describedby="map-charset">暗号文の文字を切り替え（A〜H ⇄ 1〜8）</button>
+            <button type="button" class="btn" id="btn-map-reset">リセット</button>
           </div>
+          <p class="map-charset" id="map-charset" aria-live="polite"></p>
         </article>
 
         <article class="card">
@@ -58,18 +59,20 @@
             <li>例：トランプをぐちゃぐちゃにして並び替えるイメージ</li>
             <li>実際の暗号化では一定文字数ごとにブロック化してシャッフル</li>
           </ul>
-          <div class="concept-hint">
-            💡 ブロックをドラッグ＆ドロップして順序を変えてみてください。
+          <div class="concept-hint" id="shuffle-help">
+            💡 文字のブロックをドラッグして順序を変えてみてください。キーボードでは、ブロックを選んで Space で持ち上げ、←→ で動かし、Space で置きます（Esc で取り消し）。
           </div>
           <div class="shuffle-figure">
-            <div class="blocks" id="viz-shuffle-source" aria-label="元の並び">E D U C A T I O N</div>
-            <div class="sortable" id="viz-shuffle-target" aria-label="並べ替え体験領域"></div>
+            <p class="shuffle-source" id="shuffle-source">元の並び: <span class="source-word">EDUCATION</span></p>
+            <ol class="sortable" id="shuffle-list" aria-label="並べ替える文字" aria-describedby="shuffle-help"></ol>
+            <p class="shuffle-now" id="shuffle-now"></p>
+            <p class="sr-only" id="shuffle-status" aria-live="polite"></p>
           </div>
           <div class="shuffle-actions">
-            <button class="btn" id="btn-viz-shuffle-random">ランダム並べ替え</button>
-            <button class="btn" id="btn-viz-shuffle-reverse">逆順に並べ替え</button>
-            <button class="btn" id="btn-viz-shuffle-evenodd">偶奇入れ替え</button>
-            <button class="btn" id="btn-viz-shuffle-reset">リセット</button>
+            <button type="button" class="btn" id="btn-shuffle-random">ランダムに並べ替え</button>
+            <button type="button" class="btn" id="btn-shuffle-reverse">逆順にする</button>
+            <button type="button" class="btn" id="btn-shuffle-evenodd">偶奇を入れ替え</button>
+            <button type="button" class="btn" id="btn-shuffle-reset">リセット</button>
           </div>
         </article>
       </div>
@@ -292,6 +295,8 @@
     </a> ）
   </footer>
 
+  <script src="js/structure-core.js"></script>
+  <script src="js/messages.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
