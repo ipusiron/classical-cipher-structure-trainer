@@ -8,8 +8,8 @@ title: "Classical Cipher Structure Trainer"
 subtitle_ja: "古典暗号の構造理解の教育ツール"
 subtitle_en: "Educational Tool for Understanding Classical Cipher Structures"
 
-description_ja: "古典暗号の2大構造「換字（Substitution）」と「転置（Transposition）」を、マッピングとシャッフルという直感的な概念でインタラクティブに学べる教育ツール。SVG曲線による対応関係の可視化、ドラッグ＆ドロップによる並べ替え体験、10問のクイズで理解を確認。"
-description_en: "An interactive educational tool that teaches the two fundamental structures of classical cryptography—Substitution (mapping) and Transposition (shuffle)—through intuitive visualizations. Features SVG curve mapping, drag-and-drop shuffle experience, and a 10-question quiz."
+description_ja: "古典暗号の2大構造「換字（Substitution）」と「転置（Transposition）」を、マッピングとシャッフルという直感的な概念で学べる教育ツール。対応表のSVG図、マウス・タッチ・キーボードで動かす並べ替え、シリーズの古典暗号ツール22本への案内、解説つきの10問クイズで、換字は文字の種類を、転置は文字の位置を並べ替える仕組みだと理解できる。"
+description_en: "An educational tool that teaches the two fundamental structures of classical cryptography, Substitution (mapping) and Transposition (shuffle). It offers an SVG mapping diagram, a block reordering exercise that works with mouse, touch and keyboard, a guide to 22 classical cipher tools in the series, and a 10-question quiz with explanations, showing that substitution permutes the kinds of letters while transposition permutes their positions."
 
 category_ja:
   - 古典暗号
@@ -49,11 +49,9 @@ hub: true
 
 **Day097 - 生成AIで作るセキュリティツール100**
 
-**Classical Cipher Structure Trainer** は、古典暗号を構成する2大要素**「換字（Substitution）」と「転置（Transposition）」** を、**マッピング（対応表）と シャッフル（並べ替え）** という直感的概念で学べる教育ツールです。
+**Classical Cipher Structure Trainer**は、古典暗号を構成する2大要素「換字（Substitution）」と「転置（Transposition）」を、マッピング（対応表）とシャッフル（並べ替え）という直感的な概念で学べる教育ツールです。
 
-古典暗号の仕組みを図解と体験的UIで理解し、最後にクイズで確認します。  
-
-すでに作成済みの暗号ツール群（Caesar, Vigenère, Hillなど）へのリンクから、個別の実装や応用を学ぶことができます。
+対応表の図と、文字のブロックの並べ替えで2つの仕組みを体験し、最後に解説つきのクイズで確かめます。シリーズで作った古典暗号のツール22本へのカードから、個々の暗号を実際に動かせます。
 
 ---
 
@@ -67,8 +65,21 @@ hub: true
 
 ## 📸 スクリーンショット
 
->![ツールを通じて「換字」と「転置」を理解する](assets/screenshot.png)
->*ツールを通じて「換字」と「転置」を理解する*
+>![概念タブ。A〜Hの対応表の図とEDUCATIONの並べ替え](assets/screenshot.png)
+>
+>*概念タブ。上はシフト5の対応表（A→F）の図、下はEDUCATIONに偶奇入れ替えを1回掛けた並び*
+
+>![クイズタブ。不正解のときに正解と解説を表示](assets/screenshot2.png)
+>
+>*クイズタブ。答えると正解・不正解を色と印と文字で示し、解説を表示する*
+
+>![古典暗号の例タブ。分類つきのカード](assets/screenshot3.png)
+>
+>*古典暗号の例タブ。分類のタグ（単一換字・多表式など）つきのカード*
+
+>![概念タブのダーク表示](assets/screenshot4.png)
+>
+>*ダーク表示。OSの設定に従い、右上のボタンでも切り替えられる*
 
 ---
 
@@ -76,30 +87,18 @@ hub: true
 
 ### 対象ユーザー
 
-- **高校生**
-  - 情報科目で暗号を学び始めた方
-  - 数学的な難しさを避けて直感的に理解したい方
-- **セキュリティ入門者**
-  - 暗号の基礎を学びたい方
-  - 専門用語に不安がある方
-- **プログラマー・開発者**
-  - Map/Dictionaryなどのデータ構造と関連づけて理解したい方
-  - 暗号化ライブラリを使う前に基礎を押さえたい方
-- **情報セキュリティエンジニア**
-  - 古典暗号の構造を復習したい方
-  - 教育・研修資料として活用したい方
-- **教員・講師**
-  - 暗号教育の補助教材を探している方
-  - 視覚的でわかりやすい教材が必要な方
-- **暗号技術に興味がある一般の方**
-  - 趣味で暗号を学びたい方
-  - シャーロックホームズや歴史上の暗号に関心がある方
+- 高校生（情報科目で暗号を学び始めた人、数式を使わずに仕組みをつかみたい人）
+- セキュリティ入門者（暗号の基礎を学びたい人、専門用語に不安がある人）
+- プログラマー・開発者（Map／Dictionaryや配列の並べ替えと結びつけて理解したい人）
+- 情報セキュリティエンジニア（古典暗号の構造を復習したい人、研修資料を探している人）
+- 教員・講師（暗号の授業の補助教材を探している人）
+- 暗号に興味がある一般の人（シャーロック・ホームズや歴史上の暗号に関心がある人）
 
 ### 目的
 
-- 古典暗号の複雑な分類を「構造（換字・転置）」で整理する
-- 「鍵＝対応表（Mapping）」または「鍵＝並べ替え方（Shuffle）」という共通概念をつかむ
-- 仕組みを可視化し、後の暗号理解（現代暗号を含む）への足掛かりとする  
+- 古典暗号のさまざまな方式を「構造（換字・転置、その組み合わせ）」で整理する。
+- 「鍵＝対応表（マッピング）」「鍵＝並べ替え方（シャッフル）」という共通の見方をつかむ。
+- 換字の対応表も転置の並べ替えも順列である（換字は文字の種類を、転置は文字の位置を並べ替える）と理解し、現代暗号の「置き換えと並べ替えの組み合わせ」への足がかりにする。
 
 ---
 
@@ -107,290 +106,292 @@ hub: true
 
 ### 1️⃣ 概念（Introduction）
 
-古典暗号の2大要素「換字」と「転置」を、インタラクティブな図解と体験型UIで学べます。
+古典暗号の2大要素「換字」と「転置」を、図と操作で学びます。
 
-#### 換字（Substitution）＝ 置換 ＝ マッピング（Mapping）
+#### 換字（Substitution）＝ マッピング（Mapping）
 
-- 文字を別の文字へ**対応づけ**る方式
-- 鍵は**対応表（置換表）**
-- プログラムの Map / Dictionary と同じ発想で、**「何を何に置き換えるか」**が本質
-- **インタラクティブ機能：**
-  - A-H の対応図をSVG線で可視化
-  - 「対応表を回す」ボタン：規則的なシフト対応
-  - 「ランダムに対応させる」ボタン：ランダムな換字を生成
-  - 「リセット」ボタン：初期状態に戻す
+- 文字を別の文字へ対応づける方式である。
+- 鍵は対応表（置換表）である。
+- プログラムのMap／Dictionaryと同じ発想で、「何を何に置き換えるか」が本質である。
+
+A〜Hの対応表を、上段（平文）と下段（暗号文）を結ぶ線のSVG図で表示し、図の下に対応表を文字でも示します。図はviewBoxの座標で描くので、幅320pxの画面でも8文字が1行に並びます。ボタンでできることは次のとおりです。
+
+- 「対応表を回す」：シフト量を1つずつ増やす（シフトは8通り）。
+- 「ランダムに対応させる」：一様に選んだ対応表（8! = 40,320通りのどれか）にする。乱数は`crypto.getRandomValues`で作る。
+- 「暗号文の文字を切り替え」：下段をA〜Hと1〜8で切り替える。対応表はそのままである。
+- 「リセット」：シフト5（A→F）に戻す。
 
 #### 転置（Transposition）＝ シャッフル（Shuffle）
 
-- 文字の**順序を入れ替える**方式
-- 鍵は**並べ替え方（順列）**
-- イメージ：トランプをぐちゃぐちゃにして並べ替える
-- **インタラクティブ機能：**
-  - EDUCATION の文字ブロックをドラッグ＆ドロップで並べ替え
-  - 「ランダム並べ替え」ボタン：Fisher-Yatesシャッフル
-  - 「逆順に並べ替え」ボタン：完全逆順（NOITACUDE）
-  - 「偶奇入れ替え」ボタン：隣接ペアを交換（繰り返し可能）
-  - 「リセット」ボタン：元の順序に戻す
+- 文字の順序を入れ替える方式である。
+- 鍵は並べ替え方（順列）である。
 
-> 💡 **用語のヒント**
-> 「換字」「転置」の漢字がイメージしにくい・忘れやすい場合は、
-> **「マッピング（Mapping）」と「シャッフル（Shuffle）」** に脳内で置き換えることをおすすめします。
-> この2つの概念で古典暗号のほぼすべてを理解できます。
+EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マウス・タッチ・ペンはPointer Eventsで共通に扱い、狭い画面で2段・3段に折り返しても、指を離した位置に入ります。キーボードでは、ブロックを選んでSpaceで持ち上げ、←→・Home・Endで動かし、Spaceで置きます（Escで取り消し）。動かした結果は読み上げにも伝えます。ボタンでできることは次のとおりです。
+
+- 「ランダムに並べ替え」：一様に選んだ並べ方（9! = 362,880通りのどれか）にする。
+- 「逆順にする」「偶奇を入れ替え」：いまの並びに掛ける。どちらも2回で元に戻る（EDUCATION → DECUTAOIN → EDUCATION）。
+- 「リセット」：EDUCATIONに戻す。
+
+#### 用語のヒント
+
+「換字」「転置」の漢字がイメージしにくいときは、「マッピング」と「シャッフル」に置き換えて考えるとわかりやすくなります。古典暗号の多くは、この2つと、その組み合わせ（混合）で整理できます。
+
+「置換」という語は、換字（文字の置き換え）にも、数学の置換（並べ替え＝順列）にも使われます。Shannonは1949年の論文で、単一換字の鍵を「アルファベットの置換（a permutation of the alphabet）」、転置の鍵を「最初のd個の整数の置換」と書いています（Bell System Technical Journal 28, p.665〜666）。どちらの鍵も順列で、換字は文字の種類を、転置は文字の位置を並べ替えると考えると、2つの違いがはっきりします。
 
 ---
 
 ### 2️⃣ 古典暗号の例（Examples）
 
-外部の学習ツールへのリンク集。カード形式で22種類の古典暗号を紹介しています。
+生成AIで作るセキュリティツール100の古典暗号のツール22本へのリンク集です。カード全体を押すと、新しいタブで開きます。カードには、換字式の中の分け方（単一換字・多表式・多字換字）のタグを付けています。
 
-| 種別 | 暗号名 | 説明 | リンク |
-|------|---------|------|--------|
-| 換字 | シーザー暗号・シフト暗号 | もっとも基本的な換字方式であり、置換表は文字をずらしたもの。 | 🔗 [Caesar Cipher Wheel Tool](https://ipusiron.github.io/caesar-cipher-wheel/) |
-| 換字 | 日本語版シーザー暗号 | 日本語版のシフト暗号。 | 🔗 [Japanese Caesar Cipher](https://ipusiron.github.io/japanese-caesar-cipher/) |
-| 換字 | ピッグペン暗号 | 図形・記号による視覚的な換字式暗号。 | 🔗 [Pigpen CipherLab](https://ipusiron.github.io/pigpen-cipherlab/) |
-| 換字 | 踊る人形暗号 | 「シャーロックホームズ」に登場する暗号。人形風の文字を使うのが特徴的な換字式暗号。 | 🔗 [DancingMen CipherLab](https://ipusiron.github.io/dancingmen-cipherlab/) |
-| 換字 | ポリュビオス暗号 | 文字を数字ペアに変換する暗号。ポリュビオスのチェッカー盤が置換表そのもの。 | 🔗 [Polybius CipherLab](https://ipusiron.github.io/polybius-cipherlab/) |
-| 換字 | 上杉暗号 | いろは文字を座標位置を示す文字群に変換する暗号。 | 🔗 [Uesugi Cipher Tool](https://ipusiron.github.io/uesugi-cipher/) |
-| 換字 | 忍びいろはの暗号 | いろは文字を漢字風の文字に変換する暗号。 | 🔗 [Shinobi Iroha Cipher Tool](https://ipusiron.github.io/shinobi_iroha_cipher/) |
-| 換字 | プレイフェア暗号 | 2文字を別の文字に変換する換字式暗号。 | 🔗 [Playfair CipherLab](https://ipusiron.github.io/playfair-cipherlab/) |
-| 換字 | ポルタ暗号 | 2文字を記号に変換する換字式暗号。 | 🔗 [Porta CipherLab](https://ipusiron.github.io/porta-cipherlab/) |
-| 換字 | ベーコン暗号 | アルファベット1文字を2進5文字列に対応づける暗号。 | 🔗 [Bacon CipherLab](https://ipusiron.github.io/bacon-cipherlab/) |
-| 換字 | ストリップ暗号 | 複数のストリップを用いた、シンプルな多表式暗号。 | 🔗 [Bacon CipherLab](https://github.com/ipusiron/strip-cipherlab) |
-| 換字 | ヴィジュネル暗号 | 鍵で可変マッピングする多表式暗号。 | 🔗 [Vigenere Cipher Tool](https://ipusiron.github.io/vigenere-cipher-tool/) |
-| 換字 | ビューフォート暗号 | 鍵で可変マッピングする多表式暗号の別バージョン。 | 🔗 [Beaufort CipherLab](https://ipusiron.github.io/beaufort-cipherlab/) |
-| 換字 | アフィン暗号 | 1文字ずつ一次関数で置き換える暗号。 | 🔗 [Affine CipherLab](https://ipusiron.github.io/affine-cipherlab/) |
-| 換字 | ヒル暗号 | 線形代数の行列演算を用いて、平文の文字を別の文字に置き換える。ブロック単位で複数文字を同時変換するのが特徴的。多表式のアフィン暗号に相当。 | 🔗 [Hill CipherLab](https://ipusiron.github.io/hill-cipherlab/) |
-| 転置 | スキュタレー暗号 | 平文を記した布・紙を棒に巻きつけ、棒の方向に沿って読む暗号。  | 🔗 [Scytale Cipher Visualizer](https://ipusiron.github.io/scytale-cipher-visualizer/) |
-| 転置 | 転置式暗号 | 並べ替え順序が鍵となる転置式。 | 🔗 [Permutation CipherLab](https://ipusiron.github.io/permutation-cipherlab/) |
-| 転置 | ジグザグ暗号 | 波形に並べることで順序を変える。 | 🔗 [Zigzag CipherLab](https://ipusiron.github.io/zigzag-cipherlab/) |
-| 転置 | レールフェンス暗号 | 複数のレールに順番に書き込んだ後に、横に読む暗号。 | 🔗 [RailFence CipherLab](https://ipusiron.github.io/railfence-cipherlab/) |
-| 転置 | 縦列転置式暗号 | マトリクスに横に並べてから順序を変えてから縦に読む。 | 🔗 [Columnar CipherLab](https://ipusiron.github.io/columnar-cipherlab/) |
-| 転置 | 回転グリル暗号 | 穴空きの台紙から平文を書き入れ、台紙を回転していくことでマトリクスを埋めていく暗号。 | 🔗 [Grille CipherLab](https://ipusiron.github.io/grille-cipherlab/) |
-| その他 | 分置式暗号 | ダミーメッセージ内に本当のメッセージを隠す。 | 🔗 [Hidden Message Challenge](hhttps://ipusiron.github.io/hidden-message-challenge/) |
+| 種別 | 暗号 | 説明 | ツール |
+|------|------|------|--------|
+| 換字（単一換字） | シーザー暗号 | 全部の文字を同じ量だけずらす。対応表はずらし量で決まる | [Caesar Cipher Wheel Tool](https://ipusiron.github.io/caesar-cipher-wheel/)（Day003） |
+| 換字（単一換字） | 日本語版シーザー暗号 | ひらがなを、あいうえお順やいろは順で同じ量だけずらす | [Japanese Caesar Cipher](https://ipusiron.github.io/japanese-caesar-cipher/)（Day004） |
+| 換字（単一換字） | アフィン暗号 | 文字の番号を一次関数ax + bで別の番号へ写す | [Affine CipherLab](https://ipusiron.github.io/affine-cipherlab/)（Day049） |
+| 換字（単一換字） | ピッグペン暗号 | 文字を、格子の枠と点でできた記号に置き換える | [Pigpen CipherLab](https://ipusiron.github.io/pigpen-cipherlab/)（Day032） |
+| 換字（単一換字） | 踊る人形 | シャーロック・ホームズの短編に登場。文字を人形の絵に置き換える | [DancingMen CipherLab](https://ipusiron.github.io/dancingmen-cipherlab/)（Day022） |
+| 換字（単一換字） | ポリュビオス暗号 | 文字を、方陣の行と列の数字の組に置き換える | [Polybius CipherLab](https://ipusiron.github.io/polybius-cipherlab/)（Day067） |
+| 換字（単一換字） | 上杉暗号 | いろは48文字を、表の行と列の数字の組に置き換える | [Uesugi Cipher Tool](https://ipusiron.github.io/uesugi-cipher/)（Day012） |
+| 換字（単一換字） | 忍びいろは | ひらがなを、漢字の偏と旁を組み合わせた字に置き換える | [Shinobi Iroha Cipher](https://ipusiron.github.io/shinobi_iroha_cipher/)（Day014） |
+| 換字（単一換字） | ベーコン暗号 | 1文字をaとbの5文字に置き換え、書体の違いとして文章に隠す | [Bacon CipherLab](https://ipusiron.github.io/bacon-cipherlab/)（Day055） |
+| 換字（単一換字） | ジグザグ暗号 | 文字を鍵の列の位置に置き換え、折れ線で描く。英語のzigzag cipher（レールフェンス）とは別物 | [Zigzag CipherLab](https://ipusiron.github.io/zigzag-cipherlab/)（Day072） |
+| 換字（多表式） | ヴィジュネル暗号 | 鍵の文字ごとに、別のずらし量の対応表を順に使う | [Vigenere Cipher Tool](https://ipusiron.github.io/vigenere-cipher-tool/)（Day017） |
+| 換字（多表式） | ビューフォート暗号 | 鍵の文字から平文の文字を引く多表式。暗号化と復号が同じ操作 | [Beaufort CipherLab](https://ipusiron.github.io/beaufort-cipherlab/)（Day078） |
+| 換字（多表式） | ストリップ暗号 | アルファベットを並べた帯を何本も並べ、平文の行とは別の行を読む | [Strip CipherLab](https://ipusiron.github.io/strip-cipherlab/)（Day071） |
+| 換字（多字換字） | プレイフェア暗号 | 5×5の表で、2文字を別の2文字に置き換える | [Playfair CipherLab](https://ipusiron.github.io/playfair-cipherlab/)（Day027） |
+| 換字（多字換字） | ポルタの二文字式暗号 | 1563年の表で、2文字を表の1マス（記号）に置き換える | [Porta CipherLab](https://ipusiron.github.io/porta-cipherlab/)（Day080） |
+| 換字（多字換字） | ヒル暗号 | 行列の掛け算で、n文字をまとめて別のn文字に置き換える | [Hill CipherLab](https://ipusiron.github.io/hill-cipherlab/)（Day093） |
+| 転置 | スキュタレー暗号 | 帯を棒に巻いて書き、ほどいて読む | [Scytale Cipher Visualizer](https://ipusiron.github.io/scytale-cipher-visualizer/)（Day010） |
+| 転置 | 転置式暗号（順列） | 一定の文字数ごとに、同じ順列で並べ替える | [Permutation CipherLab](https://ipusiron.github.io/permutation-cipherlab/)（Day095） |
+| 転置 | レールフェンス暗号 | 文字をジグザグに書き、行ごとに読む | [RailFence CipherLab](https://ipusiron.github.io/railfence-cipherlab/)（Day034） |
+| 転置 | 縦列転置式暗号 | 表に横に書き、鍵の順に列を縦に読む | [Columnar CipherLab](https://ipusiron.github.io/columnar-cipherlab/)（Day043） |
+| 転置 | 回転グリル暗号 | 穴のあいた型紙を回しながら書き込み、表を埋める | [Grille CipherLab](https://ipusiron.github.io/grille-cipherlab/)（Day024） |
+| その他（分置式） | 分置式暗号 | ふつうの文章の中に、本文の文字を決まった位置に散らして隠す | [Hidden Message Challenge](https://ipusiron.github.io/hidden-message-challenge/)（Day036） |
+
+- ジグザグ暗号（Day072）は、文字を鍵の列の位置に置き換える換字の一種である。英語でzigzag cipherというとレールフェンス暗号（転置）の別名を指すことが多いが、別の暗号である。
+- ヒル暗号（Day093）とポルタの二文字式暗号（Day080）は、複数の文字をまとめて置き換える多字換字である。位置ごとに別の対応表を使う多表式（ヴィジュネル暗号など）とは別の分け方である。
 
 ---
 
 ### 3️⃣ クイズ（Quiz）
 
-- 問題形式：**一問一答形式**（単一選択）
-- 問題数：10問（定義2・基礎2・分類4・混合理解2）
-- ソース：`data/quiz.json`
-- **即時フィードバック：** 1問ごとに正解・不正解を表示し、解説を確認できます
-- 最終結果：正答率＋メッセージ表示（3段階）
+- 問題形式：一問一答形式（単一選択）
+- 問題数：10問（定義2・基礎2・分類4・混合2）
+- 問題データ：`js/quiz-data.js`（スクリプトとして読むので、`index.html`をファイルから直接開いても動く）
+- 回答後の表示：正解・不正解を色と印（✓✗）と文字で示し、解説を出す
+- 分類の4問：選択肢がそろっており、単一換字・多表式・転置・混合がそれぞれ1回ずつ正解になる
+- 最終結果：正解数と正答率、3段階のメッセージ
 
 例題：
-- 「文字を別の文字に対応させる方式は？」 → 換字（Substitution）
-- 「文字の並びだけを入れ替える方式は？」 → 転置（Transposition）
-- 「ヴィジュネル暗号はどちら？」 → 換字（Substitution）
+
+- 「文字そのものは変えずに、並び順だけを入れ替える方式はどれ？」→ 転置（Transposition）
+- 「第一次世界大戦のADFGVX暗号は、表で文字を2文字の組に置き換えたあと、縦列転置で並べ替える。どれに分類される？」→ 混合（換字＋転置）
+- 「英文の暗号文の文字の出現回数が、普通の英語とほぼ同じだった。考えられるのは？」→ 転置
 
 ---
 
-## 💡 活用シナリオ
+## 🎯 ユースケース
 
-### シナリオ1：高校生の情報授業での予習・復習
+### このツールならではの使い方
 
-**状況：** 高校の情報科目で「暗号」の単元が始まったAさん。教科書には「シーザー暗号」「転置式暗号」など様々な名前が出てくるが、違いがよく分からない。
+- 変換の処理が元に戻せるかを確かめる：プログラムのコード表（Map）による変換は、換字と同じ形をしている。対応図の線が上段と下段で1本ずつになっている（一対一）なら逆の表が作れ、戻せる。A〜Hの一対一の対応表は8! = 40,320通りある。データの移行やコードの付け替えの設計レビューで、重複して同じ値へ写る行がないかを見る練習になる。
+- 「2回で元に戻る操作」を体感する：逆順と偶奇入れ替えは、同じ操作を2回かけると元に戻る（EDUCATION → DECUTAOIN → EDUCATION）。トグルの機能や往復の変換（ROT13など）を設計するとき、同じ操作で元に戻るかを確かめる考え方の入口になる。Involution Studio（Day051）で、この性質をさらに調べられる。
+- 鍵の数と安全性が別の話だと示す：A〜Hの対応表は8! = 40,320通り、26文字なら26! = 403,291,461,126,605,635,584,000,000通り（約4.03×10^26）ある。それでも単一換字は文字の頻度で破れる。パスワードの「組み合わせの数」だけで強さを語らない、という話の導入に使える。頻度の実際はFrequency Analyzer（Day009）で確かめられる。
+- 謎解きの問題を設計する：作る暗号が「文字が変わる（換字）」のか「並びが変わる（転置）」のかを先に決めると、解き手に渡すヒント（対応表か、並べ方か）が決まる。EDUCATIONの9文字の並べ方は9! = 362,880通りあるが、意味のある単語ならアナグラムとして解ける。転置の手がかりは並べ方の数ではなく、残った文字にある。
 
-**活用方法：**
-1. **概念タブ**で「換字」と「転置」の2つの構造を視覚的に理解
-2. マッピング図の「ランダムに対応させる」ボタンを何度も押して、ランダムな換字の様子を体感
-3. シャッフル図で「EDUCATION」をドラッグ＆ドロップして転置を実際に体験
-4. **古典暗号の例タブ**で教科書に出てきた暗号名をクリックし、外部ツールで実際の暗号処理を体験
-5. **クイズタブ**で理解度をチェック。間違えた問題は解説を読んで復習
+### 教育・自習
 
-**効果：** 「換字＝マッピング」「転置＝シャッフル」という2つの概念で整理でき、授業内容がスッキリ理解できた。
+- 情報科目の「暗号」の単元の予習・復習で、教科書に出てくる暗号の名前を、換字・転置・混合のどれかに振り分ける。
+- 授業の冒頭で概念タブを投影し、「対応表を回す」を押しながらシーザー暗号はシフトだけの対応表だと示す。続けて「ランダムに対応させる」で単一換字の対応表を見せる。
+- クイズの解説を読み、間違えた問題の分類の理由を確かめる。
 
----
+### 仕事・プログラミング
 
-### シナリオ2：Webエンジニアが暗号化ライブラリを使う前の基礎学習
+- 暗号ライブラリーを使う前に、置き換え（換字）と並べ替え（転置）の2つの操作を押さえる。AESのラウンドでも、SubBytesはバイトの置き換え、ShiftRowsはバイトの位置の並べ替えである。2つを組み合わせて繰り返す構造は、ToySPN Builder（Day094）で体験できる。
+- 新人研修で、MapとDictionaryによる変換と、配列のシャッフルを、暗号の2つの型として紹介する。
 
-**状況：** Web開発者のBさん。プロジェクトで暗号化機能を実装することになり、AES暗号やRSA暗号のライブラリを使う予定だが、「そもそも暗号とは何か」を理解していないまま使うのは不安。
+### 趣味・創作
 
-**活用方法：**
-1. **概念タブ**で「暗号＝文字の対応づけ（Map）または並べ替え（Shuffle）」という本質を理解
-2. 開発で使う Dictionary や Array のシャッフルと結びつけて、暗号の仕組みをプログラマー視点で納得
-3. **古典暗号の例タブ**から「ヒル暗号」「アフィン暗号」など数学的な暗号にも触れ、現代暗号への橋渡しを実感
-4. 「マッピング」「シャッフル」という用語のヒントを活用し、専門用語に抵抗感がなくなる
+- 謎解きイベントや脱出ゲームの暗号を作るとき、まず換字か転置かを決め、古典暗号の例タブのツールで実際の暗号文を作る。
 
-**効果：** 現代暗号（AES/RSA）のドキュメントを読む際に、「この処理は置換（Substitution）の発展形だな」「これはブロック単位の並べ替えか」と理解が深まり、安心してライブラリを使えるようになった。
+### ほかのツールとの組み合わせ
 
----
+- 暗号文の方式を推定する：Cipher Clairvoyance（Day044）
+- 文字の頻度を数える：Frequency Analyzer（Day009）、一致指数（IC）を学ぶ：IC Learning Visualizer（Day047）
+- 転置の鍵を順列として扱う：Permutation CipherLab（Day095）
 
-### シナリオ3：情報セキュリティ講師が授業の補助教材として活用
+### 限界
 
-**状況：** 専門学校で情報セキュリティを教えるC先生。暗号の授業で学生が「シーザー暗号」「ヴィジュネル暗号」などの違いを混乱している様子。
-
-**活用方法：**
-1. 授業の冒頭で本ツールの**概念タブ**をプロジェクターで投影
-2. 「対応表を回す」ボタンを押しながら「これがシーザー暗号の本質です」と実演
-3. 「ランダムに対応させる」ボタンで「単一換字暗号はこういうランダムな対応表を使います」と説明
-4. 学生に各自のPCで**古典暗号の例タブ**から興味のある暗号を選んで体験させる
-5. 授業の最後に**クイズタブ**を使って理解度確認。正答率が低い問題は次回授業で重点的に解説
-
-**効果：** 学生から「図解があって分かりやすかった」「マッピングとシャッフルの2つだけ覚えれば良いと分かってスッキリした」との声。授業後のアンケートでも高評価。
+- 本ツールは仕組みを学ぶ教材であり、任意の文を暗号化・復号する道具ではない（対応表はA〜Hの8文字、並べ替えはEDUCATIONの9文字）。実際の暗号化と解読は、古典暗号の例タブのツールで行う。
+- 古典暗号の安全性を保証するものではない。古典暗号は、いまの通信の秘密を守る用途には使えない。
 
 ---
 
-## 🔍 暗号文から換字式か転置式かをどう識別するか
+## 🔍 暗号文から換字式か転置式かをどう見分けるか
 
-暗号文を見て、それが換字式か転置式かを判別する際の重要なポイントを紹介します。
+平文が手元にない、暗号文だけの場面での見分け方の基本を紹介します。
 
-### 🔍 判別の3つの観点
+### 見分けの3つの観点
 
-#### 1️⃣ 文字の種類（文字集合）をチェック
+#### 1️⃣ 出てくる文字の種類
 
-**換字式の特徴：**
-- 文字が**別の文字や記号に変換**される
-- 元の文字とは異なる見た目になることが多い
-- 例：`HELLO` → `KHOOR`（シーザー暗号）、`HELLO` → `⌐∟⌐⌐⌐`（ピッグペン暗号）
+- 転置は平文の文字をそのまま使うので、平文と同じ種類の文字しか出てこない。
+- 記号・数字・見慣れない字が出てくるなら、換字の可能性が高い。
+- ただし、換字でも英字を英字に置き換えるもの（シーザー暗号など）は、見た目では区別できない。
 
-**転置式の特徴：**
-- 文字は**そのまま**で順序だけが変わる
-- 使われている文字の種類は平文と同じ
-- 例：`HELLO` → `OLLEH`（逆順）、`HELLO` → `LOLEH`（並べ替え）
+#### 2️⃣ 文字の出現回数（頻度）
 
-💡 **識別ポイント：** 暗号文に見慣れない記号や文字があれば換字式の可能性が高い！
+- 転置は文字の頻度をそのまま保つ。英文なら、暗号文でもE・T・A・O・I・Nなどが多いままになる（Shannon 1949, p.694 "With a transposition cipher it is clear that letter frequencies are preserved"）。
+- 単一換字は、回数を多い順に並べた形は平文と同じだが、多い文字がE・Tではなく別の文字になる。
+- 多表式（ヴィジュネル暗号など）は、位置ごとに対応表が変わるので頻度がならされる。この違いは一致指数（IC）で測れる。
 
----
+#### 3️⃣ 同じ文字が現れる位置の型
 
-#### 2️⃣ 文字の出現頻度を比較
+- 単一換字では、同じ平文の文字は同じ暗号文の文字になるので、語の中の繰り返しの型が保たれる（HELLOとKHOORは、どちらも3文字目と4文字目が同じ）。
+- 転置では文字の位置が変わるので、この型は保たれない。
 
-**換字式の特徴：**
-- 各文字の**出現回数は変わらない**（単純換字の場合）
-- 例：`HELLO`（Lが2回）→ `KHOOR`（Oが2回）
-- 頻度分析が暗号解読の手がかりになる
-
-**転置式の特徴：**
-- 文字の**出現回数は完全に保持**される
-- 例：`HELLO`（H:1, E:1, L:2, O:1）→ `OLLEH`（H:1, E:1, L:2, O:1）
-- 平文と暗号文で文字の種類と個数が完全一致
-
-💡 **識別ポイント：** 平文と暗号文が「アナグラム」（同じ文字の並べ替え）なら転置式！
-
----
-
-#### 3️⃣ 暗号文の「読みやすさ」を観察
-
-**換字式の特徴：**
-- 文字が変換されるため、**見慣れない組み合わせ**が多い
-- 母音・子音のバランスが崩れることがある
-- 例：`KHOOR`（子音が連続）
-
-**転置式の特徴：**
-- 元の文字がそのまま使われるため、**部分的に読める**ことがある
-- 文字の組み合わせに自然さが残る
-- 例：`OLLEH`（OLやEHは英語的に不自然だが、文字自体は自然）
-
-💡 **識別ポイント：** 転置式は「元の単語の痕跡」が残りやすい！
-
----
-
-### 📊 判別フローチャート
+### 判別の流れ
 
 ```
 暗号文を見る
     ↓
-Q1: 元の文字と違う文字・記号が使われている？
-    YES → 換字式の可能性大
-    NO  → 次へ
+Q1: 平文に使われない記号・数字・字が出てくる？
+    YES → 換字の可能性が高い
+    NO  → Q2へ
     ↓
-Q2: 平文と暗号文で文字の種類と個数が完全一致？
-    YES → 転置式の可能性大
-    NO  → 換字式の可能性大
+Q2: 文字の出現回数が、普通の文（英語ならE・T・Aが多い）とほぼ同じ？
+    YES → 転置の可能性が高い（意味のある語に並べ替えられるかを試す）
+    NO  → Q3へ
     ↓
-Q3: 暗号文を並べ替えると意味のある言葉になる？
-    YES → 転置式確定
-    NO  → 換字式または混合式
+Q3: 頻度が大きく偏っている（多い文字がはっきりある）？
+    YES → 単一換字の可能性が高い
+    NO  → 多表式など、位置ごとに対応表が変わる方式の可能性
 ```
 
----
+短い暗号文では頻度が安定しないので、どの判定も「可能性」にとどまります。換字と転置を重ねた混合の暗号は、単一換字と同じく「多い順の形」が残るので、頻度だけでは単一換字と区別できません。
 
-### 🧪 実例で確認
+### 実例で確認
 
 | 平文 | 暗号文 | 種別 | 理由 |
 |------|--------|------|------|
-| `HELLO` | `KHOOR` | 換字 | 文字が変換されている（H→K, E→H, L→O, O→R） |
-| `HELLO` | `OLLEH` | 転置 | 同じ文字が使われ、順序だけ変化 |
-| `HELLO` | `●■●●◆` | 換字 | 記号に置換されている |
-| `ATTACK` | `KCATTA` | 転置 | アナグラム（文字の種類と個数が同じ） |
+| `HELLO` | `KHOOR` | 換字 | 3文字ずらしの対応表。HELLOのLLがKHOORのOOになり、繰り返しの型が残る |
+| `HELLO` | `OLLEH` | 転置 | 同じ文字のまま、順序だけ逆にした |
+| `HELLO` | `●■▲▲◆` | 換字 | 記号に置き換えた。Lだけが同じ記号▲になる |
+| `ATTACK` | `KCATTA` | 転置 | 文字の種類と個数が同じ（アナグラム）。逆順にした |
 
----
-
-### ツールで識別する
+### ツールで見分ける
 
 - [Frequency Analyzer - 頻度分析ツール](https://ipusiron.github.io/frequency-analyzer/)
 - [Cipher Clairvoyance - 暗号化方式推定ツール](https://ipusiron.github.io/cipher-clairvoyance/)
+- [IC Learning Visualizer - 一致指数の学習ツール](https://ipusiron.github.io/ic-learning-visualizer/)
 
 ---
 
 ## 🧮 教育的ポイント
 
-- 古典暗号の多様な方式を「構造」で整理できる  
-- **Mapping と Shuffle** という抽象化で理解が一気に進む  
-- 現代暗号のような高度な数式やアルゴリズムを学ぶ前に、  
-  「鍵とは何か」「構造とは何か」を明確にイメージできる  
+- 古典暗号のさまざまな方式を「構造」で整理できる。
+- マッピングとシャッフルという2つの見方で、鍵が何なのか（対応表か、並べ替え方か）をイメージできる。
+- 単一換字と転置は、どちらを先に掛けても結果が同じになる（Shannon 1949, p.672 "multiplication is not in general commutative …, although in special cases, such as substitution and transposition, it is"）。この2つを重ねても、回数を多い順に並べた形は残る。
+- Shannonは、よく混ぜる変換は「入れ替えると結果が変わる2つの簡単な操作」の繰り返しで作られることが多いと書いている（p.712 "Good mixing transformations are often formed by repeated products of two simple non-commuting operations"）。現代のブロック暗号は、置き換えと並べ替えに鍵の加算などを挟み、何度も繰り返す。
 
 ---
 
-## ⚙️ 技術情報
+## 🔬 技術情報
 
-- HTML / CSS / JavaScript（クライアントサイド完結）
-- 白背景・図解中心の教材デザイン
-- クイズデータ：JSON外部読み込み（`data/quiz.json`）
-- SVG Bézier曲線による対応関係の可視化
-- Fisher-Yatesシャッフルアルゴリズム
-- HTML5 Drag and Drop API + タッチイベント対応
-- Content Security Policy（CSP）によるセキュリティ対策
-- ARIA属性によるアクセシビリティ対応
+- HTML／CSS／JavaScript（クライアントサイドで完結。ライブラリー・CDN・外部への通信なし）
+- 計算部`js/structure-core.js`は画面に依存しない純粋関数で、Node.jsのテストから同じコードを読む
+- 対応図はSVG（viewBoxの座標で描き、画面の寸法を測らない）
+- 並べ替えはPointer Events（マウス・タッチ・ペン）とキーボード操作。差し込み位置は行（折り返し）を先に決めてから列を比べる
+- 乱数は`crypto.getRandomValues`。2^32を割り切れない端を引き直す一様な整数とFisher–Yatesで、偏りのない順列を作る
+- WAI-ARIAのタブ（←→・Home・End）、aria-liveでの読み上げ、ボタンの高さ44px以上
+- ライト／ダークの配色（OSの設定と切り替えボタン）。文字4.5:1、枠とフォーカス3:1以上をテストで検査する
 - MIT License
 
 ### 🔧 開発者向け技術ドキュメント
 
-実装の詳細、コアロジック、アルゴリズムの解説は以下をご覧ください：
-
-👉 **[TECHNICAL.md - 技術詳細ドキュメント](TECHNICAL.md)**
-
-- SVG Bézier曲線による対応関係の可視化
-- Fisher-Yatesシャッフルアルゴリズム
-- ドラッグ&ドロップの実装（マウス/タッチ/キーボード対応）
-- 偶奇入れ替えの繰り返し可能な実装
-- セキュリティ対策（CSP、DOM操作、JSON検証）
-- レスポンシブデザインとアクセシビリティ
-- パフォーマンス最適化
+実装の詳細は[TECHNICAL.md](TECHNICAL.md)を、セキュリティ対策は[SECURITY.md](SECURITY.md)をご覧ください。
 
 ---
 
-## 🧩 ディレクトリー構成
+## 🔒 セキュリティ
+
+- meta要素のContent Security Policyで、スクリプト・スタイル・画像を同じオリジンに限り、通信（connect-src）とフォームの送信先を禁止している。
+- 画面の文字はすべて`textContent`で入れ、`innerHTML`への代入はない。
+- 外部へのリンクは`rel="noopener noreferrer"`で開き、referrerは送らない（no-referrer）。
+- 保存するのは配色の選択（localStorage）だけで、使えない環境でも動く。
+- GitHub Pagesでは応答ヘッダーを設定できないので、クリックジャッキング対策（frame-ancestors）は入れていない。meta要素のframe-ancestorsは仕様上無視される。
+
+---
+
+## 🧪 テスト
+
+```bash
+npm test
+```
+
+- Node.js 22以上で動き、依存パッケージはない（`node --test`）。
+- GitHub Actionsで、pushとpull requestのたびに自動で実行する。
+- 計算部（対応表・順列・乱数の一様さ・差し込み位置）、クイズのデータ、古典暗号の例の一覧、index.htmlのCSPとARIA、配色のコントラスト比、文言の辞書、ファイルの書式、READMEの例と数値を検査する。READMEの表と数値は、テストが計算部から計算し直して一致を確かめる。
+
+---
+
+## 📁 ディレクトリー構造
 
 ```
 classical-cipher-structure-trainer/
-│
-├── index.html              # メインHTML（3タブ構成：概念、古典暗号の例、クイズ）
-├── script.js               # JavaScriptロジック（マッピング/シャッフル、クイズ機能）
-├── style.css               # スタイルシート（レスポンシブデザイン）
-│
-├── data/                   # データファイル
-│   ├── quiz.json          # クイズ問題データ（10問）
-│   ├── favicon.svg        # ファビコン
-│   └── diagram-mapping.svg # マッピング図（参考用）
-│
-├── assets/                 # アセットファイル
-│   └── screenshot.png     # スクリーンショット画像
-│
-├── README.md               # プロジェクト説明（本ファイル）
-├── TECHNICAL.md            # 開発者向け技術詳細ドキュメント
-├── LICENSE                 # MITライセンス
-├── CLAUDE.md               # Claude Code用ガイド
-├── SECURITY.md             # セキュリティ関連ドキュメント
-├── .gitignore              # Git除外設定
-└── .nojekyll               # GitHub Pages設定
+├── index.html               # 画面（概念・古典暗号の例・クイズの3タブ）
+├── script.js                # 画面の動き（対応図・並べ替え・タブ・クイズ・カードの描画）
+├── style.css                # 見た目（ライト／ダークの配色、レスポンシブ）
+├── js/                      # 画面から読むスクリプト
+│   ├── structure-core.js    # 計算部（対応表・順列・乱数・差し込み位置・クイズの検査）
+│   ├── messages.js          # script.jsが組み立てる文言の辞書
+│   ├── quiz-data.js         # クイズの10問（解説つき）
+│   ├── catalog.js           # 古典暗号の例のツール22本の一覧
+│   └── theme.js             # 配色の初期値と切り替え（描画の前に読む）
+├── data/                    # 素材
+│   ├── favicon.svg          # ファビコン
+│   └── diagram-mapping.svg  # 対応図の静的な見本（画面では使わない）
+├── assets/                  # READMEの画像
+│   ├── screenshot.png       # 概念タブ
+│   ├── screenshot2.png      # クイズタブ（解説の表示）
+│   ├── screenshot3.png      # 古典暗号の例タブ
+│   └── screenshot4.png      # ダーク表示
+├── test/                    # node:testのテスト
+│   ├── core.test.js         # 計算部
+│   ├── quiz.test.js         # クイズのデータ
+│   ├── catalog.test.js      # 古典暗号の例の一覧
+│   ├── html.test.js         # index.html（CSP・ARIA・読み込むスクリプト）
+│   ├── contrast.test.js     # 配色のコントラスト比
+│   ├── messages.test.js     # 文言の辞書
+│   ├── format.test.js       # ファイルの書式
+│   └── readme.test.js       # READMEの例・数値・構造
+├── .github/                 # GitHubの設定
+│   └── workflows/           # GitHub Actions
+│       └── test.yml         # pushとpull requestでnpm test
+├── package.json             # npm testの定義（依存なし）
+├── README.md                # 本ドキュメント
+├── TECHNICAL.md             # 実装の説明
+├── SECURITY.md              # セキュリティ対策
+├── CLAUDE.md                # Claude Code向けの案内
+├── LICENSE                  # MIT License
+├── .gitignore               # Gitの除外設定
+└── .nojekyll                # GitHub PagesでJekyllを使わない
 ```
+
+---
+
+## 💻 動作環境
+
+- ブラウザー：Chrome・Edge・Firefoxの最新版で確認した。Safariとスマートフォンの実機は未確認である。
+- `index.html`をファイルから直接開いても、すべての機能が動く（クイズの問題もスクリプトとして読む）。
+- ローカルのサーバーで試す場合は、リポジトリのフォルダーで`python -m http.server 8000`を実行し、`http://localhost:8000/`を開く。
 
 ---
 
 ## 📄 ライセンス
 
-MIT License – 詳細は [LICENSE](LICENSE) を参照してください。
+MIT License – 詳細は[LICENSE](LICENSE)を参照してください。
 
 ---
 

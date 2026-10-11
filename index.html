@@ -5,21 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Classical Cipher Structure Trainer</title>
   <meta name="description" content="Mapping（換字）と Shuffle（転置）で古典暗号の骨格を直感理解する教育用ツール。図解と体験UI、10問クイズ付き。" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';" />
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta name="referrer" content="no-referrer" />
+  <link rel="icon" href="data/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
+  <script src="js/theme.js"></script>
 </head>
 <body>
   <header class="app-header">
+    <div class="header-tools">
+      <button type="button" class="btn theme-toggle" id="btn-theme" aria-pressed="false">ダーク表示</button>
+    </div>
     <h1>Classical Cipher Structure Trainer</h1>
-    <p class="subtitle"><string>マッピング</string>と<string>シャッフル</string>で古典暗号の構造を理解する教育ツール</p>
+    <p class="subtitle"><strong>マッピング</strong>と<strong>シャッフル</strong>で古典暗号の構造を理解する教育ツール</p>
   </header>
 
-  <nav class="tabs" role="tablist" aria-label="Main Tabs">
-    <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-intro" id="btn-intro">概念</button>
-    <button class="tab" role="tab" aria-selected="false" aria-controls="tab-examples" id="btn-examples">古典暗号の例</button>
-    <button class="tab" role="tab" aria-selected="false" aria-controls="tab-quiz" id="btn-quiz">クイズ</button>
+  <noscript>
+    <p class="noscript">このツールは JavaScript を使います。ブラウザーの設定で JavaScript を有効にしてください。</p>
+  </noscript>
+
+  <nav class="tabs" role="tablist" aria-label="表示する内容">
+    <button type="button" class="tab active" role="tab" aria-selected="true" aria-controls="tab-intro" id="btn-intro">概念</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-examples" id="btn-examples" tabindex="-1">古典暗号の例</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-quiz" id="btn-quiz" tabindex="-1">クイズ</button>
   </nav>
 
   <main>
@@ -27,7 +35,7 @@
     <section class="tab-panel active" id="tab-intro" role="tabpanel" aria-labelledby="btn-intro">
       <div class="intro-grid">
         <article class="card">
-          <h3>換字（Substitution）＝ 置換 ＝ マッピング（Mapping）</h3>
+          <h3>換字（Substitution）＝ マッピング（Mapping）</h3>
           <ul class="concept-list">
             <li>文字を別の文字へ<strong>対応づけ</strong>る方式</li>
             <li>鍵は<strong>対応表（置換表）</strong></li>
@@ -37,17 +45,18 @@
           <div class="concept-hint">
             💡 上段＝平文文字、下段＝暗号文文字。線が「対応」を示します。重複なく対応（一対一対応）。
           </div>
-          <div class="mapping-figure large">
-            <div class="row row-top" id="viz-map-top"></div>
-            <svg id="viz-map-lines" aria-hidden="true"></svg>
-            <div class="row row-bottom" id="viz-map-bottom"></div>
-          </div>
+          <figure class="mapping-figure">
+            <svg id="map-figure" class="map-svg" role="img" aria-labelledby="map-figure-desc"></svg>
+            <figcaption class="map-key" id="map-key"></figcaption>
+            <p class="sr-only" id="map-figure-desc"></p>
+          </figure>
           <div class="mapping-actions">
-            <button class="btn" id="btn-map-rotate">対応表を回す</button>
-            <button class="btn" id="btn-map-random">ランダムに対応させる</button>
-            <button class="btn" id="btn-map-toggle-charset">暗号文文字の切り替え: A-H ⇄ 1-8</button>
-            <button class="btn" id="btn-map-reset">リセット</button>
+            <button type="button" class="btn" id="btn-map-rotate">対応表を回す</button>
+            <button type="button" class="btn" id="btn-map-random">ランダムに対応させる</button>
+            <button type="button" class="btn" id="btn-map-toggle-charset" aria-describedby="map-charset">暗号文の文字を切り替え（A〜H ⇄ 1〜8）</button>
+            <button type="button" class="btn" id="btn-map-reset">リセット</button>
           </div>
+          <p class="map-charset" id="map-charset" aria-live="polite"></p>
         </article>
 
         <article class="card">
@@ -55,228 +64,54 @@
           <ul class="concept-list">
             <li>文字の<strong>順序を入れ替える</strong>方式</li>
             <li>鍵は<strong>並べ替え方（順列）</strong></li>
-            <li>例：トランプをぐちゃぐちゃにして並び替えるイメージ</li>
-            <li>実際の暗号化では一定文字数ごとにブロック化してシャッフル</li>
+            <li>例：トランプを切り混ぜて並べ替えるイメージ</li>
+            <li>実際の暗号では、決まった規則（一定の文字数ごとの順列、表への書き方と読み方など）で並べ替える</li>
           </ul>
-          <div class="concept-hint">
-            💡 ブロックをドラッグ＆ドロップして順序を変えてみてください。
+          <div class="concept-hint" id="shuffle-help">
+            💡 文字のブロックをドラッグして順序を変えてみてください。キーボードでは、ブロックを選んでSpaceで持ち上げ、←→で動かし、Spaceで置きます（Escで取り消し）。
           </div>
           <div class="shuffle-figure">
-            <div class="blocks" id="viz-shuffle-source" aria-label="元の並び">E D U C A T I O N</div>
-            <div class="sortable" id="viz-shuffle-target" aria-label="並べ替え体験領域"></div>
+            <p class="shuffle-source" id="shuffle-source">元の並び：<span class="source-word">EDUCATION</span></p>
+            <ol class="sortable" id="shuffle-list" aria-label="並べ替える文字" aria-describedby="shuffle-help"></ol>
+            <p class="shuffle-now" id="shuffle-now"></p>
+            <p class="sr-only" id="shuffle-status" aria-live="polite"></p>
           </div>
           <div class="shuffle-actions">
-            <button class="btn" id="btn-viz-shuffle-random">ランダム並べ替え</button>
-            <button class="btn" id="btn-viz-shuffle-reverse">逆順に並べ替え</button>
-            <button class="btn" id="btn-viz-shuffle-evenodd">偶奇入れ替え</button>
-            <button class="btn" id="btn-viz-shuffle-reset">リセット</button>
+            <button type="button" class="btn" id="btn-shuffle-random">ランダムに並べ替え</button>
+            <button type="button" class="btn" id="btn-shuffle-reverse">逆順にする</button>
+            <button type="button" class="btn" id="btn-shuffle-evenodd">偶奇を入れ替え</button>
+            <button type="button" class="btn" id="btn-shuffle-reset">リセット</button>
           </div>
         </article>
       </div>
       <div class="terminology-tip">
-        💡 <strong>用語のヒント：</strong>
-        「換字」「転置」の漢字がイメージしにくい・忘れやすい場合は、
-        <strong>「マッピング（Mapping）」と「シャッフル（Shuffle）」</strong>に脳内で置き換えることをおすすめします。<br>
-        この2つの概念で古典暗号のほとんどを理解できます。
+        <p>💡 <strong>用語のヒント：</strong>「換字」「転置」の漢字がイメージしにくいときは、「マッピング（Mapping）」と「シャッフル（Shuffle）」に置き換えて考えるとわかりやすくなります。古典暗号の多くは、この2つと、その組み合わせ（混合）で整理できます。</p>
+        <p>「置換」という語は、換字（文字の置き換え）にも、数学の置換（並べ替え＝順列）にも使われます。実は換字の対応表も、文字の種類を並べ替えた順列です。換字は「文字の種類」を、転置は「文字の位置」を並べ替えると考えると、2つの違いがはっきりします。</p>
       </div>
     </section>
 
     <!-- Examples -->
     <section class="tab-panel" id="tab-examples" role="tabpanel" aria-labelledby="btn-examples">
       <div class="tab-intro">
-        💡 外部の学習ツールへのリンク集です。各暗号の実際の動作を体験できます。
+        💡 生成AIで作るセキュリティツール100で作った学習ツールへのリンク集です。カードを押すと、それぞれの暗号を新しいタブで動かせます。
       </div>
-
-      <div class="cipher-category">
-        <h3 class="category-title">🔤 換字式暗号（Substitution）</h3>
-        <p class="category-desc">文字を別の文字・記号に<strong>対応づける（Mapping）</strong>方式</p>
-        <div class="cipher-grid">
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>シーザー暗号</h4>
-              <p>固定ずらしの基本的な換字方式</p>
-            </div>
-            <a href="https://ipusiron.github.io/caesar-cipher-wheel/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>日本語版シーザー暗号</h4>
-              <p>日本語のシフト暗号</p>
-            </div>
-            <a href="https://ipusiron.github.io/japanese-caesar-cipher/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ピッグペン暗号</h4>
-              <p>図形・記号による視覚的な換字</p>
-            </div>
-            <a href="https://ipusiron.github.io/pigpen-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>踊る人形暗号</h4>
-              <p>シャーロックホームズに登場</p>
-            </div>
-            <a href="https://ipusiron.github.io/dancingmen-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ポリュビオス暗号</h4>
-              <p>文字を数字ペアに変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/polybius-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>上杉暗号</h4>
-              <p>いろは文字を座標位置に変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/uesugi-cipher/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>忍びいろはの暗号</h4>
-              <p>いろは文字を漢字風に変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/shinobi_iroha_cipher/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>プレイフェア暗号</h4>
-              <p>2文字を別の文字に変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/playfair-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ポルタ暗号</h4>
-              <p>鍵依存の置換表を使用</p>
-            </div>
-            <a href="https://ipusiron.github.io/porta-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ベーコン暗号</h4>
-              <p>1文字を2進5文字列に対応</p>
-            </div>
-            <a href="https://ipusiron.github.io/bacon-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ストリップ暗号</h4>
-              <p>複数ストリップの多表式暗号</p>
-            </div>
-            <a href="https://github.com/ipusiron/strip-cipherlab" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ヴィジュネル暗号</h4>
-              <p>鍵で可変マッピング（多表式）</p>
-            </div>
-            <a href="https://ipusiron.github.io/vigenere-cipher-tool/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ビューフォート暗号</h4>
-              <p>多表式暗号の別バージョン</p>
-            </div>
-            <a href="https://ipusiron.github.io/beaufort-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>アフィン暗号</h4>
-              <p>一次関数で置き換え</p>
-            </div>
-            <a href="https://ipusiron.github.io/affine-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ヒル暗号</h4>
-              <p>行列演算でブロック変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/hill-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="cipher-category">
-        <h3 class="category-title">🔀 転置式暗号（Transposition）</h3>
-        <p class="category-desc">文字の<strong>順序を入れ替える（Shuffle）</strong>方式</p>
-        <div class="cipher-grid">
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>スキュタレー暗号</h4>
-              <p>棒に巻きつけて読む暗号</p>
-            </div>
-            <a href="https://ipusiron.github.io/scytale-cipher-visualizer/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>転置式暗号</h4>
-              <p>並べ替え順序が鍵となる</p>
-            </div>
-            <a href="https://ipusiron.github.io/permutation-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ジグザグ暗号</h4>
-              <p>波形に並べて順序を変える</p>
-            </div>
-            <a href="https://ipusiron.github.io/zigzag-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>レールフェンス暗号</h4>
-              <p>複数レールに書き込む</p>
-            </div>
-            <a href="https://ipusiron.github.io/railfence-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>縦列転置式暗号</h4>
-              <p>マトリクスで列順序を変える</p>
-            </div>
-            <a href="https://ipusiron.github.io/columnar-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>回転グリル暗号</h4>
-              <p>穴空き台紙を回転させる</p>
-            </div>
-            <a href="https://ipusiron.github.io/grille-cipherlab/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="cipher-category">
-        <h3 class="category-title">🔍 その他</h3>
-        <p class="category-desc">換字・転置以外の特殊な暗号方式</p>
-        <div class="cipher-grid">
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>分置式暗号</h4>
-              <p>ダミーメッセージ内に隠す</p>
-            </div>
-            <a href="https://ipusiron.github.io/hidden-message-challenge/" target="_blank" rel="noopener" class="cipher-btn">→</a>
-          </div>
-        </div>
-      </div>
+      <div id="catalog" class="catalog"></div>
     </section>
 
     <!-- Quiz -->
     <section class="tab-panel" id="tab-quiz" role="tabpanel" aria-labelledby="btn-quiz">
       <div class="tab-intro">
-        📝 <strong>10問・一問一答形式</strong> ー 定義2問 / 基礎2問 / 分類4問 / 混合2問
+        📝 <strong>10問・一問一答形式</strong>（定義2問・基礎2問・分類4問・混合2問）。答えるたびに解説が出ます。
       </div>
 
       <div id="quiz-area" class="quiz-area">
-        <div id="quiz-loader" class="loader">読み込み中...</div>
+        <p id="quiz-loader" class="loader" role="status"></p>
         <div id="quiz-container" class="quiz-container hidden">
-          <div id="quiz-progress" class="quiz-progress"></div>
+          <p id="quiz-progress" class="quiz-progress"></p>
           <div id="quiz-question" class="quiz-question"></div>
-          <div id="quiz-feedback" class="quiz-feedback hidden"></div>
+          <div id="quiz-feedback" class="quiz-feedback hidden" role="status" aria-live="polite"></div>
           <div class="quiz-actions">
-            <button type="button" class="btn" id="btn-quiz-next">次へ</button>
+            <button type="button" class="btn primary" id="btn-quiz-next" disabled>次へ</button>
             <button type="button" class="btn secondary" id="btn-quiz-restart">最初から</button>
           </div>
         </div>
@@ -286,12 +121,13 @@
   </main>
 
   <footer class="app-footer">
-    🔗 GitHubリポジトリはこちら（
-    <a href="https://github.com/ipusiron/classical-cipher-structure-trainer" target="_blank" rel="noopener">
-      ipusiron/classical-cipher-structure-trainer
-    </a> ）
+    <a href="https://github.com/ipusiron/classical-cipher-structure-trainer" target="_blank" rel="noopener noreferrer">🔗 GitHubリポジトリ：ipusiron/classical-cipher-structure-trainer</a>
   </footer>
 
+  <script src="js/structure-core.js"></script>
+  <script src="js/messages.js"></script>
+  <script src="js/quiz-data.js"></script>
+  <script src="js/catalog.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

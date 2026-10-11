@@ -1,117 +1,51 @@
 # セキュリティ対策
 
-このドキュメントは、Classical Cipher Structure Trainer に実装されているセキュリティ対策について説明します。
+このドキュメントは、Classical Cipher Structure Trainerに実装しているセキュリティ対策と、その限界を説明します。
 
 ## 実装済みのセキュリティ対策
 
-### 1. Content Security Policy (CSP)
+### 1. Content Security Policy（CSP）
 
-厳格なCSPを設定し、以下を制限しています：
-
-```html
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';" />
-```
-
-- **script-src 'self'**: 外部スクリプトの実行を禁止
-- **style-src 'self'**: インラインスタイルを禁止（クラスベースのスタイリングのみ許可）
-- **object-src 'none'**: プラグインの実行を禁止
-- **frame-ancestors 'none'**: クリックジャッキング攻撃を防止
-
-### 2. 外部リンクのセキュリティ
-
-すべての外部リンクに `rel="noopener"` 属性を設定：
+`index.html`のmeta要素で、次のCSPを設定しています。
 
 ```html
-<a href="..." target="_blank" rel="noopener">...</a>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
 ```
 
-これにより、Reverse Tabnabbing 攻撃を防止します。
+- `script-src 'self'`：同じオリジンのスクリプトファイルだけを実行する。インラインのスクリプトとイベント属性は使わない。
+- `style-src 'self'`：同じオリジンのスタイルシートだけを使う。style属性は使わない。
+- `img-src 'self'`：画像（ファビコン）は同じオリジンだけである。
+- `connect-src 'none'`：通信（fetch・XMLHttpRequest・WebSocket）をしない。
+- `object-src 'none'`・`base-uri 'none'`・`form-action 'none'`：プラグイン、base要素、フォームの送信先を禁止する。
 
-### 3. XSS対策
+`test/html.test.js`が、このCSPと、インラインのスクリプト・イベント属性・style属性がないことを毎回検査します。
 
-#### innerHTML の安全な使用
+### 2. 文字の描画
 
-- `innerHTML` の使用を最小限に抑え、主にクリア操作（空文字列設定）のみに使用
-- 動的コンテンツの生成には `createElement` と `textContent` を使用
+- 画面に入れる文字は、すべて`textContent`で入れる。`innerHTML`への代入はない（テストで検査）。
+- SVGの図は`createElementNS`と`setAttribute`で組み立てる。
+- クイズの問題と古典暗号の例の一覧は、リポジトリの中のスクリプト（`js/quiz-data.js`・`js/catalog.js`）で、利用者の入力ではない。クイズの問題は、表示の前に形を検査する（`validateQuiz`）。
 
-#### JSONデータの検証
+### 3. 外部リンクとreferrer
 
-外部JSONファイル（`data/quiz.json`）から読み込んだデータを使用前に厳格に検証：
+- 外部へのリンクは`target="_blank" rel="noopener noreferrer"`で開く。開いた先のページから、このページを操作されない。
+- `<meta name="referrer" content="no-referrer">`で、リンク先にreferrerを送らない。
 
-```javascript
-function validateQuizData(data){
-  if(!data || typeof data !== 'object') return false;
-  if(!Array.isArray(data.questions)) return false;
+### 4. 通信と保存
 
-  return data.questions.every(q => {
-    return q && typeof q === 'object' &&
-           typeof q.prompt === 'string' &&
-           Array.isArray(q.choices) &&
-           q.choices.length > 0 &&
-           q.choices.every(c => typeof c === 'string') &&
-           typeof q.answer_index === 'number' &&
-           q.answer_index >= 0 &&
-           q.answer_index < q.choices.length;
-  });
-}
-```
+- 外部への通信はない。ライブラリー・CDN・解析用のスクリプトも使わない。
+- 保存するのは配色の選択（`localStorage`の`ccst-theme`、`light`か`dark`）だけである。読み出した値は`light`と`dark`以外を無視する。保存できない環境（プライベートモードなど）でも、例外で止まらずに動く。
 
-### 4. エラーハンドリング
+### 5. 乱数
 
-- すべての非同期操作に適切なエラーハンドリングを実装
-- ユーザーにわかりやすいエラーメッセージを表示
-- 開発者向けにコンソールログを出力
+- 「ランダムに対応させる」「ランダムに並べ替え」の乱数は`crypto.getRandomValues`である。偏りのない整数（2^32を割り切れない端を引き直す）とFisher–Yatesで、すべての順列を同じ確率で作る。
+- 本ツールは学習用で、作った対応表や並べ方を秘密の鍵として使うことは想定していない。
 
-```javascript
-try{
-  const res = await fetch('data/quiz.json', { cache: 'no-store' });
-  if(!res.ok){
-    throw new Error(`HTTP error! status: ${res.status}`);
-  }
-  // ...
-}catch(err){
-  console.error('Quiz loading error:', err);
-  loader.textContent = 'クイズの読み込みに失敗しました。ページをリロードしてください。';
-}
-```
+## 対策していないこと（限界）
 
-### 5. Referrer Policy
+- クリックジャッキング：`frame-ancestors`はmeta要素のCSPでは仕様上無視され、GitHub Pagesでは`X-Frame-Options`などの応答ヘッダーを設定できない。他サイトのiframeに埋め込まれることは防げない。本ツールは入力や送信を扱わないので、埋め込まれたときの影響は表示に限られる。
+- 応答ヘッダーで設定する対策（HSTSの設定値、`X-Content-Type-Options`など）は、GitHub Pagesの設定に従う。
 
-リファラー情報の漏洩を最小限に抑えるため、strict-origin-when-cross-originポリシーを設定：
+## 報告
 
-```html
-<meta name="referrer" content="strict-origin-when-cross-origin" />
-```
-
-### 6. クライアントサイド完結
-
-- バックエンドサーバーを使用しない完全なクライアントサイドアプリケーション
-- 機密情報の送信や保存を行わない
-- ユーザー入力は最小限（クイズの選択のみ）
-
-## セキュリティベストプラクティス
-
-### 開発時の注意点
-
-1. **外部ライブラリの使用を避ける**: 依存関係を持たないことで、サプライチェーン攻撃のリスクを排除
-2. **インラインスクリプト/スタイルを使用しない**: CSPを厳格に保つため
-3. **ユーザー入力の検証**: すべての外部データ（JSONファイルを含む）を検証
-4. **DOM操作の安全性**: `textContent` を優先的に使用し、`innerHTML` は慎重に使用
-
-### GitHub Pages でのデプロイ
-
-GitHub Pages は自動的に HTTPS を提供します。追加の設定は不要です。
-
-## 報告されたセキュリティ問題
-
-現在、報告されているセキュリティ問題はありません。
-
-セキュリティ上の問題を発見した場合は、GitHub Issues で報告してください。
-
-## 更新履歴
-
-- 2025-01-XX: 初版作成
-  - CSP実装
-  - XSS対策
-  - JSONデータ検証
-  - エラーハンドリング改善
+セキュリティ上の問題を見つけた場合は、GitHub Issuesで報告してください。

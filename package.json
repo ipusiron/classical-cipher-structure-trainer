@@ -1,0 +1,7 @@
+{
+  "name": "classical-cipher-structure-trainer",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  }
+}
