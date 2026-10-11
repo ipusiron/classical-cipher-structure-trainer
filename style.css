@@ -1,8 +1,9 @@
 /* =========================================================
    Classical Cipher Structure Trainer - Stylesheet
    - デザインシステム: CSS Custom Properties（CSS変数）
+   - 配色: ライトとダーク（OS の設定、または右上のボタン）
    - レスポンシブ: clamp()、メディアクエリ
-   - アクセシビリティ: フォーカス表示、ARIA対応
+   - アクセシビリティ: フォーカス表示、ARIA対応、文字 4.5:1・枠 3:1 以上（test/contrast.test.js で検査）
    ========================================================= */
 
 /* ============================================================
@@ -11,21 +12,104 @@
    色、影、角丸などをCSS変数で一元管理
    変更時は:root内の値を修正するだけで全体に反映される */
 :root{
-  --bg: #ffffff;           /* 背景色 */
-  --fg: #1b1f24;           /* テキスト色 */
-  --muted: #6b7280;        /* 補足テキスト色 */
-  --card: #f8fafc;         /* カード背景色 */
-  --border: #e5e7eb;       /* ボーダー色 */
-  --brand: #0ea5e9;        /* ブランドカラー（青） */
-  --brand-weak: #bae6fd;   /* ブランドカラー（薄め） */
-  --brand-strong: #0369a1; /* 線・枠の濃い青（白地で5.93:1） */
-  --border-strong: #7b8494; /* 操作できる枠（白地で3.77:1、#fafafa で3.61:1） */
-  --focus: #0369a1;        /* フォーカスの枠（白地で5.93:1） */
-  --accent: #10b981;       /* アクセントカラー（緑：正解） */
-  --warn: #f59e0b;         /* 警告色（黄） */
-  --danger: #ef4444;       /* 危険色（赤：不正解） */
+  --bg: #ffffff;            /* 背景色 */
+  --fg: #1b1f24;            /* テキスト色 */
+  --muted: #5b6472;         /* 補足テキスト色 */
+  --card: #f8fafc;          /* カード背景色 */
+  --surface: #ffffff;       /* カードの中の面（図・ボタン・選択肢） */
+  --surface-2: #fafafa;     /* 並べ替えの枠 */
+  --border: #e5e7eb;        /* 飾りの枠線 */
+  --border-strong: #7b8494; /* 操作できる要素の枠（3:1 以上） */
+  --brand: #0ea5e9;         /* ブランドカラー（飾りの線・マーカーだけ） */
+  --brand-strong: #0369a1;  /* 対応図の線・主ボタン */
+  --brand-weak: #bae6fd;    /* 選択中のタブ・持ち上げたブロック */
+  --on-primary: #ffffff;    /* 主ボタンの文字 */
+  --hover-bg: #f0f9ff;      /* ホバーの面 */
+  --hint-bg: #f0f9ff;       /* ヒントの面 */
+  --hint-fg: #0c4a6e;       /* ヒントの文字 */
+  --tip-bg: #fffbeb;        /* 用語のヒントの面 */
+  --tip-border: #d97706;    /* 用語のヒントの枠（飾り） */
+  --tip-fg: #78350f;        /* 用語のヒントの文字 */
+  --tip-strong: #92400e;    /* 用語のヒントの強調 */
+  --ok-bg: #d1fae5;         /* 正解の面 */
+  --ok-fg: #065f46;         /* 正解の文字 */
+  --ok-border: #047857;     /* 正解の枠 */
+  --ng-bg: #fee2e2;         /* 不正解の面 */
+  --ng-fg: #991b1b;         /* 不正解の文字 */
+  --ng-border: #b91c1c;     /* 不正解の枠 */
+  --focus: #0369a1;         /* フォーカスの枠 */
+  --link: #0369a1;          /* リンク */
   --shadow: 0 6px 20px rgba(0,0,0,0.06);  /* 影 */
-  --radius: 14px;          /* 角丸の半径 */
+  --radius: 14px;           /* 角丸の半径 */
+  color-scheme: light;
+}
+
+/* ダーク（OS の設定がダークで、ボタンでライトを選んでいないとき） */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg: #0f1623;
+    --fg: #e6e9ef;
+    --muted: #a3adbb;
+    --card: #161f2e;
+    --surface: #1b2638;
+    --surface-2: #131b29;
+    --border: #2c3a52;
+    --border-strong: #7d8aa3;
+    --brand: #38bdf8;
+    --brand-strong: #7dd3fc;
+    --brand-weak: #0c4a6e;
+    --on-primary: #0f1623;
+    --hover-bg: #1d3047;
+    --hint-bg: #0f2a3d;
+    --hint-fg: #cde9fb;
+    --tip-bg: #2a2110;
+    --tip-border: #b7791f;
+    --tip-fg: #f6e3b4;
+    --tip-strong: #fcd581;
+    --ok-bg: #0f3a2e;
+    --ok-fg: #b7f0d3;
+    --ok-border: #34d399;
+    --ng-bg: #3f1d1d;
+    --ng-fg: #fecaca;
+    --ng-border: #f87171;
+    --focus: #7dd3fc;
+    --link: #7dd3fc;
+    --shadow: 0 6px 20px rgba(0,0,0,0.35);
+    color-scheme: dark;
+  }
+}
+
+/* ダーク（ボタンで選んだとき。値は上と同じ） */
+:root[data-theme="dark"]{
+  --bg: #0f1623;
+  --fg: #e6e9ef;
+  --muted: #a3adbb;
+  --card: #161f2e;
+  --surface: #1b2638;
+  --surface-2: #131b29;
+  --border: #2c3a52;
+  --border-strong: #7d8aa3;
+  --brand: #38bdf8;
+  --brand-strong: #7dd3fc;
+  --brand-weak: #0c4a6e;
+  --on-primary: #0f1623;
+  --hover-bg: #1d3047;
+  --hint-bg: #0f2a3d;
+  --hint-fg: #cde9fb;
+  --tip-bg: #2a2110;
+  --tip-border: #b7791f;
+  --tip-fg: #f6e3b4;
+  --tip-strong: #fcd581;
+  --ok-bg: #0f3a2e;
+  --ok-fg: #b7f0d3;
+  --ok-border: #34d399;
+  --ng-bg: #3f1d1d;
+  --ng-fg: #fecaca;
+  --ng-border: #f87171;
+  --focus: #7dd3fc;
+  --link: #7dd3fc;
+  --shadow: 0 6px 20px rgba(0,0,0,0.35);
+  color-scheme: dark;
 }
 
 /* ============================================================
@@ -39,15 +123,48 @@ html,body{
   background:var(--bg);
   color:var(--fg);
   /* システムフォントスタック: OS標準フォントを使用（高速レンダリング） */
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP",
+    "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* hidden 属性と .hidden は、ほかの display 指定より優先して隠す */
+[hidden], .hidden{ display:none !important; }
+
+/* 画面には出さず、読み上げにだけ渡す */
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip: rect(0 0 0 0);
+  white-space:nowrap;
+  border:0;
+}
+
+/* JavaScript が無効のときの案内 */
+.noscript{
+  max-width: 980px;
+  margin: 0 auto 12px;
+  padding: 12px 16px;
+  background: var(--ng-bg);
+  color: var(--ng-fg);
+  border-radius: 10px;
 }
 
 /* ============================================================
    ヘッダー
    ============================================================ */
 .app-header{
-  padding: 36px 20px 16px;
+  padding: 12px 20px 16px;
   text-align: center;
+}
+.header-tools{
+  max-width: 980px;
+  margin: 0 auto 8px;
+  display:flex;
+  justify-content:flex-end;
 }
 h1{
   margin: 0;
@@ -59,6 +176,9 @@ h1{
   margin: 6px 0 0;
   color: var(--muted); /* 控えめな色でサブタイトルを表示 */
   font-size: 15px;
+}
+.subtitle strong{
+  color: var(--fg);
 }
 
 /* ============================================================
@@ -72,25 +192,29 @@ h1{
   flex-wrap:wrap; /* 小画面でタブを折り返し */
 }
 .tab{
-  border:1px solid var(--border);
-  background:#fff;
-  padding:10px 14px;
+  min-height: 44px;
+  border:1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--fg);
+  padding:10px 16px;
   border-radius:10px;
   cursor:pointer;
-  font-size:14px;
+  font: inherit;
+  font-size:15px;
 }
 .tab:hover{
-  background: #f0f9ff; /* ホバー時に薄い青色 */
+  background: var(--hover-bg); /* ホバー時に薄い青色 */
 }
-.tab:focus{
+.tab:focus-visible{
   /* キーボードフォーカス時の視覚的フィードバック（アクセシビリティ） */
-  outline: 2px solid var(--brand);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 .tab.active{
-  /* アクティブなタブを強調表示 */
+  /* アクティブなタブを強調表示（色だけでなく太さと枠でも示す） */
   background: var(--brand-weak);
-  border-color: var(--brand);
+  border: 2px solid var(--brand-strong);
+  font-weight: 700;
 }
 
 /* ============================================================
@@ -151,11 +275,11 @@ main{
    ============================================================ */
 .concept-hint{
   padding: 12px 16px;
-  background: #f0f9ff; /* 薄い青色の背景 */
+  background: var(--hint-bg); /* 薄い青色の背景 */
   border-left: 4px solid var(--brand); /* 左側に太いアクセント線 */
   border-radius: 6px;
-  font-size: 13px;
-  color: #0c4a6e; /* 濃い青色のテキスト */
+  font-size: 14px;
+  color: var(--hint-fg); /* 濃い青色のテキスト */
   line-height: 1.6;
   margin-bottom: 16px;
 }
@@ -165,11 +289,10 @@ main{
    ============================================================ */
 .tab-intro{
   padding: 16px 20px;
-  /* グラデーション背景: 左上から右下に向かって青→水色 */
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: var(--hint-bg);
   border-radius: 12px;
   font-size: 15px;
-  color: #0c4a6e;
+  color: var(--hint-fg);
   margin-bottom: 24px;
   border-left: 4px solid var(--brand); /* 左側にアクセント線 */
   line-height: 1.6;
@@ -181,15 +304,15 @@ main{
 .terminology-tip{
   margin-top: 24px;
   padding: 16px 20px;
-  background: #fffbeb; /* 薄い黄色の背景 */
-  border: 2px solid #fbbf24; /* 黄色の枠線 */
+  background: var(--tip-bg); /* 薄い黄色の背景 */
+  border: 2px solid var(--tip-border); /* 黄色の枠線 */
   border-radius: 12px;
-  color: #78350f; /* 濃い茶色のテキスト */
+  color: var(--tip-fg); /* 濃い茶色のテキスト */
   font-size: 14px;
   line-height: 1.6;
 }
 .terminology-tip strong{
-  color: #92400e; /* 強調部分をさらに濃く */
+  color: var(--tip-strong); /* 強調部分をさらに濃く */
 }
 
 /* ============================================================
@@ -200,7 +323,7 @@ main{
   border:1px dashed var(--border); /* 破線でコンテナを強調 */
   border-radius: 12px;
   padding: 12px;
-  background: #fff;
+  background: var(--surface);
 }
 
 /* ============================================================
@@ -216,7 +339,7 @@ main{
   margin: 0 auto;
 }
 .map-cell rect{
-  fill:#fff;
+  fill: var(--surface);
   stroke: var(--border-strong);
   stroke-width: 1;
 }
@@ -243,24 +366,7 @@ main{
   color: var(--muted);
 }
 
-/* 画面には出さず、読み上げにだけ渡す */
-.sr-only{
-  position:absolute;
-  width:1px;
-  height:1px;
-  padding:0;
-  margin:-1px;
-  overflow:hidden;
-  clip: rect(0 0 0 0);
-  white-space:nowrap;
-  border:0;
-}
 
-.note{
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 8px;
-}
 
 /* ============================================================
    シャッフル図のブロック要素
@@ -288,7 +394,7 @@ main{
   margin: 12px 0 0;
   min-height: 60px;
   padding: 8px;
-  background: #fafafa;
+  background: var(--surface-2);
   border:1px solid var(--border);
   border-radius: 12px;
 }
@@ -303,7 +409,7 @@ main{
   display:flex;
   align-items:center;
   justify-content:center;
-  background:#fff;
+  background: var(--surface);
   color: var(--fg);
   border:1px solid var(--border-strong);
   border-radius: 10px;
@@ -345,28 +451,46 @@ main{
    ボタンコンポーネント
    ============================================================ */
 .btn{
-  border:1px solid var(--border);
-  background:#fff;
-  padding:8px 12px;
+  min-height: 44px; /* タップしやすい高さ */
+  border:1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--fg);
+  padding:8px 14px;
   border-radius:10px;
+  font: inherit;
   font-size:14px;
   cursor:pointer;
 }
 .btn:hover:not(:disabled){
-  background: #f0f9ff; /* ホバー時に薄い青色 */
-  border-color: var(--brand);
+  background: var(--hover-bg); /* ホバー時に薄い青色 */
 }
-.btn:focus{
+.btn:focus-visible{
   /* キーボードフォーカス時の視覚的フィードバック */
-  outline: 2px solid var(--brand);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 .btn:disabled{
-  opacity: 0.5; /* 無効化ボタンは半透明 */
+  opacity: 0.55; /* 無効化ボタンは半透明 */
   cursor: not-allowed;
 }
 .btn.secondary{
-  background: #f8fafc; /* セカンダリボタンはグレー背景 */
+  background: var(--card); /* セカンダリボタンはグレー背景 */
+}
+.btn.primary{
+  background: var(--brand-strong);
+  border-color: var(--brand-strong);
+  color: var(--on-primary);
+  font-weight: 700;
+}
+.btn.primary:hover:not(:disabled){
+  background: var(--brand-strong);
+  text-decoration: underline;
+}
+
+/* 配色の切り替え（押した状態＝ダーク） */
+.theme-toggle[aria-pressed="true"]{
+  background: var(--brand-weak);
+  border: 2px solid var(--brand-strong);
 }
 
 /* ボタングループ（シャッフル、マッピング、クイズ用） */
@@ -376,38 +500,6 @@ main{
   margin-top:10px;
   flex-wrap:wrap; /* 小画面でボタンを折り返し */
 }
-
-/* ============================================================
-   可視化モード切り替えボタン（未使用だが将来用）
-   ============================================================ */
-.viz-switch{
-  display:flex;
-  gap:10px;
-  margin-bottom: 16px;
-  flex-wrap:wrap;
-}
-.mode-btn{
-  border:1px solid var(--border);
-  padding:8px 12px;
-  border-radius: 999px; /* ピル型ボタン */
-  background:#fff;
-  cursor:pointer;
-}
-.mode-btn:hover{
-  background: #f0f9ff;
-}
-.mode-btn:focus{
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-.mode-btn.active{
-  background:#eef9ff;
-  border-color: var(--brand);
-}
-
-.viz-panel.hidden{ display:none; }
-
-.muted{ color: var(--muted); }
 
 /* ============================================================
    クイズエリア
@@ -420,12 +512,12 @@ main{
   padding: 16px;
 }
 .loader{
+  margin: 0;
   color: var(--muted); /* 読み込み中のテキスト */
 }
 .loader.error{
-  color: var(--danger); /* エラー時は赤色 */
+  color: var(--ng-fg); /* エラー時は赤色 */
 }
-.hidden{ display:none; }
 
 /* ============================================================
    クイズコンテナ
@@ -436,12 +528,13 @@ main{
 .quiz-progress{
   font-size: 14px;
   color: var(--muted);
-  margin-bottom: 16px;
+  margin: 0 0 16px;
   font-weight: 600;
 }
 .quiz-question h3{
   margin: 0 0 16px;
   font-size: 18px;
+  line-height: 1.5;
 }
 
 /* ============================================================
@@ -455,70 +548,96 @@ main{
 }
 .choice-btn{
   width: 100%;
+  min-height: 48px;
+  display:flex;
+  align-items:center;
+  gap: 8px;
   text-align: left;
-  padding: 12px 16px;
-  border: 2px solid var(--border);
+  padding: 10px 14px;
+  border: 2px solid var(--border-strong);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
+  color: var(--fg);
   cursor: pointer;
+  font: inherit;
   font-size: 15px;
-  transition: all 0.2s; /* ホバー時のアニメーション */
+  transition: background-color 0.2s, border-color 0.2s; /* ホバー時のアニメーション */
 }
-.choice-btn:hover:not(:disabled){
-  background: #f0f9ff; /* ホバー時に薄い青色 */
-  border-color: var(--brand);
+.choice-btn:hover:not([aria-disabled="true"]){
+  background: var(--hover-bg); /* ホバー時に薄い青色 */
 }
-.choice-btn:focus{
+.choice-btn:focus-visible{
   /* キーボードフォーカス時の視覚的フィードバック */
-  outline: 2px solid var(--brand);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
-.choice-btn:disabled{
-  cursor: not-allowed;
-  opacity: 0.7;
+.choice-btn[aria-disabled="true"]{
+  cursor: default;
+}
+.choice-mark{
+  flex: 0 0 1.4em; /* ✓・✗ の場所（答える前は空） */
+  font-weight: 700;
+  text-align: center;
+}
+.choice-text{
+  flex: 1;
+  min-width: 0;
+}
+.choice-note{
+  font-size: 13px;
+  font-weight: 700;
 }
 .choice-btn.correct{
-  /* 正解の選択肢を緑色で表示 */
-  background: #d1fae5;
-  border-color: var(--accent);
+  /* 正解の選択肢（色と ✓ と文字で示す） */
+  background: var(--ok-bg);
+  border-color: var(--ok-border);
+  color: var(--ok-fg);
   font-weight: 600;
 }
 .choice-btn.incorrect{
-  /* 不正解の選択肢を赤色で表示 */
-  background: #fee2e2;
-  border-color: var(--danger);
+  /* 選んだ不正解の選択肢（色と ✗ と文字で示す） */
+  background: var(--ng-bg);
+  border-color: var(--ng-border);
+  color: var(--ng-fg);
 }
 
 /* ============================================================
-   クイズフィードバック（正解/不正解の表示）
+   クイズフィードバック（正解/不正解と解説）
    ============================================================ */
 .quiz-feedback{
-  display: flex;
-  align-items: center;
-  gap: 12px;
   padding: 12px 16px;
   border-radius: 10px;
   margin-bottom: 16px;
-  font-weight: 600;
 }
 .quiz-feedback.correct{
   /* 正解時は緑色の背景 */
-  background: #d1fae5;
-  border: 2px solid var(--accent);
-  color: #065f46; /* 濃い緑色のテキスト */
+  background: var(--ok-bg);
+  border: 2px solid var(--ok-border);
+  color: var(--ok-fg);
 }
 .quiz-feedback.incorrect{
   /* 不正解時は赤色の背景 */
-  background: #fee2e2;
-  border: 2px solid var(--danger);
-  color: #991b1b; /* 濃い赤色のテキスト */
+  background: var(--ng-bg);
+  border: 2px solid var(--ng-border);
+  color: var(--ng-fg);
+}
+.feedback-head{
+  display:flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0;
+  font-weight: 700;
 }
 .feedback-icon{
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 22px;
 }
 .feedback-text{
-  font-size: 16px;
+  font-size: 17px;
+}
+.feedback-explanation{
+  margin: 8px 0 0;
+  line-height: 1.7;
 }
 
 /* ============================================================
@@ -529,15 +648,15 @@ main{
   padding: 16px;
   border-radius: 12px;
   border:1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
 }
 .quiz-result .score{
   font-weight: 700;
   font-size: 18px;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
 }
 .quiz-result .msg{
-  margin-bottom: 16px;
+  margin: 0 0 16px;
   line-height: 1.6;
 }
 .quiz-result .btn{
@@ -570,12 +689,12 @@ main{
 
 /* 各暗号へのリンクカード */
 .cipher-card{
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: all 0.2s; /* ホバー時のアニメーション */
+  transition: box-shadow 0.2s, transform 0.2s; /* ホバー時のアニメーション */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -608,26 +727,24 @@ main{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: var(--brand);
-  color: #fff;
+  width: 44px;
+  height: 44px;
+  background: var(--brand-strong);
+  color: var(--on-primary);
   text-decoration: none;
   border-radius: 50%; /* 円形ボタン */
   font-size: 18px;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: transform 0.2s;
   flex-shrink: 0; /* ボタンサイズを固定 */
 }
 .cipher-btn:hover{
-  background: #0284c7; /* ホバー時に少し濃く */
-  transform: translateX(4px) scale(1.1); /* 右に移動＆拡大 */
+  transform: translateX(4px); /* 右に移動 */
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); /* 影で浮き上がり */
 }
-.cipher-btn:focus{
+.cipher-btn:focus-visible{
   /* キーボードフォーカス時の視覚的フィードバック */
-  outline: 2px solid var(--brand);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 
@@ -639,13 +756,31 @@ main{
   text-align: center;
   color: var(--muted);
   border-top:1px solid var(--border);
+  overflow-wrap: anywhere;
 }
 
 /* リンクのグローバルスタイル */
 a{
-  color: #0369a1; /* 青色のリンク */
+  color: var(--link); /* 青色のリンク */
   text-decoration: none;
 }
 a:hover{
   text-decoration: underline; /* ホバー時に下線 */
+}
+a:focus-visible{
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   動きを減らす設定
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    transition: none !important;
+    animation: none !important;
+  }
+  .block:hover, .slot.grabbed .block, .cipher-card:hover, .cipher-btn:hover{
+    transform: none;
+  }
 }

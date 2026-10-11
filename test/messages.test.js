@@ -11,6 +11,15 @@ const script = fs.readFileSync(path.join(root, 'script.js'), 'utf8');
 const used = new Set([...script.matchAll(/\b(?:T|announceShuffle)\('([\w.]+)'/g)].map(m => m[1]));
 used.add('map.charset.letters');
 used.add('map.charset.numbers');
+for (const k of ['quiz.grade.low', 'quiz.grade.mid', 'quiz.grade.high', 'quiz.error.empty', 'quiz.error.field']) used.add(k);
+
+test('script.js に日本語の文字列リテラルがない（文言は辞書から引く）', () => {
+  // コメントを除いてから、引用符の中の日本語を探す
+  const code = script.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  const literals = [...code.matchAll(/(['"`])((?:\\.|(?!\1).)*)\1/g)].map(m => m[2]);
+  const ja = literals.filter(s => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(s));
+  assert.deepEqual(ja, []);
+});
 
 test('script.js が使う文言のキーはすべて辞書にある', () => {
   assert.ok(used.size >= 12, `キーの数 ${used.size}`);
