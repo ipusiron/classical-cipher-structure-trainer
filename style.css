@@ -671,7 +671,7 @@ main{
 }
 .category-title{
   font-size: 20px;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
   color: var(--fg);
 }
 .category-desc{
@@ -682,70 +682,96 @@ main{
 
 /* グリッドレイアウト: 最小240px幅のカードを自動配置 */
 .cipher-grid{
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
   gap: 16px;
 }
 
-/* 各暗号へのリンクカード */
+/* 各暗号へのリンクカード（見出しのリンクをカード全体に広げる） */
 .cipher-card{
+  position: relative;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 14px 48px 14px 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   transition: box-shadow 0.2s, transform 0.2s; /* ホバー時のアニメーション */
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
 }
 .cipher-card:hover{
   /* ホバー時に浮き上がり効果 */
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   transform: translateY(-2px);
-  border-color: var(--brand);
 }
-.cipher-info{
-  flex: 1;
-  min-width: 0; /* テキストの折り返しを許可 */
+.cipher-card:focus-within{
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
-.cipher-card h4{
-  margin: 0 0 4px 0;
+.cipher-name{
+  margin: 0 0 6px 0;
   font-size: 16px;
-  color: var(--fg);
 }
-.cipher-card p{
+.cipher-name a{
+  color: var(--fg);
+  text-decoration: none;
+}
+.cipher-name a::after{
+  /* カードのどこを押してもリンクが開く */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+}
+.cipher-name a:focus-visible{
+  outline: none; /* 枠はカード（:focus-within）に出す */
+}
+.cipher-card:hover .cipher-name a{
+  text-decoration: underline;
+}
+.cipher-tag{
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--card);
+  color: var(--fg);
+  font-size: 12px;
+}
+.cipher-desc{
   margin: 0;
   font-size: 13px;
   color: var(--muted);
   line-height: 1.5;
 }
+.cipher-tool{
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
 
-/* 外部リンクボタン（矢印アイコン） */
-.cipher-btn{
+/* 右端の矢印（飾り。読み上げない） */
+.cipher-arrow{
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
   background: var(--brand-strong);
   color: var(--on-primary);
-  text-decoration: none;
-  border-radius: 50%; /* 円形ボタン */
-  font-size: 18px;
-  font-weight: 500;
+  border-radius: 50%;
+  font-size: 15px;
   transition: transform 0.2s;
-  flex-shrink: 0; /* ボタンサイズを固定 */
 }
-.cipher-btn:hover{
-  transform: translateX(4px); /* 右に移動 */
-  text-decoration: none;
-}
-.cipher-btn:focus-visible{
-  /* キーボードフォーカス時の視覚的フィードバック */
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+.cipher-card:hover .cipher-arrow{
+  transform: translateX(3px);
 }
 
 /* ============================================================
@@ -780,7 +806,7 @@ a:focus-visible{
     transition: none !important;
     animation: none !important;
   }
-  .block:hover, .slot.grabbed .block, .cipher-card:hover, .cipher-btn:hover{
+  .block:hover, .slot.grabbed .block, .cipher-card:hover, .cipher-card:hover .cipher-arrow{
     transform: none;
   }
 }

@@ -35,7 +35,7 @@
     <section class="tab-panel active" id="tab-intro" role="tabpanel" aria-labelledby="btn-intro">
       <div class="intro-grid">
         <article class="card">
-          <h3>換字（Substitution）＝ 置換 ＝ マッピング（Mapping）</h3>
+          <h3>換字（Substitution）＝ マッピング（Mapping）</h3>
           <ul class="concept-list">
             <li>文字を別の文字へ<strong>対応づけ</strong>る方式</li>
             <li>鍵は<strong>対応表（置換表）</strong></li>
@@ -64,8 +64,8 @@
           <ul class="concept-list">
             <li>文字の<strong>順序を入れ替える</strong>方式</li>
             <li>鍵は<strong>並べ替え方（順列）</strong></li>
-            <li>例：トランプをぐちゃぐちゃにして並び替えるイメージ</li>
-            <li>実際の暗号化では一定文字数ごとにブロック化してシャッフル</li>
+            <li>例：トランプを切り混ぜて並べ替えるイメージ</li>
+            <li>実際の暗号では、決まった規則（一定の文字数ごとの順列、表への書き方と読み方など）で並べ替える</li>
           </ul>
           <div class="concept-hint" id="shuffle-help">
             💡 文字のブロックをドラッグして順序を変えてみてください。キーボードでは、ブロックを選んで Space で持ち上げ、←→ で動かし、Space で置きます（Esc で取り消し）。
@@ -85,199 +85,23 @@
         </article>
       </div>
       <div class="terminology-tip">
-        💡 <strong>用語のヒント：</strong>
-        「換字」「転置」の漢字がイメージしにくい・忘れやすい場合は、
-        <strong>「マッピング（Mapping）」と「シャッフル（Shuffle）」</strong>に脳内で置き換えることをおすすめします。<br>
-        この2つの概念で古典暗号のほとんどを理解できます。
+        <p>💡 <strong>用語のヒント：</strong>「換字」「転置」の漢字がイメージしにくいときは、「マッピング（Mapping）」と「シャッフル（Shuffle）」に置き換えて考えるとわかりやすくなります。古典暗号の多くは、この2つと、その組み合わせ（混合）で整理できます。</p>
+        <p>「置換」という語は、換字（文字の置き換え）にも、数学の置換（並べ替え＝順列）にも使われます。実は換字の対応表も、文字の種類を並べ替えた順列です。換字は「文字の種類」を、転置は「文字の位置」を並べ替えると考えると、2つの違いがはっきりします。</p>
       </div>
     </section>
 
     <!-- Examples -->
     <section class="tab-panel" id="tab-examples" role="tabpanel" aria-labelledby="btn-examples">
       <div class="tab-intro">
-        💡 外部の学習ツールへのリンク集です。各暗号の実際の動作を体験できます。
+        💡 生成AIで作るセキュリティツール100で作った学習ツールへのリンク集です。カードを押すと、それぞれの暗号を新しいタブで動かせます。
       </div>
-
-      <div class="cipher-category">
-        <h3 class="category-title">🔤 換字式暗号（Substitution）</h3>
-        <p class="category-desc">文字を別の文字・記号に<strong>対応づける（Mapping）</strong>方式</p>
-        <div class="cipher-grid">
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>シーザー暗号</h4>
-              <p>固定ずらしの基本的な換字方式</p>
-            </div>
-            <a href="https://ipusiron.github.io/caesar-cipher-wheel/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>日本語版シーザー暗号</h4>
-              <p>日本語のシフト暗号</p>
-            </div>
-            <a href="https://ipusiron.github.io/japanese-caesar-cipher/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ピッグペン暗号</h4>
-              <p>図形・記号による視覚的な換字</p>
-            </div>
-            <a href="https://ipusiron.github.io/pigpen-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>踊る人形暗号</h4>
-              <p>シャーロックホームズに登場</p>
-            </div>
-            <a href="https://ipusiron.github.io/dancingmen-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ポリュビオス暗号</h4>
-              <p>文字を数字ペアに変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/polybius-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>上杉暗号</h4>
-              <p>いろは文字を座標位置に変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/uesugi-cipher/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>忍びいろはの暗号</h4>
-              <p>いろは文字を漢字風に変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/shinobi_iroha_cipher/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>プレイフェア暗号</h4>
-              <p>2文字を別の文字に変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/playfair-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ポルタ暗号</h4>
-              <p>鍵依存の置換表を使用</p>
-            </div>
-            <a href="https://ipusiron.github.io/porta-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ベーコン暗号</h4>
-              <p>1文字を2進5文字列に対応</p>
-            </div>
-            <a href="https://ipusiron.github.io/bacon-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ストリップ暗号</h4>
-              <p>複数ストリップの多表式暗号</p>
-            </div>
-            <a href="https://github.com/ipusiron/strip-cipherlab" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ヴィジュネル暗号</h4>
-              <p>鍵で可変マッピング（多表式）</p>
-            </div>
-            <a href="https://ipusiron.github.io/vigenere-cipher-tool/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ビューフォート暗号</h4>
-              <p>多表式暗号の別バージョン</p>
-            </div>
-            <a href="https://ipusiron.github.io/beaufort-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>アフィン暗号</h4>
-              <p>一次関数で置き換え</p>
-            </div>
-            <a href="https://ipusiron.github.io/affine-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ヒル暗号</h4>
-              <p>行列演算でブロック変換</p>
-            </div>
-            <a href="https://ipusiron.github.io/hill-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="cipher-category">
-        <h3 class="category-title">🔀 転置式暗号（Transposition）</h3>
-        <p class="category-desc">文字の<strong>順序を入れ替える（Shuffle）</strong>方式</p>
-        <div class="cipher-grid">
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>スキュタレー暗号</h4>
-              <p>棒に巻きつけて読む暗号</p>
-            </div>
-            <a href="https://ipusiron.github.io/scytale-cipher-visualizer/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>転置式暗号</h4>
-              <p>並べ替え順序が鍵となる</p>
-            </div>
-            <a href="https://ipusiron.github.io/permutation-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>ジグザグ暗号</h4>
-              <p>波形に並べて順序を変える</p>
-            </div>
-            <a href="https://ipusiron.github.io/zigzag-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>レールフェンス暗号</h4>
-              <p>複数レールに書き込む</p>
-            </div>
-            <a href="https://ipusiron.github.io/railfence-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>縦列転置式暗号</h4>
-              <p>マトリクスで列順序を変える</p>
-            </div>
-            <a href="https://ipusiron.github.io/columnar-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>回転グリル暗号</h4>
-              <p>穴空き台紙を回転させる</p>
-            </div>
-            <a href="https://ipusiron.github.io/grille-cipherlab/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="cipher-category">
-        <h3 class="category-title">🔍 その他</h3>
-        <p class="category-desc">換字・転置以外の特殊な暗号方式</p>
-        <div class="cipher-grid">
-          <div class="cipher-card">
-            <div class="cipher-info">
-              <h4>分置式暗号</h4>
-              <p>ダミーメッセージ内に隠す</p>
-            </div>
-            <a href="https://ipusiron.github.io/hidden-message-challenge/" target="_blank" rel="noopener noreferrer" class="cipher-btn">→</a>
-          </div>
-        </div>
-      </div>
+      <div id="catalog" class="catalog"></div>
     </section>
 
     <!-- Quiz -->
     <section class="tab-panel" id="tab-quiz" role="tabpanel" aria-labelledby="btn-quiz">
       <div class="tab-intro">
-        📝 <strong>10問・一問一答形式</strong> ー 定義2問 / 基礎2問 / 分類4問 / 混合2問
+        📝 <strong>10問・一問一答形式</strong>（定義2問・基礎2問・分類4問・混合2問）。答えるたびに解説が出ます。
       </div>
 
       <div id="quiz-area" class="quiz-area">
@@ -303,6 +127,7 @@
   <script src="js/structure-core.js"></script>
   <script src="js/messages.js"></script>
   <script src="js/quiz-data.js"></script>
+  <script src="js/catalog.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

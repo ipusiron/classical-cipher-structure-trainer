@@ -373,11 +373,57 @@ function setupShuffleViz(){
   });
 }
 
+// ============================================================
+// 古典暗号の例（js/catalog.js の一覧からカードを描く）
+// ============================================================
+// カード全体を押せるように、見出しのリンクの ::after をカードに広げる（CSS）。
+// リンクの名前は暗号の名前だけにして、説明とツール名はカードの文として読む。
+
+function renderCatalog(){
+  const box = document.getElementById('catalog');
+  if(!box || !window.Catalog) return;
+  const { KINDS, tools, url } = window.Catalog;
+
+  const sections = KINDS.map(kind => {
+    const items = tools.filter(t => t.kind === kind);
+    const section = el('section', 'cipher-category');
+    const title = el('h3', 'category-title', T(`catalog.kind.${kind}`));
+    title.id = `catalog-${kind}`;
+    section.setAttribute('aria-labelledby', title.id);
+    section.appendChild(title);
+    section.appendChild(el('p', 'category-desc', T(`catalog.kind.${kind}.desc`, { count: items.length })));
+
+    const grid = el('ul', 'cipher-grid');
+    items.forEach(t => {
+      const card = el('li', 'cipher-card');
+      const head = el('h4', 'cipher-name');
+      const link = el('a', null, t.name);
+      link.href = url(t.slug);
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.appendChild(el('span', 'sr-only', T('catalog.newTab')));
+      head.appendChild(link);
+      card.appendChild(head);
+      card.appendChild(el('span', `cipher-tag tag-${t.sub}`, T(`catalog.sub.${t.sub}`)));
+      card.appendChild(el('p', 'cipher-desc', t.desc));
+      card.appendChild(el('p', 'cipher-tool', T('catalog.tool', { day: String(t.day).padStart(3, '0'), title: t.title })));
+      const arrow = el('span', 'cipher-arrow', '→');
+      arrow.setAttribute('aria-hidden', 'true');
+      card.appendChild(arrow);
+      grid.appendChild(card);
+    });
+    section.appendChild(grid);
+    return section;
+  });
+  box.replaceChildren(...sections);
+}
+
 // 初期化処理
 window.addEventListener('load', () => {
   renderThemeButton();
   renderMapping();
   setupShuffleViz();
+  renderCatalog();
   setupQuiz();
 });
 

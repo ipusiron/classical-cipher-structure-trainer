@@ -31,6 +31,21 @@
     // 配色
     'theme.label': 'ダーク表示',
 
+    // 古典暗号の例
+    'catalog.kind.substitution': '🔤 換字式暗号（Substitution）',
+    'catalog.kind.substitution.desc': '文字を別の文字・記号に対応づける（マッピング）方式。{count}件',
+    'catalog.kind.transposition': '🔀 転置式暗号（Transposition）',
+    'catalog.kind.transposition.desc': '文字はそのままで、位置を並べ替える（シャッフル）方式。{count}件',
+    'catalog.kind.other': '🔍 その他',
+    'catalog.kind.other.desc': '換字でも転置でもなく、文章の中に本文を隠す方式。{count}件',
+    'catalog.sub.mono': '単一換字',
+    'catalog.sub.poly': '多表式',
+    'catalog.sub.polygraphic': '多字換字',
+    'catalog.sub.transposition': '転置',
+    'catalog.sub.concealment': '分置式',
+    'catalog.tool': 'Day{day} {title}',
+    'catalog.newTab': '（新しいタブで開きます）',
+
     // クイズ
     'quiz.progress': '問題 {n} / {total}（正解 {score}）',
     'quiz.next': '次へ',

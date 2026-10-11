@@ -24,7 +24,7 @@ test('コードの最長行は160文字以下、index.html は250文字以下（
 });
 
 test('主要ファイルの行数の下限（圧縮していない）', () => {
-  const min = { 'script.js': 450, 'style.css': 600, 'index.html': 250, 'js/structure-core.js': 200 };
+  const min = { 'script.js': 450, 'style.css': 600, 'index.html': 120, 'js/structure-core.js': 200 };
   for (const [f, n] of Object.entries(min)) assert.ok(read(f).split('\n').length >= n, f);
 });
 

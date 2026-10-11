@@ -51,6 +51,7 @@ const UI = [
   ['focus', 'card', 'フォーカスの枠（カード）'],
   ['focus', 'surface', 'フォーカスの枠（面）'],
   ['border-strong', 'surface', 'ボタン・ブロックの枠'],
+  ['border-strong', 'bg', 'カードの枠（地の上）'],
   ['border-strong', 'surface-2', '並べ替えの枠の中のブロック'],
   ['brand-strong', 'surface', '対応図の線・選択中の枠'],
   ['ok-border', 'surface', '正解の枠'],

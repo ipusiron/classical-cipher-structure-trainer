@@ -43,7 +43,7 @@ test('インラインのスクリプト・イベント属性・style 属性が�
     assert.ok(!/type="module"/.test(attrs), 'file:// で動かすため module にしない');
   }
   assert.deepEqual(scripts.map(m => m[1].match(/src="([^"]+)"/)[1]),
-    ['js/theme.js', 'js/structure-core.js', 'js/messages.js', 'js/quiz-data.js', 'script.js']);
+    ['js/theme.js', 'js/structure-core.js', 'js/messages.js', 'js/quiz-data.js', 'js/catalog.js', 'script.js']);
   for (const src of scripts.map(m => m[1].match(/src="([^"]+)"/)[1])) assert.ok(fs.existsSync(path.join(root, src)), src);
 });
 
@@ -83,7 +83,7 @@ test('script.js が探す id が index.html にある', () => {
 
 test('ボタンは type="button"、動的な表示に aria-live', () => {
   const buttons = [...html.matchAll(/<button\s[^>]*>/g)].map(m => m[0]);
-  assert.ok(buttons.length >= 13);
+  assert.ok(buttons.length >= 12);
   for (const b of buttons) assert.match(b, /type="button"/, b);
   for (const id of ['shuffle-status', 'quiz-feedback', 'quiz-result', 'map-charset']) {
     assert.match(html, new RegExp(`id="${id}"[^>]*aria-live="polite"`), id);

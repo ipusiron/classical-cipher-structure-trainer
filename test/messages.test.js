@@ -12,6 +12,13 @@ const used = new Set([...script.matchAll(/\b(?:T|announceShuffle)\('([\w.]+)'/g)
 used.add('map.charset.letters');
 used.add('map.charset.numbers');
 for (const k of ['quiz.grade.low', 'quiz.grade.mid', 'quiz.grade.high', 'quiz.error.empty', 'quiz.error.field']) used.add(k);
+// カタログの見出しと分け方（`catalog.kind.${kind}` の形で組み立てる）
+const Cat = require('../js/catalog.js');
+for (const kind of Cat.KINDS) {
+  used.add(`catalog.kind.${kind}`);
+  used.add(`catalog.kind.${kind}.desc`);
+  for (const s of Cat.SUBS[kind]) used.add(`catalog.sub.${s}`);
+}
 
 test('script.js に日本語の文字列リテラルがない（文言は辞書から引く）', () => {
   // コメントを除いてから、引用符の中の日本語を探す
