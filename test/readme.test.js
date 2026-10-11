@@ -38,10 +38,12 @@ test('シリーズの定型（H1・Day 表記・プロジェクトのリンク�
 });
 
 test('古典暗号の例の表は js/catalog.js と同じ（件数・名前・分類・リンク先）', () => {
-  const rows = section(readme, '🧠 タブ構成').split('\n').filter(l => /^\| (換字|転置|混合|その他|解く|学ぶ)/.test(l));
-  assert.equal(rows.length, Cat.tools.length);
   const label = { mono: '換字（単一換字）', poly: '換字（多表式）', polygraphic: '換字（多字換字）', transposition: '転置',
     product: '混合', concealment: 'その他（分置式）', code: 'その他（コード）', analysis: '解く（解析・解読）', study: '学ぶ' };
+  const labels = new Set(Object.values(label));
+  const rows = section(readme, '🧠 タブ構成').split('\n')
+    .filter(l => l.startsWith('| ') && labels.has(l.slice(2).split(' | ')[0]) && l.split(' | ').length === 4);
+  assert.equal(rows.length, Cat.tools.length);
   Cat.tools.forEach((t, i) => {
     const cells = rows[i].split(' | ').map(c => c.replace(/^\| |\s\|$/g, ''));
     assert.equal(cells[0], label[t.sub], t.slug);
@@ -127,4 +129,73 @@ test('太字は H2 の節ごとに2つまで', () => {
     const n = (p.replace(/```[\s\S]*?```/g, '').match(/\*\*[^*\n]+\*\*/g) || []).length;
     assert.ok(n <= 2, `${p.split('\n')[0]}: ${n}`);
   }
+});
+
+const L = require('../js/lab-core.js');
+const EF = require('../js/english-freq.js');
+const ACC = require('../js/classify-accuracy.js');
+
+/** 表の行を「| a | b | … |」から配列に */
+const cells = line => line.replace(/^\|\s*|\s*\|$/g, '').split(' | ');
+
+test('実験室の表は計算部の値と同じ（例文に3つの暗号を掛けた結果）', () => {
+  const lab = L.letters(L.SAMPLES.LAB);
+  const part = section(readme, '🧠 タブ構成');
+  assert.ok(part.includes(`英字${lab.length}文字。平文のICは${L.ic(lab).toFixed(4)}`));
+  const ops = {
+    '単一換字（キーワードZEBRA）': { type: 'keyword', key: 'ZEBRA' },
+    '多表式（ヴィジュネルLEMON）': { type: 'vigenere', key: 'LEMON' },
+    '転置（縦列転置ZEBRAS）': { type: 'columnar', key: 'ZEBRAS' },
+  };
+  const rows = part.split('\n').filter(l => /^\| (単一換字|多表式|転置)（/.test(l) && cells(l).length === 5);
+  assert.equal(rows.length, 3);
+  const word = b => (b ? '保たれる' : '変わる');
+  for (const r of rows) {
+    const [name, counts, profile, pattern, ic] = cells(r);
+    const c = L.apply(lab, ops[name]);
+    const inv = L.invariants(lab, c);
+    assert.deepEqual([counts, profile, pattern, ic], [word(inv.counts), word(inv.profile), word(inv.pattern), L.ic(c).toFixed(4)], name);
+  }
+});
+
+test('見分けるの例と正答率の表は計算部・評価結果と同じ', () => {
+  const part = section(readme, '🧠 タブ構成');
+  const detect = L.letters(L.SAMPLES.DETECT);
+  assert.ok(part.includes(`英字${detect.length}文字`));
+  const th = L.THRESHOLDS;
+  assert.ok(part.includes(`カイ二乗が${th.chiMax}未満`) && part.includes(`一致指数（IC）が${th.icMin}以上`));
+  const ops = {
+    '転置（縦列転置ZEBRAS）': { type: 'columnar', key: 'ZEBRAS' },
+    '単一換字（キーワードZEBRA）': { type: 'keyword', key: 'ZEBRA' },
+    '多表式（ヴィジュネルLEMON）': { type: 'vigenere', key: 'LEMON' },
+  };
+  const kind = { transposition: '転置', mono: '単一換字', poly: '多表式など' };
+  const rows = part.split('\n').filter(l => /^\| (単一換字|多表式|転置)（/.test(l) && cells(l).length === 4);
+  assert.equal(rows.length, 3);
+  for (const r of rows) {
+    const [name, chi, ic, verdict] = cells(r);
+    const res = L.classify(L.apply(detect, ops[name]), EF.FREQ);
+    assert.deepEqual([chi, ic, verdict], [res.chi.toFixed(1), res.ic.toFixed(4), kind[res.kind]], name);
+  }
+  const acc = part.split('\n').filter(l => /^\| \d+文字 \|/.test(l));
+  assert.deepEqual(acc, Object.entries(ACC.evaluation).map(([n, v]) => `| ${n}文字 | ${v.transposition}% | ${v.mono}% | ${v.poly}% |`));
+  assert.ok(part.includes(`#${ACC.train.ebook}『${ACC.train.title}』`) && part.includes(`#${ACC.test.ebook}『${ACC.test.title}』`));
+  assert.ok(part.includes(`3種類×${ACC.perClass}件`));
+});
+
+test('ユースケースの数値（仮名化の例・順番の入れ替え）は計算部の値と同じ', () => {
+  const part = section(readme, '🎯 ユースケース');
+  assert.ok(part.includes(`HELLOをキーワードZEBRAで置き換えると${L.apply('HELLO', { type: 'keyword', key: 'ZEBRA' })}になり`));
+  const lab = L.letters(L.SAMPLES.LAB);
+  assert.equal(L.commute(lab, { type: 'keyword', key: 'ZEBRA' }, { type: 'columnar', key: 'KEY' }).same, true);
+  const mix = L.commute(lab, { type: 'vigenere', key: 'LEMON' }, { type: 'columnar', key: 'KEY' });
+  let i = 0;
+  while (mix.ab[i] === mix.ba[i]) i++;
+  assert.ok(part.includes(`実験室の例文では${i + 1}文字目から食い違う`));
+});
+
+test('クイズの節の数（20問・区分）', () => {
+  const part = section(readme, '🧠 タブ構成');
+  const Q = require('../js/quiz-data.js').ja;
+  assert.ok(part.includes(`問題数：${Q.length}問（定義3・基礎4・分類6・性質3・混合4）`));
 });
