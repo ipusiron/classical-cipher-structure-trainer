@@ -5,7 +5,7 @@ const Cat = require('../js/catalog.js');
 const { tools, KINDS, SUBS, url } = Cat;
 const find = slug => tools.find(t => t.slug === slug);
 
-test('一覧の形: Day 番号・リポジトリー名・title・分類', () => {
+test('一覧の形: Day 番号・リポジトリ名・title・分類', () => {
   assert.ok(tools.length >= 22);
   const slugs = new Set();
   const days = new Set();

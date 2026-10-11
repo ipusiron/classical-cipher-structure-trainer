@@ -35,7 +35,7 @@ test('script.js が使う文言のキーはすべて辞書にある', () => {
 
 test('置き場所を埋める', () => {
   assert.equal(M.t('map.pair', { from: 'A', to: 'F' }), 'A→F');
-  assert.equal(M.t('shuffle.moved', { ch: 'D', pos: 3 }), 'D: 3番目');
-  assert.equal(M.t('shuffle.moved', { ch: 'D' }), 'D: {pos}番目', '足りない置き場所は残す');
+  assert.equal(M.t('shuffle.moved', { ch: 'D', pos: 3 }), 'D：3番目');
+  assert.equal(M.t('shuffle.moved', { ch: 'D' }), 'D：{pos}番目', '足りない置き場所は残す');
   assert.equal(M.t('no.such.key'), 'no.such.key');
 });

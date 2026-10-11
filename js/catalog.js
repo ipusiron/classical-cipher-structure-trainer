@@ -4,7 +4,7 @@
  *
  * 「古典暗号の例」タブのカードは、この一覧だけから描く。
  *   day   : 生成AIで作るセキュリティツール100 の Day 番号
- *   slug  : リポジトリー名（公開先は https://ipusiron.github.io/<slug>/）
+ *   slug  : リポジトリ名（公開先は https://ipusiron.github.io/<slug>/）
  *   title : 各ツールの README の YAML の title（そのまま写す）
  *   kind  : substitution（換字式）｜transposition（転置式）｜other（その他）
  *   sub   : 換字式の中の分け方 mono（単一換字）｜poly（多表式）｜polygraphic（多字換字）、
@@ -30,7 +30,7 @@
     { day: 4, slug: 'japanese-caesar-cipher', title: 'Japanese Caesar Cipher', kind: 'substitution', sub: 'mono',
       name: '日本語版シーザー暗号', desc: 'ひらがなを、あいうえお順やいろは順で同じ量だけずらす' },
     { day: 49, slug: 'affine-cipherlab', title: 'Affine CipherLab', kind: 'substitution', sub: 'mono',
-      name: 'アフィン暗号', desc: '文字の番号を一次関数 ax + b で別の番号へ写す' },
+      name: 'アフィン暗号', desc: '文字の番号を一次関数ax + bで別の番号へ写す' },
     { day: 32, slug: 'pigpen-cipherlab', title: 'Pigpen CipherLab', kind: 'substitution', sub: 'mono',
       name: 'ピッグペン暗号', desc: '文字を、格子の枠と点でできた記号に置き換える' },
     { day: 22, slug: 'dancingmen-cipherlab', title: 'DancingMen CipherLab', kind: 'substitution', sub: 'mono',
@@ -42,9 +42,9 @@
     { day: 14, slug: 'shinobi_iroha_cipher', title: 'Shinobi Iroha Cipher', kind: 'substitution', sub: 'mono',
       name: '忍びいろは', desc: 'ひらがなを、漢字の偏と旁を組み合わせた字に置き換える' },
     { day: 55, slug: 'bacon-cipherlab', title: 'Bacon CipherLab', kind: 'substitution', sub: 'mono',
-      name: 'ベーコン暗号', desc: '1文字を a と b の5文字に置き換え、書体の違いとして文章に隠す' },
+      name: 'ベーコン暗号', desc: '1文字をaとbの5文字に置き換え、書体の違いとして文章に隠す' },
     { day: 72, slug: 'zigzag-cipherlab', title: 'Zigzag CipherLab', kind: 'substitution', sub: 'mono',
-      name: 'ジグザグ暗号', desc: '文字を鍵の列の位置に置き換え、折れ線で描く。英語の zigzag cipher（レールフェンス）とは別物' },
+      name: 'ジグザグ暗号', desc: '文字を鍵の列の位置に置き換え、折れ線で描く。英語のzigzag cipher（レールフェンス）とは別物' },
     // 換字式（多表式: 位置によって別の対応表を使う）
     { day: 17, slug: 'vigenere-cipher-tool', title: 'Vigenere Cipher Tool', kind: 'substitution', sub: 'poly',
       name: 'ヴィジュネル暗号', desc: '鍵の文字ごとに、別のずらし量の対応表を順に使う' },

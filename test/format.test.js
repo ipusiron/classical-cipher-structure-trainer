@@ -8,7 +8,8 @@ const read = rel => fs.readFileSync(path.join(root, rel), 'utf8');
 const list = dir => fs.readdirSync(path.join(root, dir)).filter(f => f.endsWith('.js')).map(f => `${dir}/${f}`);
 
 const codeFiles = ['script.js', 'style.css', ...list('js'), ...list('test')];
-const textFiles = [...codeFiles, 'index.html', 'package.json', '.github/workflows/test.yml', 'data/favicon.svg'];
+const textFiles = [...codeFiles, 'index.html', 'package.json', '.github/workflows/test.yml', 'data/favicon.svg',
+  'README.md', 'TECHNICAL.md', 'SECURITY.md', 'CLAUDE.md'];
 
 // 見えない文字（ゼロ幅・向きの制御・BOM など）。範囲は数で持つ
 const INVISIBLE = [[0x200b, 0x200f], [0x202a, 0x202e], [0x2060, 0x2069], [0xfeff, 0xfeff], [0x00ad, 0x00ad]];

@@ -13,20 +13,20 @@
     // 換字（マッピング）
     'map.kind.shift': 'シフト{offset}',
     'map.kind.random': 'ランダムな対応表',
-    'map.key': '対応表（{kind}）: {pairs}',
+    'map.key': '対応表（{kind}）：{pairs}',
     'map.pair': '{from}→{to}',
     'map.figure': '上段の平文の文字 A〜H と、下段の暗号文の文字をつなぐ線の図。{pairs}',
-    'map.charset.letters': '暗号文の文字: A〜H',
-    'map.charset.numbers': '暗号文の文字: 1〜8',
+    'map.charset.letters': '暗号文の文字：A〜H',
+    'map.charset.numbers': '暗号文の文字：1〜8',
 
     // 転置（シャッフル）
-    'shuffle.now': 'いまの並び: {word}',
+    'shuffle.now': 'いまの並び：{word}',
     'shuffle.block': '{ch}（元の{from}番目、いま{to}番目）',
-    'shuffle.grabbed': '{ch} を持ち上げました。いま{pos}番目です。←→で動かし、Space で置きます。Esc で取り消します。',
-    'shuffle.moved': '{ch}: {pos}番目',
-    'shuffle.dropped': '{ch} を{pos}番目に置きました。いまの並び: {word}',
-    'shuffle.cancelled': '取り消しました。いまの並び: {word}',
-    'shuffle.changed': '並べ替えました。いまの並び: {word}',
+    'shuffle.grabbed': '{ch}を持ち上げました。いま{pos}番目です。←→で動かし、Spaceで置きます。Escで取り消します。',
+    'shuffle.moved': '{ch}：{pos}番目',
+    'shuffle.dropped': '{ch}を{pos}番目に置きました。いまの並び：{word}',
+    'shuffle.cancelled': '取り消しました。いまの並び：{word}',
+    'shuffle.changed': '並べ替えました。いまの並び：{word}',
 
     // 配色
     'theme.label': 'ダーク表示',
@@ -55,7 +55,7 @@
     'quiz.answerIs': '正解は「{answer}」',
     'quiz.mark.correct': '（正解）',
     'quiz.mark.chosen': '（選んだ答え）',
-    'quiz.result': '最終結果: {total}問中{score}問正解（{percent}%）',
+    'quiz.result': '最終結果：{total}問中{score}問正解（{percent}%）',
     'quiz.retry': 'もう一度挑戦',
     'quiz.grade.low': 'もう一歩。「概念」タブの図に戻り、「線＝対応」「ブロック＝並べ替え」を確かめよう。',
     'quiz.grade.mid': '理解は順調。「古典暗号の例」タブのリンク先で、鍵の正体（対応表か並べ替えか）を体験しよう。',
