@@ -664,6 +664,265 @@ main{
 }
 
 /* ============================================================
+   実験室・見分ける（入力欄・表・棒グラフ）
+   ============================================================ */
+.tab-panel > .card + .card{
+  margin-top: 16px;
+}
+.card h4{
+  margin: 18px 0 8px;
+  font-size: 15px;
+}
+.card-lead{
+  margin: 0 0 12px;
+  line-height: 1.7;
+}
+.field-label{
+  display:block;
+  margin: 0 0 4px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.text-input, .select-input{
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: 16px; /* iOS で入力のたびに拡大されないように */
+}
+textarea.text-input{
+  resize: vertical;
+  line-height: 1.5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.text-input.short{
+  max-width: 14em;
+}
+.text-input:focus-visible, .select-input:focus-visible{
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+.field-note{
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.field-error{
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--ng-fg);
+}
+.field-error:empty{
+  display: none;
+}
+.lab-controls{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+.lab-controls .field{
+  flex: 1 1 14em;
+  min-width: 0;
+}
+.lab-texts{
+  display:grid;
+  gap: 4px 16px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 720px){
+  .lab-texts{ grid-template-columns: 1fr 1fr; }
+}
+.mono-text{
+  margin: 0;
+  padding: 8px 10px;
+  min-height: 2.6em;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.lab-explain{
+  margin: 10px 0 0;
+  line-height: 1.7;
+}
+.lab-actions{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* 表（狭い画面では折り返して収める） */
+.table-wrap{
+  max-width: 100%;
+  overflow-x: auto;
+}
+.data-table{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--surface);
+}
+.data-table th, .data-table td{
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.data-table thead th{
+  background: var(--card);
+}
+.mono-cell{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.kept{
+  font-weight: 700;
+  white-space: nowrap;
+}
+.kept.yes{
+  color: var(--ok-fg);
+  background: var(--ok-bg);
+}
+.kept.no{
+  color: var(--ng-fg);
+  background: var(--ng-bg);
+}
+.count-table{
+  max-width: 22em;
+}
+.count-details{
+  margin-top: 10px;
+}
+.count-details summary{
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.count-details summary:focus-visible{
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* 棒グラフ（26列。高さは script.js が CSSOM で指定する） */
+.bars-title{
+  margin: 10px 0 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.bars{
+  display:grid;
+  grid-template-columns: repeat(26, minmax(0, 1fr));
+  gap: 2px;
+  padding: 6px 4px 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.bar-col{
+  display:flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+}
+.bar-track{
+  height: 90px;
+  display:flex;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border-strong);
+}
+.bar{
+  width: 100%;
+  background: var(--brand-strong);
+  border-radius: 3px 3px 0 0;
+}
+.bar.zero{
+  height: 0;
+}
+.bar-label{
+  margin-top: 2px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* 重ねる */
+.mix-result{
+  margin: 12px 0 0;
+}
+.mix-result dt{
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.mix-result dd{
+  margin: 4px 0 0;
+}
+.verdict{
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.verdict.yes{
+  background: var(--ok-bg);
+  color: var(--ok-fg);
+  border: 2px solid var(--ok-border);
+}
+.verdict.no{
+  background: var(--ng-bg);
+  color: var(--ng-fg);
+  border: 2px solid var(--ng-border);
+}
+
+/* 見分ける */
+.detect-result{
+  margin-top: 12px;
+}
+.detect-result .verdict{
+  background: var(--hint-bg);
+  color: var(--hint-fg);
+  border-left: 4px solid var(--brand-strong);
+}
+.detect-steps{
+  margin: 10px 0 0;
+  padding-left: 1.5em;
+  line-height: 1.7;
+}
+.link-list{
+  margin: 0;
+  padding-left: 1.2em;
+  line-height: 1.8;
+}
+.link-list li{
+  overflow-wrap: anywhere;
+}
+.link-list a{
+  display: inline-block;
+  min-height: 32px;
+  padding: 4px 0;
+}
+.link-note{
+  margin-left: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ============================================================
    暗号カード（古典暗号の例タブ）
    ============================================================ */
 .cipher-category{

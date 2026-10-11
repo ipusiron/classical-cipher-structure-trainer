@@ -1,6 +1,7 @@
 /* =========================================================
    Classical Cipher Structure Trainer
-   - Tabs: 3タブ構成（概念、古典暗号の例、クイズ）
+   - Tabs: 5タブ構成（概念、実験室、見分ける、古典暗号の例、クイズ）
+   - Lab: 英文に換字・転置・多表式を掛け、保たれるもの・順番の入れ替え・暗号文からの見分けを数える
    - Mapping: 対応表を SVG で描く（配置は計算部 figureLayout が決め、画面の寸法を測らない）
    - Shuffle: Pointer Events（マウス・タッチ・ペン共通）とキーボードで並べ替え
    - Quiz: js/quiz-data.js の10問（一問一答形式、解説つき）
@@ -418,11 +419,360 @@ function renderCatalog(){
   box.replaceChildren(...sections);
 }
 
+// ============================================================
+// 実験室（英文に換字・転置・多表式を掛けて、保たれるものを比べる）
+// ============================================================
+// 計算は js/lab-core.js（LabCore）。英語の頻度は js/english-freq.js。
+// 入力欄の値と各欄の設定だけから画面を描く（前の結果を持ち越さない）。
+
+const Lab = window.LabCore;
+const FREQ = window.EnglishFreq.FREQ;
+const SHOW_MAX = 600; // 画面に出す英字の上限（それより後ろは数だけ示す）
+
+const labState = {
+  randomMap: null, // 「ランダムな換字表」の表（作り直すまで同じ）
+  cipher: '',      // いまの暗号文（「見分ける」へ送る）
+};
+
+/** 5文字ごとに区切って表示用にする。長い文は SHOW_MAX 文字で切る */
+function displayLetters(text){
+  const head = text.slice(0, SHOW_MAX).replace(/(.{5})/g, '$1 ').trim();
+  return text.length > SHOW_MAX ? `${head} ${T('lab.more', { n: text.length - SHOW_MAX })}` : head;
+}
+
+/** 欄の値から操作を作る。誤りは { error } */
+function labOperation(){
+  const method = document.getElementById('lab-method').value;
+  const num = id => Number(document.getElementById(id).value);
+  const key = (id, min) => Lab.parseKeyword(document.getElementById(id).value, { min });
+  if(method === 'shift'){
+    const v = num('lab-shift');
+    return Number.isInteger(v) && v >= 1 && v <= 25 ? { op: { type: 'shift', shift: v } } : { error: { key: 'lab.error.shift', params: {} } };
+  }
+  if(method === 'keyword'){
+    const k = key('lab-subkey', 1);
+    return k.error ? k : { op: { type: 'keyword', key: k.value } };
+  }
+  if(method === 'random'){
+    if(!labState.randomMap) labState.randomMap = Lab.randomKey(fillRandom);
+    return { op: { type: 'map', map: labState.randomMap } };
+  }
+  if(method === 'vigenere'){
+    const k = key('lab-vigkey', 1);
+    return k.error ? k : { op: { type: 'vigenere', key: k.value } };
+  }
+  if(method === 'railfence'){
+    const v = num('lab-rails');
+    return Number.isInteger(v) && v >= 2 && v <= Lab.MAX_RAILS ? { op: { type: 'railfence', rails: v } } : { error: { key: 'lab.error.rails', params: {} } };
+  }
+  if(method === 'columnar'){
+    const k = key('lab-colkey', 2);
+    return k.error ? k : { op: { type: 'columnar', key: k.value } };
+  }
+  return { op: { type: 'reverse' } };
+}
+
+/** 鍵の中身を文で示す */
+function labKeyInfo(op, plain){
+  if(op.type === 'shift' || op.type === 'keyword' || op.type === 'map'){
+    const map = op.type === 'shift' ? Lab.shiftKey(op.shift) : op.type === 'keyword' ? Lab.keywordKey(op.key) : op.map;
+    return T('lab.key.sub', { plain: Lab.ALPHABET.join(''), cipher: Lab.cipherAlphabet(map) });
+  }
+  if(op.type === 'vigenere') return T('lab.key.vig', { key: op.key });
+  const order = op.type === 'reverse' ? Lab.reverseOrder(plain.length)
+    : op.type === 'railfence' ? Lab.railFenceOrder(plain.length, op.rails) : Lab.columnarOrder(plain.length, op.key);
+  const shown = order.slice(0, 20).map(i => i + 1).join(' ');
+  return T('lab.key.trans', { order: order.length > 20 ? `${shown} …` : shown });
+}
+
+/** 多い文字を「E 37・T 30・A 24」の形に */
+function topText(text){
+  return Lab.topLetters(text, 3).map(e => `${e.ch} ${e.c}`).join('・');
+}
+
+/** 文字ごとの出現回数の棒グラフ（平文と暗号文で縦の目盛りをそろえる） */
+function renderBars(box, counts, max, label){
+  const cols = counts.map((c, i) => {
+    const col = el('div', 'bar-col');
+    col.setAttribute('title', T('lab.bars.tip', { ch: Lab.ALPHABET[i], c }));
+    const bar = el('div', c > 0 ? 'bar' : 'bar zero');
+    bar.style.height = `${max > 0 ? Math.max(c / max * 100, c > 0 ? 3 : 0) : 0}%`; // CSSOM（style 属性ではない）
+    const track = el('div', 'bar-track');
+    track.appendChild(bar);
+    col.appendChild(track);
+    col.appendChild(el('span', 'bar-label', Lab.ALPHABET[i]));
+    return col;
+  });
+  box.replaceChildren(...cols);
+  const top = counts.map((c, i) => ({ ch: Lab.ALPHABET[i], c })).filter(e => e.c > 0)
+    .sort((a, b) => b.c - a.c).slice(0, 3).map(e => `${e.ch} ${e.c}`).join('、');
+  box.setAttribute('aria-label', T('lab.bars.aria', { label, top: top || T('lab.none') }));
+}
+
+function renderCountTable(table, plainCounts, cipherCounts){
+  const head = el('thead');
+  const hr = el('tr');
+  for(const k of ['lab.count.letter', 'lab.count.plain', 'lab.count.cipher']){
+    const th = el('th', null, T(k));
+    th.scope = 'col';
+    hr.appendChild(th);
+  }
+  head.appendChild(hr);
+  const body = el('tbody');
+  Lab.ALPHABET.forEach((ch, i) => {
+    const tr = el('tr');
+    const th = el('th', null, ch);
+    th.scope = 'row';
+    tr.appendChild(th);
+    tr.appendChild(el('td', null, String(plainCounts[i])));
+    tr.appendChild(el('td', null, String(cipherCounts[i])));
+    body.appendChild(tr);
+  });
+  table.replaceChildren(head, body);
+}
+
+function renderLab(){
+  const input = document.getElementById('lab-input');
+  if(!input) return;
+  const method = document.getElementById('lab-method').value;
+  document.querySelectorAll('#tab-lab .param').forEach(p => { p.hidden = p.dataset.param !== method; });
+
+  const plain = Lab.letters(input.value);
+  document.getElementById('lab-count').textContent = T('lab.count', { letters: plain.length, chars: [...input.value].length, max: Lab.MAX_INPUT });
+  const errorEl = document.getElementById('lab-error');
+  const outputs = ['lab-plain', 'lab-cipher', 'lab-keyinfo', 'lab-explain'].map(id => document.getElementById(id));
+  const tbody = document.getElementById('lab-tbody');
+  const toDetect = document.getElementById('btn-lab-to-detect');
+
+  const { op, error } = labOperation();
+  errorEl.textContent = error ? T(error.key, error.params) : '';
+  if(error || plain.length === 0){
+    outputs.forEach(o => { o.textContent = ''; });
+    if(!error) outputs[3].textContent = T('lab.empty');
+    tbody.replaceChildren();
+    ['lab-bars-plain', 'lab-bars-cipher', 'lab-count-table'].forEach(id => document.getElementById(id).replaceChildren());
+    labState.cipher = '';
+    toDetect.disabled = true;
+    renderMix();
+    return;
+  }
+
+  const cipher = Lab.apply(plain, op);
+  labState.cipher = cipher;
+  toDetect.disabled = false;
+  outputs[0].textContent = displayLetters(plain);
+  outputs[1].textContent = displayLetters(cipher);
+  outputs[2].textContent = labKeyInfo(op, plain);
+
+  // 保たれたもの
+  const inv = Lab.invariants(plain, cipher);
+  const icP = Lab.ic(plain);
+  const icC = Lab.ic(cipher);
+  const chiP = Lab.chiSquare(plain, FREQ);
+  const chiC = Lab.chiSquare(cipher, FREQ);
+  const short = s => (s.length > 12 ? `${s.slice(0, 12)}…` : s);
+  const rows = [
+    ['lab.row.counts', topText(plain), topText(cipher), inv.counts],
+    ['lab.row.profile', Lab.profile(plain).slice(0, 5).join(', '), Lab.profile(cipher).slice(0, 5).join(', '), inv.profile],
+    ['lab.row.pattern', short(plain), short(cipher), inv.pattern],
+    ['lab.row.ic', icP.toFixed(4), icC.toFixed(4), Math.abs(icP - icC) < 1e-12],
+    ['lab.row.chi', chiP.toFixed(1), chiC.toFixed(1), Math.abs(chiP - chiC) < 1e-9],
+  ];
+  tbody.replaceChildren(...rows.map(([key, a, b, kept]) => {
+    const tr = el('tr');
+    const th = el('th', null, T(key));
+    th.scope = 'row';
+    tr.appendChild(th);
+    tr.appendChild(el('td', 'mono-cell', a));
+    tr.appendChild(el('td', 'mono-cell', b));
+    tr.appendChild(el('td', kept ? 'kept yes' : 'kept no', T(kept ? 'lab.kept.yes' : 'lab.kept.no')));
+    return tr;
+  }));
+  outputs[3].textContent = T(`lab.explain.${Lab.family(op)}`);
+
+  // 棒グラフと表（縦の目盛りは2つの大きいほうにそろえる）
+  const pc = Lab.counts(plain);
+  const cc = Lab.counts(cipher);
+  const max = Math.max(...pc, ...cc);
+  renderBars(document.getElementById('lab-bars-plain'), pc, max, T('lab.bars.plain'));
+  renderBars(document.getElementById('lab-bars-cipher'), cc, max, T('lab.bars.cipher'));
+  renderCountTable(document.getElementById('lab-count-table'), pc, cc);
+  renderMix();
+}
+
+// ------------------------------------------------------------
+// 重ねる（換字と転置の順番を入れ替える）
+// ------------------------------------------------------------
+const MIX_SUB = { keyword: { type: 'keyword', key: 'ZEBRA' }, shift: { type: 'shift', shift: 3 }, vigenere: { type: 'vigenere', key: 'LEMON' } };
+const MIX_TRANS = { columnar: { type: 'columnar', key: 'KEY' }, railfence: { type: 'railfence', rails: 3 }, reverse: { type: 'reverse' } };
+
+function renderMix(){
+  const ab = document.getElementById('mix-ab');
+  if(!ab) return;
+  const ba = document.getElementById('mix-ba');
+  const verdict = document.getElementById('mix-verdict');
+  const note = document.getElementById('mix-note');
+  const plain = Lab.letters(document.getElementById('lab-input').value);
+  if(plain.length === 0){
+    [ab, ba, note].forEach(o => { o.textContent = ''; });
+    verdict.textContent = T('lab.empty');
+    verdict.className = 'verdict';
+    return;
+  }
+  const sub = MIX_SUB[document.getElementById('mix-sub').value];
+  const trans = MIX_TRANS[document.getElementById('mix-trans').value];
+  const c = Lab.commute(plain, sub, trans);
+  ab.textContent = displayLetters(c.ab);
+  ba.textContent = displayLetters(c.ba);
+  if(c.same){
+    verdict.textContent = T('mix.same');
+  }else{
+    let i = 0;
+    while(c.ab[i] === c.ba[i]) i++;
+    verdict.textContent = T('mix.diff', { pos: i + 1 });
+  }
+  verdict.className = c.same ? 'verdict yes' : 'verdict no';
+  note.textContent = T(Lab.invariants(plain, c.ab).profile ? 'mix.note.profileKept' : 'mix.note.profileBroken');
+}
+
+// ------------------------------------------------------------
+// 見分ける（暗号文だけから）
+// ------------------------------------------------------------
+
+function renderDetect(){
+  const input = document.getElementById('detect-input');
+  if(!input) return;
+  const text = Lab.letters(input.value);
+  document.getElementById('detect-count').textContent = T('detect.count', { letters: text.length, min: Lab.MIN_LETTERS });
+  const box = document.getElementById('detect-result');
+  const links = document.getElementById('detect-links');
+
+  let kind = null;
+  if(text.length === 0){
+    box.replaceChildren(el('p', 'field-note', T('detect.empty')));
+  }else{
+    const r = Lab.classify(text, FREQ);
+    kind = r.kind;
+    const th = Lab.THRESHOLDS;
+    const head = el('p', `verdict kind-${r.kind}`, T(`detect.kind.${r.kind}`));
+    const steps = el('ol', 'detect-steps');
+    steps.appendChild(el('li', null, T('detect.step.n', { n: r.n, min: Lab.MIN_LETTERS })));
+    if(r.kind !== 'short'){
+      const low = r.chi < th.chiMax;
+      steps.appendChild(el('li', null, T(low ? 'detect.step.chiLow' : 'detect.step.chiHigh', { chi: r.chi.toFixed(1), max: th.chiMax })));
+      if(!low){
+        const high = r.ic >= th.icMin;
+        steps.appendChild(el('li', null, T(high ? 'detect.step.icHigh' : 'detect.step.icLow', { ic: r.ic.toFixed(4), min: th.icMin })));
+      }
+    }
+    const top = el('p', 'field-note', T('detect.top', { letters: Lab.topLetters(text, 6).map(e => `${e.ch} ${e.c}`).join('・') }));
+    const caution = el('p', 'field-note', T('detect.caution'));
+    box.replaceChildren(head, steps, top, caution);
+  }
+
+  // 案内するツール（見分けた結果ごと。暗号文を渡せるものは #text= で渡す）
+  const groups = kind && kind !== 'short' ? [...Lab.HANDOFF[kind], ...Lab.HANDOFF.any] : Lab.HANDOFF.any;
+  links.replaceChildren(...groups.map(entry => {
+    const { url, withText } = Lab.handoffUrl(entry, text);
+    const li = el('li');
+    const a = el('a', null, T('detect.link.name', { title: entry.title, day: String(entry.day).padStart(3, '0') }));
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.appendChild(el('span', 'sr-only', T('catalog.newTab')));
+    li.appendChild(a);
+    li.appendChild(el('span', 'link-note', T(withText ? 'detect.link.withText' : 'detect.link.page')));
+    return li;
+  }));
+}
+
+function renderAccuracy(){
+  const table = document.getElementById('detect-accuracy');
+  const acc = window.ClassifyAccuracy;
+  if(!table || !acc) return;
+  document.getElementById('detect-method').textContent = T('detect.method', {
+    train: T('detect.book', acc.train), test: T('detect.book', acc.test), per: acc.perClass,
+    chi: acc.thresholds.chiMax, ic: acc.thresholds.icMin,
+  });
+  const head = el('thead');
+  const hr = el('tr');
+  for(const k of ['detect.acc.length', 'detect.acc.transposition', 'detect.acc.mono', 'detect.acc.poly']){
+    const th = el('th', null, T(k));
+    th.scope = 'col';
+    hr.appendChild(th);
+  }
+  head.appendChild(hr);
+  const body = el('tbody');
+  for(const [len, v] of Object.entries(acc.evaluation)){
+    const tr = el('tr');
+    const th = el('th', null, T('detect.acc.letters', { n: len }));
+    th.scope = 'row';
+    tr.appendChild(th);
+    for(const k of ['transposition', 'mono', 'poly']) tr.appendChild(el('td', null, `${v[k]}%`));
+    body.appendChild(tr);
+  }
+  table.replaceChildren(head, body);
+  document.getElementById('detect-limits').textContent = T('detect.limits');
+}
+
+/** 例を入れる（『二都物語』の冒頭に、それぞれの暗号を掛けた文） */
+function detectExample(op){
+  const input = document.getElementById('detect-input');
+  input.value = Lab.apply(Lab.letters(Lab.SAMPLES.DETECT), op);
+  renderDetect();
+}
+
+function setupLab(){
+  const input = document.getElementById('lab-input');
+  if(!input) return;
+  input.value = Lab.SAMPLES.LAB;
+  let pending = 0;
+  const schedule = () => {
+    if(pending) return;
+    pending = requestAnimationFrame(() => { pending = 0; renderLab(); });
+  };
+  for(const id of ['lab-input', 'lab-shift', 'lab-subkey', 'lab-vigkey', 'lab-rails', 'lab-colkey']){
+    document.getElementById(id).addEventListener('input', schedule);
+  }
+  for(const id of ['lab-method', 'mix-sub', 'mix-trans']){
+    document.getElementById(id).addEventListener('change', renderLab);
+  }
+  document.getElementById('btn-lab-random').addEventListener('click', () => {
+    labState.randomMap = Lab.randomKey(fillRandom);
+    renderLab();
+  });
+  document.getElementById('btn-lab-to-detect').addEventListener('click', () => {
+    if(!labState.cipher) return;
+    document.getElementById('detect-input').value = labState.cipher;
+    renderDetect();
+    selectTab(document.getElementById('btn-detect'), true);
+  });
+  renderLab();
+
+  const detect = document.getElementById('detect-input');
+  let pendingDetect = 0;
+  detect.addEventListener('input', () => {
+    if(pendingDetect) return;
+    pendingDetect = requestAnimationFrame(() => { pendingDetect = 0; renderDetect(); });
+  });
+  document.getElementById('btn-detect-ex-trans').addEventListener('click', () => detectExample({ type: 'columnar', key: 'ZEBRAS' }));
+  document.getElementById('btn-detect-ex-mono').addEventListener('click', () => detectExample({ type: 'keyword', key: 'ZEBRA' }));
+  document.getElementById('btn-detect-ex-poly').addEventListener('click', () => detectExample({ type: 'vigenere', key: 'LEMON' }));
+  document.getElementById('btn-detect-clear').addEventListener('click', () => {
+    detect.value = '';
+    renderDetect();
+    detect.focus();
+  });
+  renderDetect();
+  renderAccuracy();
+}
+
 // 初期化処理
 window.addEventListener('load', () => {
   renderThemeButton();
   renderMapping();
   setupShuffleViz();
+  setupLab();
   renderCatalog();
   setupQuiz();
 });

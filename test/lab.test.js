@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const L = require('../js/lab-core.js');
 const EF = require('../js/english-freq.js');
-const result = require('../tools/eval-classify-result.json');
+const result = require('../js/classify-accuracy.js');
 
 const fill = buf => crypto.getRandomValues(buf);
 const P = 'WEAREDISCOVEREDFLEEATONCE';
@@ -117,7 +117,7 @@ test('見分け: しきい値は評価結果と同じ、短い文は判定しな
 
 test('評価結果の形（3種類×300件、学習と評価は別の本）', () => {
   assert.equal(result.perClass, 300);
-  assert.notEqual(result.train.file, result.test.file);
+  assert.deepEqual([result.train.ebook, result.test.ebook], [1342, 98]);
   assert.equal(result.train.letters, EF.TOTAL);
   assert.deepEqual(Object.keys(result.evaluation), ['50', '100', '200', '400']);
   for (const v of Object.values(result.evaluation)) {

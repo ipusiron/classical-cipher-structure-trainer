@@ -14,6 +14,10 @@ used.add('map.charset.numbers');
 for (const k of ['quiz.grade.low', 'quiz.grade.mid', 'quiz.grade.high', 'quiz.error.empty', 'quiz.error.field']) used.add(k);
 // カタログの見出しと分け方（`catalog.kind.${kind}` の形で組み立てる）
 const Cat = require('../js/catalog.js');
+// 実験室・見分けるで組み立てるキー
+for (const f of ['substitution', 'transposition', 'polyalphabetic']) used.add(`lab.explain.${f}`);
+for (const k of ['short', 'transposition', 'mono', 'poly']) used.add(`detect.kind.${k}`);
+for (const k of ['keyEmpty', 'keyChars', 'keyShort', 'keyLong']) used.add(`lab.error.${k}`);
 for (const kind of Cat.KINDS) {
   used.add(`catalog.kind.${kind}`);
   used.add(`catalog.kind.${kind}.desc`);

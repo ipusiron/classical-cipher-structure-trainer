@@ -26,6 +26,8 @@
 
   <nav class="tabs" role="tablist" aria-label="表示する内容">
     <button type="button" class="tab active" role="tab" aria-selected="true" aria-controls="tab-intro" id="btn-intro">概念</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-lab" id="btn-lab" tabindex="-1">実験室</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-detect" id="btn-detect" tabindex="-1">見分ける</button>
     <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-examples" id="btn-examples" tabindex="-1">古典暗号の例</button>
     <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-quiz" id="btn-quiz" tabindex="-1">クイズ</button>
   </nav>
@@ -90,6 +92,164 @@
       </div>
     </section>
 
+    <!-- Lab -->
+    <section class="tab-panel" id="tab-lab" role="tabpanel" aria-labelledby="btn-lab">
+      <div class="tab-intro">
+        🧪 英文に換字・転置・多表式を掛けて、何が保たれ、何が崩れるかを数えます。使うのは英字（A〜Z）だけで、ほかの文字は除きます。
+      </div>
+
+      <article class="card">
+        <h3>暗号を掛けて比べる</h3>
+        <label class="field-label" for="lab-input">平文（英文）</label>
+        <textarea id="lab-input" class="text-input" rows="4" maxlength="5000" spellcheck="false" aria-describedby="lab-count"></textarea>
+        <p class="field-note" id="lab-count"></p>
+        <div class="lab-controls">
+          <div class="field">
+            <label class="field-label" for="lab-method">掛ける暗号</label>
+            <select id="lab-method" class="select-input">
+              <optgroup label="換字（単一換字）">
+                <option value="shift">シフト（シーザー暗号）</option>
+                <option value="keyword" selected>キーワード換字表</option>
+                <option value="random">ランダムな換字表</option>
+              </optgroup>
+              <optgroup label="多表式">
+                <option value="vigenere">ヴィジュネル暗号</option>
+              </optgroup>
+              <optgroup label="転置">
+                <option value="reverse">逆順</option>
+                <option value="railfence">レールフェンス</option>
+                <option value="columnar">縦列転置</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="field param" data-param="shift">
+            <label class="field-label" for="lab-shift">ずらす量（1〜25）</label>
+            <input id="lab-shift" class="text-input short" type="number" min="1" max="25" value="3" inputmode="numeric" />
+          </div>
+          <div class="field param" data-param="keyword">
+            <label class="field-label" for="lab-subkey">キーワード（英字）</label>
+            <input id="lab-subkey" class="text-input short" type="text" value="ZEBRA" maxlength="20" spellcheck="false" autocomplete="off" />
+          </div>
+          <div class="field param" data-param="random">
+            <button type="button" class="btn" id="btn-lab-random">換字表を作り直す</button>
+          </div>
+          <div class="field param" data-param="vigenere">
+            <label class="field-label" for="lab-vigkey">鍵（英字）</label>
+            <input id="lab-vigkey" class="text-input short" type="text" value="LEMON" maxlength="20" spellcheck="false" autocomplete="off" />
+          </div>
+          <div class="field param" data-param="railfence">
+            <label class="field-label" for="lab-rails">レールの数（2〜10）</label>
+            <input id="lab-rails" class="text-input short" type="number" min="2" max="10" value="3" inputmode="numeric" />
+          </div>
+          <div class="field param" data-param="columnar">
+            <label class="field-label" for="lab-colkey">キーワード（英字2文字以上）</label>
+            <input id="lab-colkey" class="text-input short" type="text" value="ZEBRAS" maxlength="20" spellcheck="false" autocomplete="off" />
+          </div>
+        </div>
+        <p class="field-error" id="lab-error" role="alert"></p>
+        <div class="lab-texts">
+          <div>
+            <h4>平文（英字だけ）</h4>
+            <p class="mono-text" id="lab-plain"></p>
+          </div>
+          <div>
+            <h4>暗号文</h4>
+            <p class="mono-text" id="lab-cipher"></p>
+          </div>
+        </div>
+        <p class="field-note" id="lab-keyinfo"></p>
+
+        <h4>保たれたもの</h4>
+        <div class="table-wrap">
+          <table class="data-table" id="lab-table">
+            <thead>
+              <tr><th scope="col">比べるもの</th><th scope="col">平文</th><th scope="col">暗号文</th><th scope="col">結果</th></tr>
+            </thead>
+            <tbody id="lab-tbody"></tbody>
+          </table>
+        </div>
+        <p class="lab-explain" id="lab-explain" aria-live="polite"></p>
+
+        <h4>文字ごとの出現回数</h4>
+        <p class="bars-title">平文</p>
+        <div class="bars" id="lab-bars-plain" role="img"></div>
+        <p class="bars-title">暗号文</p>
+        <div class="bars" id="lab-bars-cipher" role="img"></div>
+        <details class="count-details">
+          <summary>回数を表で見る</summary>
+          <div class="table-wrap">
+            <table class="data-table count-table" id="lab-count-table"></table>
+          </div>
+        </details>
+        <div class="lab-actions">
+          <button type="button" class="btn" id="btn-lab-to-detect">この暗号文を「見分ける」で調べる</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>重ねる（混合）と順番</h3>
+        <p class="card-lead">換字と転置を続けて掛けると、混合（積）の暗号になります。2つを掛ける順番を入れ替えて、結果が同じになるかを確かめます。平文は上の欄の英文です。</p>
+        <div class="lab-controls">
+          <div class="field">
+            <label class="field-label" for="mix-sub">換字の側</label>
+            <select id="mix-sub" class="select-input">
+              <option value="keyword">単一換字（キーワードZEBRA）</option>
+              <option value="shift">単一換字（シフト3）</option>
+              <option value="vigenere">多表式（ヴィジュネルLEMON）</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="mix-trans">転置の側</label>
+            <select id="mix-trans" class="select-input">
+              <option value="columnar">縦列転置（キーワードKEY）</option>
+              <option value="railfence">レールフェンス（3段）</option>
+              <option value="reverse">逆順</option>
+            </select>
+          </div>
+        </div>
+        <dl class="mix-result">
+          <dt>換字 → 転置</dt>
+          <dd class="mono-text" id="mix-ab"></dd>
+          <dt>転置 → 換字</dt>
+          <dd class="mono-text" id="mix-ba"></dd>
+        </dl>
+        <p class="verdict" id="mix-verdict" aria-live="polite"></p>
+        <p class="field-note" id="mix-note"></p>
+      </article>
+    </section>
+
+    <!-- Detect -->
+    <section class="tab-panel" id="tab-detect" role="tabpanel" aria-labelledby="btn-detect">
+      <div class="tab-intro">
+        🔍 英文の暗号文だけから、転置・単一換字・多表式のどれに近いかを、文字の頻度と一致指数（IC）で見分けます。
+      </div>
+
+      <article class="card">
+        <h3>暗号文を調べる</h3>
+        <label class="field-label" for="detect-input">暗号文（英字だけを使います。30字以上）</label>
+        <textarea id="detect-input" class="text-input" rows="4" maxlength="5000" spellcheck="false" aria-describedby="detect-count"></textarea>
+        <p class="field-note" id="detect-count"></p>
+        <div class="lab-actions">
+          <button type="button" class="btn" id="btn-detect-ex-trans">例：転置</button>
+          <button type="button" class="btn" id="btn-detect-ex-mono">例：単一換字</button>
+          <button type="button" class="btn" id="btn-detect-ex-poly">例：多表式</button>
+          <button type="button" class="btn secondary" id="btn-detect-clear">消す</button>
+        </div>
+        <div class="detect-result" id="detect-result" aria-live="polite"></div>
+        <h4>次に試すツール</h4>
+        <ul class="link-list" id="detect-links"></ul>
+      </article>
+
+      <article class="card">
+        <h3>この見分け方の当たり具合</h3>
+        <p class="card-lead" id="detect-method"></p>
+        <div class="table-wrap">
+          <table class="data-table" id="detect-accuracy"></table>
+        </div>
+        <p class="field-note" id="detect-limits"></p>
+      </article>
+    </section>
+
     <!-- Examples -->
     <section class="tab-panel" id="tab-examples" role="tabpanel" aria-labelledby="btn-examples">
       <div class="tab-intro">
@@ -128,6 +288,9 @@
   <script src="js/messages.js"></script>
   <script src="js/quiz-data.js"></script>
   <script src="js/catalog.js"></script>
+  <script src="js/english-freq.js"></script>
+  <script src="js/lab-core.js"></script>
+  <script src="js/classify-accuracy.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

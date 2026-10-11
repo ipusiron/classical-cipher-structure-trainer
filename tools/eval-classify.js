@@ -2,8 +2,9 @@
 // 見分け（LabCore.classify）のしきい値を決め、当たり具合を測る
 // ============================================================================
 //
-// 使い方: node tools/eval-classify.js <学習用の英文> <評価用の英文> [出力JSON]
-//   例: node tools/eval-classify.js pg1342.txt pg98.txt tools/eval-classify-result.json
+// 使い方: node tools/eval-classify.js <学習用の英文> <評価用の英文> [出力ファイル]
+//   例: node tools/eval-classify.js pg1342.txt pg98.txt js/classify-accuracy.js
+// 出力ファイルは画面と README が読むスクリプト（window.ClassifyAccuracy）。手で直さない。
 // 英文は Project Gutenberg のテキスト（*** START と *** END の間を使う）。英文そのものは同梱しない。
 // 1. 学習用の英文で文字を数え、js/english-freq.js の回数と同じかを確かめる
 // 2. 学習用の英文から 100 字の抜き出しを 3 種類×300 件作り、正答率の平均が最大になるしきい値を探す
@@ -12,7 +13,6 @@
 'use strict';
 
 const fs = require('node:fs');
-const path = require('node:path');
 const Core = require('../js/structure-core.js');
 const L = require('../js/lab-core.js');
 const EF = require('../js/english-freq.js');
@@ -31,6 +31,15 @@ function body(file) {
   const b = t.indexOf('*** END');
   if (a < 0 || b < 0) throw new Error(`${file}: Gutenberg の START/END が見つからない`);
   return L.letters(t.slice(t.indexOf('\n', a), b));
+}
+
+/** Gutenberg の見出しから書名と番号を読む（Title: …、[eBook #…]） */
+function about(file) {
+  const t = fs.readFileSync(file, 'utf8').slice(0, 3000);
+  const title = (t.match(/^Title:\s*(.+?)\s*$/m) || [])[1];
+  const ebook = Number((t.match(/\[e[Bb]ook #(\d+)\]/) || [])[1]);
+  if (!title || !ebook) throw new Error(`${file}: 書名か番号が見つからない`);
+  return { title, ebook };
 }
 
 function mulberry32(seed) {
@@ -76,7 +85,7 @@ function accuracy(set, th) {
 function main() {
   const [trainFile, testFile, outFile] = process.argv.slice(2);
   if (!trainFile || !testFile) {
-    console.error('使い方: node tools/eval-classify.js <学習用の英文> <評価用の英文> [出力JSON]');
+    console.error('使い方: node tools/eval-classify.js <学習用の英文> <評価用の英文> [出力ファイル]');
     process.exit(2);
   }
   const train = body(trainFile);
@@ -98,8 +107,8 @@ function main() {
   const result = {
     seed: SEED,
     perClass: PER_CLASS,
-    train: { file: path.basename(trainFile), letters: train.length, length: TRAIN_LENGTH, accuracy: best.acc },
-    test: { file: path.basename(testFile), letters: test.length },
+    train: { ...about(trainFile), letters: train.length, length: TRAIN_LENGTH, accuracy: best.acc },
+    test: { ...about(testFile), letters: test.length },
     classes: {
       transposition: 'columnar transposition, random keyword of 5-9 letters',
       mono: 'simple substitution, uniformly random key',
@@ -108,9 +117,21 @@ function main() {
     thresholds: best.th,
     evaluation,
   };
-  const json = `${JSON.stringify(result, null, 2)}\n`;
-  if (outFile) fs.writeFileSync(outFile, json);
-  process.stdout.write(json);
+  const json = JSON.stringify(result, null, 2);
+  if (outFile) {
+    const js = [
+      '/* 見分け（LabCore.classify）の当たり具合。tools/eval-classify.js が書き出す（手で直さない） */',
+      '(function (root) {',
+      "  'use strict';",
+      `  const data = ${json.split('\n').join('\n  ')};`,
+      "  if (typeof module !== 'undefined' && module.exports) module.exports = data;",
+      '  else root.ClassifyAccuracy = data;',
+      "})(typeof globalThis !== 'undefined' ? globalThis : this);",
+      '',
+    ].join('\n');
+    fs.writeFileSync(outFile, js);
+  }
+  process.stdout.write(`${json}\n`);
 }
 
 main();

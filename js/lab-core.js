@@ -26,6 +26,52 @@
 
   const err = (key, params = {}) => ({ error: { key, params } });
 
+  // 例文（どちらもパブリックドメイン）
+  //   LAB   : Jane Austen『Pride and Prejudice』（1813）の冒頭
+  //   DETECT: Charles Dickens『A Tale of Two Cities』（1859）の冒頭。しきい値を決めた本とは別の本
+  const SAMPLES = Object.freeze({
+    LAB: 'It is a truth universally acknowledged, that a single man in possession of a good fortune, '
+      + 'must be in want of a wife. However little known the feelings or views of such a man may be '
+      + 'on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, '
+      + 'that he is considered as the rightful property of some one or other of their daughters.',
+    DETECT: 'It was the best of times, it was the worst of times, it was the age of wisdom, '
+      + 'it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, '
+      + 'it was the season of Light, it was the season of Darkness, it was the spring of hope, '
+      + 'it was the winter of despair.',
+  });
+
+  // 見分けた結果から案内するツール（生成AIで作るセキュリティツール100）。
+  // param: 'text' は #text=、'advanced' は #text=…&tab=advanced で暗号文を渡す。null はページだけ開く。
+  // max: 渡せる文字数の上限（各ツールの README）。超えたらページだけ開く。
+  const HANDOFF = Object.freeze({
+    transposition: [
+      { day: 95, slug: 'permutation-cipherlab', title: 'Permutation CipherLab', param: 'text', max: 5000 },
+      { day: 45, slug: 'anagram-hunter', title: 'Anagram Hunter', param: 'text', max: 400 },
+      { day: 43, slug: 'columnar-cipherlab', title: 'Columnar CipherLab', param: null },
+    ],
+    mono: [
+      { day: 9, slug: 'frequency-analyzer', title: 'Frequency Analyzer', param: 'text', max: 5000 },
+      { day: 18, slug: 'cipherclimb', title: 'Cipher Climb', param: null },
+      { day: 8, slug: 'caesar-cipher-breaker', title: 'Caesar Cipher Breaker', param: null },
+    ],
+    poly: [
+      { day: 47, slug: 'ic-learning-visualizer', title: 'IC Learning Visualizer', param: 'advanced', max: 10000 },
+      { day: 46, slug: 'alphaloom', title: 'AlphaLoom', param: 'text', max: 10000 },
+      { day: 28, slug: 'repeatseq-analyzer', title: 'RepeatSeq Analyzer', param: null },
+    ],
+    any: [
+      { day: 44, slug: 'cipher-clairvoyance', title: 'Cipher Clairvoyance', param: null },
+    ],
+  });
+
+  /** 案内先の URL。暗号文を渡せないとき（上限超え・空）はページの URL と withText: false */
+  function handoffUrl(entry, text) {
+    const base = `https://ipusiron.github.io/${entry.slug}/`;
+    if (!entry.param || !text || text.length > entry.max) return { url: base, withText: false };
+    const hash = `#text=${encodeURIComponent(text)}${entry.param === 'advanced' ? '&tab=advanced' : ''}`;
+    return { url: base + hash, withText: true };
+  }
+
   // ------------------------------------------------------------
   // 入力
   // ------------------------------------------------------------
@@ -235,6 +281,9 @@
     MAX_KEY,
     MAX_RAILS,
     THRESHOLDS,
+    SAMPLES,
+    HANDOFF,
+    handoffUrl,
     letters,
     parseKeyword,
     shiftKey,
