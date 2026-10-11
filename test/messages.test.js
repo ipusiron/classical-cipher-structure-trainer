@@ -18,6 +18,7 @@ const Cat = require('../js/catalog.js');
 for (const f of ['substitution', 'transposition', 'polyalphabetic']) used.add(`lab.explain.${f}`);
 for (const k of ['short', 'transposition', 'mono', 'poly']) used.add(`detect.kind.${k}`);
 for (const k of ['keyEmpty', 'keyChars', 'keyShort', 'keyLong']) used.add(`lab.error.${k}`);
+for (const kind of ['all', ...Cat.KINDS]) used.add(`catalog.filter.${kind}`);
 for (const kind of Cat.KINDS) {
   used.add(`catalog.kind.${kind}`);
   used.add(`catalog.kind.${kind}.desc`);

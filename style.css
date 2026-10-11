@@ -939,6 +939,49 @@ textarea.text-input{
   font-size: 14px;
 }
 
+/* 分類で絞り込む（ラジオボタンのチップ） */
+.catalog-filter{
+  min-inline-size: 0; /* fieldset が中身の幅より縮まない既定を外す */
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.catalog-filter legend{
+  padding: 0;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.filter-chip{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--fg);
+  font-size: 14px;
+  cursor: pointer;
+}
+.filter-chip:has(input:checked){
+  background: var(--brand-weak);
+  border: 2px solid var(--brand-strong);
+  font-weight: 700;
+}
+.filter-chip input{
+  margin: 0;
+  accent-color: var(--brand-strong);
+}
+.filter-chip:focus-within{
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
 /* グリッドレイアウト: 最小240px幅のカードを自動配置 */
 .cipher-grid{
   list-style: none;

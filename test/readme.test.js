@@ -38,10 +38,10 @@ test('シリーズの定型（H1・Day 表記・プロジェクトのリンク�
 });
 
 test('古典暗号の例の表は js/catalog.js と同じ（件数・名前・分類・リンク先）', () => {
-  const rows = section(readme, '🧠 タブ構成').split('\n').filter(l => /^\| 換字|^\| 転置|^\| その他/.test(l));
+  const rows = section(readme, '🧠 タブ構成').split('\n').filter(l => /^\| (換字|転置|混合|その他|解く|学ぶ)/.test(l));
   assert.equal(rows.length, Cat.tools.length);
   const label = { mono: '換字（単一換字）', poly: '換字（多表式）', polygraphic: '換字（多字換字）', transposition: '転置',
-    concealment: 'その他（分置式）' };
+    product: '混合', concealment: 'その他（分置式）', code: 'その他（コード）', analysis: '解く（解析・解読）', study: '学ぶ' };
   Cat.tools.forEach((t, i) => {
     const cells = rows[i].split(' | ').map(c => c.replace(/^\| |\s\|$/g, ''));
     assert.equal(cells[0], label[t.sub], t.slug);

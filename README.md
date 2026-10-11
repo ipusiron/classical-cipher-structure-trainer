@@ -8,7 +8,7 @@ title: "Classical Cipher Structure Trainer"
 subtitle_ja: "古典暗号の構造理解の教育ツール"
 subtitle_en: "Educational Tool for Understanding Classical Cipher Structures"
 
-description_ja: "古典暗号の2大構造「換字（Substitution）」と「転置（Transposition）」を、マッピングとシャッフルという直感的な概念で学べる教育ツール。対応表のSVG図、マウス・タッチ・キーボードで動かす並べ替え、シリーズの古典暗号ツール22本への案内、解説つきの10問クイズで、換字は文字の種類を、転置は文字の位置を並べ替える仕組みだと理解できる。"
+description_ja: "古典暗号の2大構造「換字（Substitution）」と「転置（Transposition）」を、マッピングとシャッフルという直感的な概念で学べる教育ツール。対応表のSVG図、マウス・タッチ・キーボードで動かす並べ替え、シリーズの古典暗号ツール42本への案内、解説つきの10問クイズで、換字は文字の種類を、転置は文字の位置を並べ替える仕組みだと理解できる。"
 description_en: "An educational tool that teaches the two fundamental structures of classical cryptography, Substitution (mapping) and Transposition (shuffle). It offers an SVG mapping diagram, a block reordering exercise that works with mouse, touch and keyboard, a guide to 22 classical cipher tools in the series, and a 10-question quiz with explanations, showing that substitution permutes the kinds of letters while transposition permutes their positions."
 
 category_ja:
@@ -51,7 +51,7 @@ hub: true
 
 **Classical Cipher Structure Trainer**は、古典暗号を構成する2大要素「換字（Substitution）」と「転置（Transposition）」を、マッピング（対応表）とシャッフル（並べ替え）という直感的な概念で学べる教育ツールです。
 
-対応表の図と、文字のブロックの並べ替えで2つの仕組みを体験し、最後に解説つきのクイズで確かめます。シリーズで作った古典暗号のツール22本へのカードから、個々の暗号を実際に動かせます。
+対応表の図と、文字のブロックの並べ替えで2つの仕組みを体験し、最後に解説つきのクイズで確かめます。シリーズで作った古典暗号のツール42本へのカードから、個々の暗号を実際に動かせます。
 
 ---
 
@@ -142,7 +142,7 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 
 ### 2️⃣ 古典暗号の例（Examples）
 
-生成AIで作るセキュリティツール100の古典暗号のツール22本へのリンク集です。カード全体を押すと、新しいタブで開きます。カードには、換字式の中の分け方（単一換字・多表式・多字換字）のタグを付けています。
+生成AIで作るセキュリティツール100の古典暗号のツール42本へのリンク集です。カード全体を押すと、新しいタブで開きます。カードには、換字式の中の分け方（単一換字・多表式・多字換字）のタグを付けています。
 
 | 種別 | 暗号 | 説明 | ツール |
 |------|------|------|--------|
@@ -156,9 +156,14 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 | 換字（単一換字） | 忍びいろは | ひらがなを、漢字の偏と旁を組み合わせた字に置き換える | [Shinobi Iroha Cipher](https://ipusiron.github.io/shinobi_iroha_cipher/)（Day014） |
 | 換字（単一換字） | ベーコン暗号 | 1文字をaとbの5文字に置き換え、書体の違いとして文章に隠す | [Bacon CipherLab](https://ipusiron.github.io/bacon-cipherlab/)（Day055） |
 | 換字（単一換字） | ジグザグ暗号 | 文字を鍵の列の位置に置き換え、折れ線で描く。英語のzigzag cipher（レールフェンス）とは別物 | [Zigzag CipherLab](https://ipusiron.github.io/zigzag-cipherlab/)（Day072） |
+| 換字（単一換字） | ROT13 | 英字を13文字ずらす。同じ操作を2回掛けると元に戻る | [ROT13 Encoder](https://ipusiron.github.io/rot13-encoder/)（Day005） |
+| 換字（単一換字） | ROT47 | ASCIIの記号・数字を含む94文字を、47文字ずらす | [QuickROT47](https://ipusiron.github.io/quick-rot47/)（Day037） |
+| 換字（単一換字） | 絵文字の暗号 | 暗号文の文字を絵文字に置き換える。見た目が変わっても頻度の偏りは残る | [Crypto Emoji Translator](https://ipusiron.github.io/crypto-emoji-translator/)（Day076） |
+| 換字（単一換字） | シーザー暗号による難読化 | JavaScriptのコードをシーザー暗号で置き換え、実行するときに戻して動かす | [Classic JS Obfuscator](https://ipusiron.github.io/classic-js-obfuscator/)（Day042） |
 | 換字（多表式） | ヴィジュネル暗号 | 鍵の文字ごとに、別のずらし量の対応表を順に使う | [Vigenere Cipher Tool](https://ipusiron.github.io/vigenere-cipher-tool/)（Day017） |
 | 換字（多表式） | ビューフォート暗号 | 鍵の文字から平文の文字を引く多表式。暗号化と復号が同じ操作 | [Beaufort CipherLab](https://ipusiron.github.io/beaufort-cipherlab/)（Day078） |
 | 換字（多表式） | ストリップ暗号 | アルファベットを並べた帯を何本も並べ、平文の行とは別の行を読む | [Strip CipherLab](https://ipusiron.github.io/strip-cipherlab/)（Day071） |
+| 換字（多表式） | ワンタイムパッド | 平文と同じ長さの使い捨ての鍵とXORする。鍵を繰り返さない | [OTP Animation](https://ipusiron.github.io/otp-animation/)（Day029） |
 | 換字（多字換字） | プレイフェア暗号 | 5×5の表で、2文字を別の2文字に置き換える | [Playfair CipherLab](https://ipusiron.github.io/playfair-cipherlab/)（Day027） |
 | 換字（多字換字） | ポルタの二文字式暗号 | 1563年の表で、2文字を表の1マス（記号）に置き換える | [Porta CipherLab](https://ipusiron.github.io/porta-cipherlab/)（Day080） |
 | 換字（多字換字） | ヒル暗号 | 行列の掛け算で、n文字をまとめて別のn文字に置き換える | [Hill CipherLab](https://ipusiron.github.io/hill-cipherlab/)（Day093） |
@@ -167,7 +172,22 @@ EDUCATIONの文字のブロックを、ドラッグで並べ替えます。マ�
 | 転置 | レールフェンス暗号 | 文字をジグザグに書き、行ごとに読む | [RailFence CipherLab](https://ipusiron.github.io/railfence-cipherlab/)（Day034） |
 | 転置 | 縦列転置式暗号 | 表に横に書き、鍵の順に列を縦に読む | [Columnar CipherLab](https://ipusiron.github.io/columnar-cipherlab/)（Day043） |
 | 転置 | 回転グリル暗号 | 穴のあいた型紙を回しながら書き込み、表を埋める | [Grille CipherLab](https://ipusiron.github.io/grille-cipherlab/)（Day024） |
+| 転置 | ミラー暗号（逆転置） | 文字の並びを逆にする（全文・語・行など）。字形の鏡像と組み合わせる | [Mirror CipherLab](https://ipusiron.github.io/mirror-cipherlab/)（Day084） |
+| 混合 | SPN（換字と転置の繰り返し） | S-Box（換字）とP層（転置）に鍵の加算を挟んで繰り返す。現代のブロック暗号の骨組み | [ToySPN Builder](https://ipusiron.github.io/toyspn-builder/)（Day094） |
 | その他（分置式） | 分置式暗号 | ふつうの文章の中に、本文の文字を決まった位置に散らして隠す | [Hidden Message Challenge](https://ipusiron.github.io/hidden-message-challenge/)（Day036） |
+| その他（分置式） | トレヴァニオン暗号 | 手紙の句読点の直後から数えて3文字目を拾い集めて読む（Null暗号） | [Trevanion CipherLab](https://ipusiron.github.io/trevanion-cipherlab/)（Day069） |
+| その他（分置式） | クロノグラム | 文の中のローマ数字に当たる文字を足して、年号を表す | [Epigraph Chronogrammer](https://ipusiron.github.io/epigraph-chronogrammer/)（Day086） |
+| その他（コード） | 書籍暗号（ブックコード） | 語を、本の中の位置（ページ・行・語の番号）で表すコード | [Book Code Builder](https://ipusiron.github.io/book-code-builder/)（Day099） |
+| 解く（解析・解読） | 暗号方式の推定 | 暗号文の特徴から、どの古典暗号が使われたかを推定する | [Cipher Clairvoyance](https://ipusiron.github.io/cipher-clairvoyance/)（Day044） |
+| 解く（解析・解読） | 頻度分析 | 英語の頻度・一致指数・n-gramで、単一換字を手で解く | [Frequency Analyzer](https://ipusiron.github.io/frequency-analyzer/)（Day009） |
+| 解く（解析・解読） | シーザー暗号の総当たり | 25通りのずらし量をすべて試し、英単語と頻度で候補を選ぶ | [Caesar Cipher Breaker](https://ipusiron.github.io/caesar-cipher-breaker/)（Day008） |
+| 解く（解析・解読） | 山登り法による解読 | 換字表を少しずつ変え、英語らしさが上がる方へ進めて解く | [Cipher Climb](https://ipusiron.github.io/cipherclimb/)（Day018） |
+| 解く（解析・解読） | 一致指数（IC） | ICで単一換字と多表式を見分け、周期ごとのICで鍵の長さを推定する | [IC Learning Visualizer](https://ipusiron.github.io/ic-learning-visualizer/)（Day047） |
+| 解く（解析・解読） | 繰り返しの解析（カシスキー） | 暗号文の繰り返しの間隔と列のICから、多表式の鍵の長さを推定する | [RepeatSeq Analyzer](https://ipusiron.github.io/repeatseq-analyzer/)（Day028） |
+| 解く（解析・解読） | 列への分割 | 暗号文を周期ごとの列に分け、多表式を単一換字の集まりにして解く | [Modular Text Divider](https://ipusiron.github.io/modular-text-divider/)（Day030） |
+| 解く（解析・解読） | 鍵の候補の探索 | 鍵の位置ごとに来そうな文字を並べ、辞書の語で多表式の鍵の候補を採点する | [AlphaLoom](https://ipusiron.github.io/alphaloom/)（Day046） |
+| 解く（解析・解読） | アナグラムの探索 | 文字を並べ替えて作れる語やフレーズを探す。転置を手で解くときに使える | [Anagram Hunter](https://ipusiron.github.io/anagram-hunter/)（Day045） |
+| 学ぶ | 2回で元に戻る操作 | 換字・転置・ビット反転で、同じ操作を2回掛けると元に戻る性質を学ぶ | [Involution Studio](https://ipusiron.github.io/involution-studio/)（Day051） |
 
 - ジグザグ暗号（Day072）は、文字を鍵の列の位置に置き換える換字の一種である。英語でzigzag cipherというとレールフェンス暗号（転置）の別名を指すことが多いが、別の暗号である。
 - ヒル暗号（Day093）とポルタの二文字式暗号（Day080）は、複数の文字をまとめて置き換える多字換字である。位置ごとに別の対応表を使う多表式（ヴィジュネル暗号など）とは別の分け方である。
@@ -347,7 +367,7 @@ classical-cipher-structure-trainer/
 │   ├── structure-core.js     # 計算部（対応表・順列・乱数・差し込み位置・クイズの検査）
 │   ├── messages.js           # script.jsが組み立てる文言の辞書
 │   ├── quiz-data.js          # クイズの10問（解説つき）
-│   ├── catalog.js            # 古典暗号の例のツール22本の一覧
+│   ├── catalog.js            # 古典暗号の例のツール42本の一覧
 │   ├── lab-core.js           # 実験室の計算部（換字・転置・多表式・統計・見分け）
 │   ├── english-freq.js       # 英語の文字の出現回数（見分けの基準）
 │   ├── classify-accuracy.js  # 見分けの当たり具合（tools/eval-classify.jsの出力）

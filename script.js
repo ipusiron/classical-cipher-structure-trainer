@@ -434,10 +434,36 @@ function renderCatalog(){
       grid.appendChild(card);
     });
     section.appendChild(grid);
+    section.dataset.kind = kind;
     return section;
   });
-  box.replaceChildren(...sections);
+
+  // 分類で絞り込む（ラジオボタン。選んだ分類の節だけを見せる）
+  const filter = el('fieldset', 'catalog-filter');
+  filter.appendChild(el('legend', null, T('catalog.filter.legend')));
+  for(const kind of ['all', ...KINDS]){
+    const count = kind === 'all' ? tools.length : tools.filter(t => t.kind === kind).length;
+    const label = el('label', 'filter-chip');
+    const radio = el('input');
+    radio.type = 'radio';
+    radio.name = 'catalog-filter';
+    radio.value = kind;
+    radio.checked = kind === catalogFilter;
+    radio.addEventListener('change', () => {
+      catalogFilter = kind;
+      sections.forEach(s => { s.hidden = kind !== 'all' && s.dataset.kind !== kind; });
+      const status = document.getElementById('catalog-status');
+      if(status) status.textContent = T('catalog.filter.status', { label: T(`catalog.filter.${kind}`), count });
+    });
+    label.appendChild(radio);
+    label.appendChild(el('span', null, T('catalog.filter.option', { label: T(`catalog.filter.${kind}`), count })));
+    filter.appendChild(label);
+  }
+  sections.forEach(s => { s.hidden = catalogFilter !== 'all' && s.dataset.kind !== catalogFilter; });
+  box.replaceChildren(filter, ...sections);
 }
+
+let catalogFilter = 'all'; // 古典暗号の例の絞り込み（言語を切り替えて描き直しても保つ）
 
 // ============================================================
 // 実験室（英文に換字・転置・多表式を掛けて、保たれるものを比べる）
