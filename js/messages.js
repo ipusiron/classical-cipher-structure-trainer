@@ -16,12 +16,17 @@
     'map.key': '対応表（{kind}）：{pairs}',
     'map.pair': '{from}→{to}',
     'map.figure': '上段の平文の文字 A〜H と、下段の暗号文の文字をつなぐ線の図。{pairs}',
+    'map.inverse': '逆の表（復号に使う）：{pairs}',
+    'map.count': '{n}文字の一対一の対応表は全部で{n}! = {total}通り。シフトはそのうちの{n}通り。',
     'map.charset.letters': '暗号文の文字：A〜H',
     'map.charset.numbers': '暗号文の文字：1〜8',
 
     // 転置（シャッフル）
     'shuffle.now': 'いまの並び：{word}',
     'shuffle.block': '{ch}（元の{from}番目、いま{to}番目）',
+    'shuffle.key': '並べ替えの鍵（いまのi番目に、元の何番目を置くか）：{order}',
+    'shuffle.inverse': '元に戻す鍵（元のi番目に、いまの何番目を置くか）：{order}',
+    'shuffle.count': '{word}（{n}文字が全部違う）の並べ方は全部で{n}! = {total}通り。',
     'shuffle.grabbed': '{ch}を持ち上げました。いま{pos}番目です。←→で動かし、Spaceで置きます。Escで取り消します。',
     'shuffle.moved': '{ch}：{pos}番目',
     'shuffle.dropped': '{ch}を{pos}番目に置きました。いまの並び：{word}',

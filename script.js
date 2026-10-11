@@ -129,6 +129,14 @@ function renderMapping(){
   const kind = offset === null ? T('map.kind.random') : T('map.kind.shift', { offset });
   key.textContent = T('map.key', { kind, pairs });
   desc.textContent = T('map.figure', { pairs });
+
+  // 鍵を見る: 逆の表（下段 → 上段）と、対応表の数
+  const inv = Core.invert(map);
+  const inversePairs = bottom.map((ch, j) => T('map.pair', { from: ch, to: top[inv[j]] })).join(' ');
+  const invEl = document.getElementById('map-inverse');
+  if(invEl) invEl.textContent = T('map.inverse', { pairs: inversePairs });
+  const countEl = document.getElementById('map-count');
+  if(countEl) countEl.textContent = T('map.count', { n: top.length, total: Core.groupDigits(Core.factorial(top.length)) });
   if(charset) charset.textContent = T(`map.charset.${mapState.charset}`);
 }
 
@@ -205,6 +213,18 @@ function renderShuffle(){
   if(active && document.activeElement !== active) active.focus({ preventScroll: true });
   shuffle.rendering = false;
   if(now) now.textContent = T('shuffle.now', { word: shuffleWord() });
+
+  // 鍵を見る: 並べ替えの鍵（取り出す向き、1始まり）と元に戻す鍵、並べ方の数
+  const oneBased = o => o.map(i => i + 1).join(' ');
+  const keyEl = document.getElementById('shuffle-key');
+  if(keyEl) keyEl.textContent = T('shuffle.key', { order: oneBased(shuffle.order) });
+  const invEl = document.getElementById('shuffle-inverse');
+  if(invEl) invEl.textContent = T('shuffle.inverse', { order: oneBased(Core.invert(shuffle.order)) });
+  const countEl = document.getElementById('shuffle-count');
+  if(countEl) {
+    countEl.textContent = T('shuffle.count', { word: Core.SHUFFLE_WORD, n: shuffleLetters.length,
+      total: Core.groupDigits(Core.factorial(shuffleLetters.length)) });
+  }
 }
 
 /** ボタン操作で並びを変える（持ち上げ中なら置いてから） */
