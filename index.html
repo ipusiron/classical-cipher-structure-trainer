@@ -267,8 +267,12 @@
     <!-- Quiz -->
     <section class="tab-panel" id="tab-quiz" role="tabpanel" aria-labelledby="btn-quiz">
       <div class="tab-intro">
-        📝 <strong>10問・一問一答形式</strong>（定義2問・基礎2問・分類4問・混合2問）。答えるたびに解説が出ます。
+        📝 <strong>20問・一問一答形式</strong>（定義3問・基礎4問・分類6問・性質3問・混合4問）。答えるたびに解説が出て、最後に間違えた問題を見直せます。
       </div>
+      <label class="check-option" for="quiz-shuffle">
+        <input type="checkbox" id="quiz-shuffle" />
+        <span>問題の順番と選択肢を混ぜる（切り替えると最初からやり直す）</span>
+      </label>
 
       <div id="quiz-area" class="quiz-area">
         <p id="quiz-loader" class="loader" role="status"></p>

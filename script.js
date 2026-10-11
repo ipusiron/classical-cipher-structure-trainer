@@ -827,17 +827,33 @@ window.addEventListener('load', () => {
 window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', renderThemeButton);
 
 // ============================================================
-// クイズシステム（一問一答形式・10問）
+// クイズシステム（一問一答形式・20問）
 // ============================================================
 // 問題は js/quiz-data.js（スクリプトとして読むので file:// でも動く）。
 // 表示の前に計算部の validateQuiz で形を確かめる。文字はすべて textContent で入れる。
+// 「順番と選択肢を混ぜる」をオンにすると、出題順と選択肢の並びを一様な順列で混ぜる。
 
 const quiz = {
   questions: null, // 検査済みの問題
-  index: 0,        // いまの問題（0始まり）
+  order: [],       // 出題順（問題の添字）
+  choiceOrders: [],// 問題ごとの選択肢の並び（選択肢の添字）
+  index: 0,        // いま何問目か（0始まり）
   score: 0,        // 正解数
   answered: false, // いまの問題に答えたか（二重回答を防ぐ）
+  log: [],         // 答えの記録 { q: 問題の添字, chosen: 選んだ選択肢の添字 }
 };
+
+/** 出題順と選択肢の並びを決める（混ぜないときは元の順） */
+function arrangeQuiz(){
+  const mix = document.getElementById('quiz-shuffle')?.checked;
+  const n = quiz.questions.length;
+  quiz.order = mix ? Core.randomPermutation(n, fillRandom) : Core.identity(n);
+  quiz.choiceOrders = quiz.questions.map(q => (mix ? Core.randomPermutation(q.choices.length, fillRandom) : Core.identity(q.choices.length)));
+}
+
+function currentQuestion(){
+  return quiz.questions[quiz.order[quiz.index]];
+}
 
 /** 子要素を作って文字を入れる */
 function el(tag, className, text){
@@ -866,11 +882,13 @@ function setupQuiz(){
   }
 
   quiz.questions = questions;
+  arrangeQuiz();
   loader.classList.add('hidden');
   container.classList.remove('hidden');
 
   document.getElementById('btn-quiz-next')?.addEventListener('click', handleNext);
   document.getElementById('btn-quiz-restart')?.addEventListener('click', restartQuiz);
+  document.getElementById('quiz-shuffle')?.addEventListener('change', restartQuiz);
   showQuestion();
 }
 
@@ -884,7 +902,7 @@ function showQuestion(){
   const nextBtn = document.getElementById('btn-quiz-next');
   if(!quiz.questions || !progressEl || !questionEl || !feedbackEl || !nextBtn) return;
 
-  const q = quiz.questions[quiz.index];
+  const q = currentQuestion();
   const total = quiz.questions.length;
 
   quiz.answered = false;
@@ -894,19 +912,19 @@ function showQuestion(){
   nextBtn.disabled = true;
   nextBtn.textContent = T(quiz.index === total - 1 ? 'quiz.finish' : 'quiz.next');
 
-  progressEl.textContent = T('quiz.progress', { n: quiz.index + 1, total, score: quiz.score });
+  progressEl.textContent = T('quiz.progress', { n: quiz.index + 1, total, score: quiz.score, cat: T(`quiz.cat.${q.category}`) });
 
   const title = el('h3', 'quiz-prompt', q.prompt);
   title.id = 'quiz-prompt';
   const choices = el('div', 'choices');
   choices.setAttribute('role', 'group');
   choices.setAttribute('aria-labelledby', 'quiz-prompt');
-  q.choices.forEach((choice, i) => {
+  quiz.choiceOrders[quiz.order[quiz.index]].forEach(i => {
     const btn = el('button', 'choice-btn');
     btn.type = 'button';
-    btn.dataset.index = String(i);
+    btn.dataset.index = String(i); // 元の選択肢の添字（並びを混ぜても正誤はこの番号で決める）
     btn.appendChild(el('span', 'choice-mark'));
-    btn.appendChild(el('span', 'choice-text', choice));
+    btn.appendChild(el('span', 'choice-text', q.choices[i]));
     btn.addEventListener('click', () => handleAnswer(i));
     choices.appendChild(btn);
   });
@@ -921,9 +939,10 @@ function handleAnswer(selected){
   if(quiz.answered) return;
   quiz.answered = true;
 
-  const q = quiz.questions[quiz.index];
+  const q = currentQuestion();
   const isCorrect = selected === q.answer;
   if(isCorrect) quiz.score++;
+  quiz.log.push({ q: quiz.order[quiz.index], chosen: selected });
 
   const feedbackEl = document.getElementById('quiz-feedback');
   const nextBtn = document.getElementById('btn-quiz-next');
@@ -953,7 +972,10 @@ function handleAnswer(selected){
   feedbackEl.classList.remove('hidden', 'correct', 'incorrect');
   feedbackEl.classList.add(isCorrect ? 'correct' : 'incorrect');
 
-  if(progressEl) progressEl.textContent = T('quiz.progress', { n: quiz.index + 1, total: quiz.questions.length, score: quiz.score });
+  if(progressEl){
+    progressEl.textContent = T('quiz.progress', { n: quiz.index + 1, total: quiz.questions.length, score: quiz.score,
+      cat: T(`quiz.cat.${q.category}`) });
+  }
   nextBtn.disabled = false;
   nextBtn.focus({ preventScroll: true });
 }
@@ -987,7 +1009,30 @@ function showFinalResult(){
   restartBtn.type = 'button';
   restartBtn.addEventListener('click', restartQuiz);
 
-  result.replaceChildren(scoreDiv, msgDiv, restartBtn);
+  // 見直し: 間違えた問題を、選んだ答え・正解・解説と並べる
+  const review = el('section', 'quiz-review');
+  const reviewTitle = el('h4', null, T('quiz.review.title'));
+  reviewTitle.id = 'quiz-review-title';
+  review.setAttribute('aria-labelledby', reviewTitle.id);
+  review.appendChild(reviewTitle);
+  const wrong = quiz.log.filter(a => a.chosen !== quiz.questions[a.q].answer);
+  if(wrong.length === 0){
+    review.appendChild(el('p', null, T('quiz.review.none')));
+  }else{
+    const list = el('ol', 'review-list');
+    for(const a of wrong){
+      const q = quiz.questions[a.q];
+      const li = el('li');
+      li.appendChild(el('p', 'review-prompt', q.prompt));
+      li.appendChild(el('p', 'review-chosen', T('quiz.review.yours', { answer: q.choices[a.chosen] })));
+      li.appendChild(el('p', 'review-answer', T('quiz.review.correct', { answer: q.choices[q.answer] })));
+      li.appendChild(el('p', 'review-explanation', q.explanation));
+      list.appendChild(li);
+    }
+    review.appendChild(list);
+  }
+
+  result.replaceChildren(scoreDiv, msgDiv, restartBtn, review);
   result.classList.remove('hidden');
   scoreDiv.focus();
 }
@@ -999,6 +1044,8 @@ function restartQuiz(){
   quiz.index = 0;
   quiz.score = 0;
   quiz.answered = false;
+  quiz.log = [];
+  arrangeQuiz();
 
   const container = document.getElementById('quiz-container');
   const result = document.getElementById('quiz-result');
@@ -1012,7 +1059,7 @@ function restartQuiz(){
 }
 
 /**
- * 正解数に応じた文言のキー（4問以下／5〜8問／9問以上。10問以外でも割合で同じ境目）
+ * 正解率に応じた文言のキー（40%以下／80%以下／それより上）
  */
 function gradeKey(score, total){
   const rate = score / total;

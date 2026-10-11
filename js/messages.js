@@ -132,7 +132,16 @@
     'catalog.newTab': '（新しいタブで開きます）',
 
     // クイズ
-    'quiz.progress': '問題 {n} / {total}（正解 {score}）',
+    'quiz.progress': '問題 {n} / {total}（正解 {score}）・{cat}',
+    'quiz.cat.definition': '定義',
+    'quiz.cat.basic': '基礎',
+    'quiz.cat.classification': '分類',
+    'quiz.cat.invariant': '性質',
+    'quiz.cat.mixed': '混合',
+    'quiz.review.title': '見直し（間違えた問題）',
+    'quiz.review.none': '全問正解でした。',
+    'quiz.review.yours': '選んだ答え：{answer}',
+    'quiz.review.correct': '正解：{answer}',
     'quiz.next': '次へ',
     'quiz.finish': '結果を見る',
     'quiz.correct': '正解',
