@@ -44,7 +44,7 @@ test('インラインのスクリプト・イベント属性・style 属性が�
   }
   assert.deepEqual(scripts.map(m => m[1].match(/src="([^"]+)"/)[1]),
     ['js/theme.js', 'js/structure-core.js', 'js/messages.js', 'js/quiz-data.js', 'js/catalog.js', 'js/english-freq.js',
-      'js/lab-core.js', 'js/classify-accuracy.js', 'script.js']);
+      'js/lab-core.js', 'js/classify-accuracy.js', 'js/i18n.js', 'js/i18n-en.js', 'script.js']);
   for (const src of scripts.map(m => m[1].match(/src="([^"]+)"/)[1])) assert.ok(fs.existsSync(path.join(root, src)), src);
 });
 

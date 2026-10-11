@@ -418,7 +418,8 @@ function renderCatalog(){
     items.forEach(t => {
       const card = el('li', 'cipher-card');
       const head = el('h4', 'cipher-name');
-      const link = el('a', null, t.name);
+      const text = window.Catalog.textOf(t, window.Messages.lang);
+      const link = el('a', null, text.name);
       link.href = url(t.slug);
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
@@ -426,7 +427,7 @@ function renderCatalog(){
       head.appendChild(link);
       card.appendChild(head);
       card.appendChild(el('span', `cipher-tag tag-${t.sub}`, T(`catalog.sub.${t.sub}`)));
-      card.appendChild(el('p', 'cipher-desc', t.desc));
+      card.appendChild(el('p', 'cipher-desc', text.desc));
       card.appendChild(el('p', 'cipher-tool', T('catalog.tool', { day: String(t.day).padStart(3, '0'), title: t.title })));
       const arrow = el('span', 'cipher-arrow', '→');
       arrow.setAttribute('aria-hidden', 'true');
@@ -533,7 +534,7 @@ function labKeyInfo(op, plain){
 
 /** 多い文字を「E 37・T 30・A 24」の形に */
 function topText(text){
-  return Lab.topLetters(text, 3).map(e => `${e.ch} ${e.c}`).join('・');
+  return Lab.topLetters(text, 3).map(e => `${e.ch} ${e.c}`).join(T('list.sep'));
 }
 
 /** 文字ごとの出現回数の棒グラフ（平文と暗号文で縦の目盛りをそろえる） */
@@ -551,7 +552,7 @@ function renderBars(box, counts, max, label){
   });
   box.replaceChildren(...cols);
   const top = counts.map((c, i) => ({ ch: Lab.ALPHABET[i], c })).filter(e => e.c > 0)
-    .sort((a, b) => b.c - a.c).slice(0, 3).map(e => `${e.ch} ${e.c}`).join('、');
+    .sort((a, b) => b.c - a.c).slice(0, 3).map(e => `${e.ch} ${e.c}`).join(T('list.sep'));
   box.setAttribute('aria-label', T('lab.bars.aria', { label, top: top || T('lab.none') }));
 }
 
@@ -629,9 +630,15 @@ function renderLab(){
     const th = el('th', null, T(key));
     th.scope = 'row';
     tr.appendChild(th);
-    tr.appendChild(el('td', 'mono-cell', a));
-    tr.appendChild(el('td', 'mono-cell', b));
-    tr.appendChild(el('td', kept ? 'kept yes' : 'kept no', T(kept ? 'lab.kept.yes' : 'lab.kept.no')));
+    // 狭い画面では見出しの行を隠し、各セルの前に data-label の見出しを出す（CSS）
+    const cell = (cls, text, label) => {
+      const td = el('td', cls, text);
+      td.dataset.label = T(label);
+      return td;
+    };
+    tr.appendChild(cell('mono-cell', a, 'lab.count.plain'));
+    tr.appendChild(cell('mono-cell', b, 'lab.count.cipher'));
+    tr.appendChild(cell(kept ? 'kept yes' : 'kept no', T(kept ? 'lab.kept.yes' : 'lab.kept.no'), 'lab.result'));
     return tr;
   }));
   outputs[3].textContent = T(`lab.explain.${Lab.family(op)}`);
@@ -711,7 +718,7 @@ function renderDetect(){
         steps.appendChild(el('li', null, T(high ? 'detect.step.icHigh' : 'detect.step.icLow', { ic: r.ic.toFixed(4), min: th.icMin })));
       }
     }
-    const top = el('p', 'field-note', T('detect.top', { letters: Lab.topLetters(text, 6).map(e => `${e.ch} ${e.c}`).join('・') }));
+    const top = el('p', 'field-note', T('detect.top', { letters: Lab.topLetters(text, 6).map(e => `${e.ch} ${e.c}`).join(T('list.sep')) }));
     const caution = el('p', 'field-note', T('detect.caution'));
     box.replaceChildren(head, steps, top, caution);
   }
@@ -813,6 +820,44 @@ function setupLab(){
   renderAccuracy();
 }
 
+// ============================================================
+// 日英の切り替え
+// ============================================================
+// index.html の日本語は js/i18n.js が控えて js/i18n-en.js で入れ替え、
+// JavaScript が描く部分は messages.js の文言で描き直す（計算はし直さない）。
+
+function renderLangButton(){
+  const btn = document.getElementById('btn-lang');
+  if(!btn) return;
+  btn.textContent = T('lang.switch');
+  btn.setAttribute('lang', window.Messages.lang === 'ja' ? 'en' : 'ja');
+}
+
+function setLanguage(lang, { store = false, rerender = true } = {}){
+  window.I18n.apply(lang, window.I18nEn);
+  window.Messages.setLang(lang);
+  document.documentElement.lang = lang;
+  if(store) window.I18n.store(lang);
+  renderLangButton();
+  if(!rerender) return;
+  renderThemeButton();
+  renderMapping();
+  renderShuffle();
+  renderLab();
+  renderDetect();
+  renderAccuracy();
+  renderCatalog();
+  rerenderQuiz();
+}
+
+// 画面を描く前に、静的な日本語を控えて、初めの言語にする
+window.I18n.collect(document.body);
+setLanguage(window.I18n.initialLanguage(window.location.search, window.I18n.stored(), navigator.language), { rerender: false });
+
+document.getElementById('btn-lang')?.addEventListener('click', () => {
+  setLanguage(window.Messages.lang === 'ja' ? 'en' : 'ja', { store: true });
+});
+
 // 初期化処理
 window.addEventListener('load', () => {
   renderThemeButton();
@@ -855,6 +900,30 @@ function currentQuestion(){
   return quiz.questions[quiz.order[quiz.index]];
 }
 
+/** 表示する言語の問題（id・正解の添字・選択肢の数は日英で同じ） */
+function quizQuestions(){
+  const data = window.QuizData || {};
+  return data[window.Messages.lang] || data.ja;
+}
+
+/** 言語を切り替えたあと、いまの状態のまま描き直す（採点も順番も変えない） */
+function rerenderQuiz(){
+  if(!quiz.questions) return;
+  quiz.questions = quizQuestions();
+  const result = document.getElementById('quiz-result');
+  if(result && !result.classList.contains('hidden')){
+    showFinalResult();
+    return;
+  }
+  const answered = quiz.answered;
+  const last = quiz.log[quiz.log.length - 1];
+  showQuestion();
+  if(answered && last){
+    quiz.answered = true;
+    renderAnswer(last.chosen);
+  }
+}
+
 /** 子要素を作って文字を入れる */
 function el(tag, className, text){
   const node = document.createElement(tag);
@@ -871,7 +940,7 @@ function setupQuiz(){
   const container = document.getElementById('quiz-container');
   if(!loader || !container) return;
 
-  const questions = window.QuizData && window.QuizData.ja;
+  const questions = quizQuestions();
   const check = Core.validateQuiz(questions);
   if(!check.ok){
     // データの誤りは画面に出す（どの問題のどの項目か）
@@ -940,10 +1009,16 @@ function handleAnswer(selected){
   quiz.answered = true;
 
   const q = currentQuestion();
-  const isCorrect = selected === q.answer;
-  if(isCorrect) quiz.score++;
+  if(selected === q.answer) quiz.score++;
   quiz.log.push({ q: quiz.order[quiz.index], chosen: selected });
+  renderAnswer(selected);
+  document.getElementById('btn-quiz-next')?.focus({ preventScroll: true });
+}
 
+/** 答えた状態を描く（採点はしない。言語を切り替えたときにも使う） */
+function renderAnswer(selected){
+  const q = currentQuestion();
+  const isCorrect = selected === q.answer;
   const feedbackEl = document.getElementById('quiz-feedback');
   const nextBtn = document.getElementById('btn-quiz-next');
   const progressEl = document.getElementById('quiz-progress');
@@ -977,7 +1052,6 @@ function handleAnswer(selected){
       cat: T(`quiz.cat.${q.category}`) });
   }
   nextBtn.disabled = false;
-  nextBtn.focus({ preventScroll: true });
 }
 
 /**

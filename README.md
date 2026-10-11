@@ -39,6 +39,8 @@ hub: true
 ---
 -->
 
+[English](README.en.md) · 日本語
+
 # Classical Cipher Structure Trainer - 古典暗号の構造理解の教育ツール
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/ipusiron/classical-cipher-structure-trainer?style=social)
@@ -51,7 +53,7 @@ hub: true
 
 **Classical Cipher Structure Trainer**は、古典暗号を構成する2大要素「換字（Substitution）」と「転置（Transposition）」を、マッピング（対応表）とシャッフル（並べ替え）という直感的な概念で学べる教育ツールです。
 
-対応表の図と文字のブロックの並べ替えで2つの仕組みを体験し、実験室では英文に暗号を掛けて「何が保たれ、何が崩れるか」を数えます。暗号文だけから転置・単一換字・多表式を見分け、最後に解説つきのクイズで確かめます。シリーズで作った古典暗号のツール42本へのカードから、個々の暗号を実際に動かせます。
+対応表の図と文字のブロックの並べ替えで2つの仕組みを体験し、実験室では英文に暗号を掛けて「何が保たれ、何が崩れるか」を数えます。暗号文だけから転置・単一換字・多表式を見分け、最後に解説つきのクイズで確かめます。シリーズで作った古典暗号のツール42本へのカードから、個々の暗号を実際に動かせます。画面は日本語と英語で切り替えられます。
 
 ---
 
@@ -398,6 +400,7 @@ Q3: 頻度が大きく偏っている（多い文字がはっきりある）？
 - 並べ替えはPointer Events（マウス・タッチ・ペン）とキーボード操作。差し込み位置は行（折り返し）を先に決めてから列を比べる
 - 乱数は`crypto.getRandomValues`。2^32を割り切れない端を引き直す一様な整数とFisher–Yatesで、偏りのない順列を作る
 - WAI-ARIAのタブ（←→・Home・End）、aria-liveでの読み上げ、ボタンの高さ44px以上
+- 日本語と英語の切り替え（右上のボタン）。初めの言語は`?lang=ja`・`?lang=en`、保存した選択、ブラウザーの言語の順で決める。index.htmlは日本語で書き、`js/i18n.js`が読み込み直後に日本語の文字列を控えて`js/i18n-en.js`の対応表で入れ替える
 - ライト／ダークの配色（OSの設定と切り替えボタン）。文字4.5:1、枠とフォーカス3:1以上をテストで検査する
 - MIT License
 
@@ -413,7 +416,7 @@ Q3: 頻度が大きく偏っている（多い文字がはっきりある）？
 - 画面の文字はすべて`textContent`で入れ、`innerHTML`への代入はない。
 - 外部へのリンクは`rel="noopener noreferrer"`で開き、referrerは送らない（no-referrer）。
 - ほかのツールへ暗号文を渡すときは、URLの`#text=`に入れる。`#`より後ろはサーバーへ送られない。ブラウザーの閲覧履歴には残る。
-- 保存するのは配色の選択（localStorage）だけで、使えない環境でも動く。
+- 保存するのは配色と言語の選択（localStorage）だけで、使えない環境でも動く。
 - GitHub Pagesでは応答ヘッダーを設定できないので、クリックジャッキング対策（frame-ancestors）は入れていない。meta要素のframe-ancestorsは仕様上無視される。
 
 ---
@@ -426,7 +429,7 @@ npm test
 
 - Node.js 22以上で動き、依存パッケージはない（`node --test`）。
 - GitHub Actionsで、pushとpull requestのたびに自動で実行する。
-- 計算部（対応表・順列・乱数の一様さ・差し込み位置）、実験室の計算（既知解答・保たれるもの・順番の入れ替え・見分けのしきい値）、クイズのデータ、古典暗号の例の一覧、index.htmlのCSPとARIA、配色のコントラスト比、文言の辞書、ファイルの書式、READMEの例と数値を検査する。READMEの表と数値は、テストが計算部から計算し直して一致を確かめる。
+- 計算部（対応表・順列・乱数の一様さ・差し込み位置）、実験室の計算（既知解答・保たれるもの・順番の入れ替え・見分けのしきい値）、クイズのデータ、古典暗号の例の一覧、index.htmlのCSPとARIA、配色のコントラスト比、文言の辞書と日英の対応（英語の文言・クイズ・カタログに日本語が残らない）、ファイルの書式、READMEの例と数値を検査する。READMEの表と数値は、テストが計算部から計算し直して一致を確かめる。
 
 ---
 
@@ -445,6 +448,8 @@ classical-cipher-structure-trainer/
 │   ├── lab-core.js           # 実験室の計算部（換字・転置・多表式・統計・見分け）
 │   ├── english-freq.js       # 英語の文字の出現回数（見分けの基準）
 │   ├── classify-accuracy.js  # 見分けの当たり具合（tools/eval-classify.jsの出力）
+│   ├── i18n.js               # 日英の切り替え（index.htmlの日本語を控えて入れ替える）
+│   ├── i18n-en.js            # index.htmlの英語の対応表
 │   └── theme.js              # 配色の初期値と切り替え（描画の前に読む）
 ├── data/                     # 素材
 │   ├── favicon.svg           # ファビコン
@@ -455,7 +460,14 @@ classical-cipher-structure-trainer/
 │   ├── screenshot3.png       # 見分けるタブ
 │   ├── screenshot4.png       # 古典暗号の例タブ
 │   ├── screenshot5.png       # クイズタブ（解説の表示）
-│   └── screenshot6.png       # ダーク表示
+│   ├── screenshot6.png       # ダーク表示
+│   └── en/                   # 英語の画面の画像（README.en.md用、同じ6枚）
+│       ├── screenshot.png    # 概念タブ
+│       ├── screenshot2.png   # 実験室タブ
+│       ├── screenshot3.png   # 見分けるタブ
+│       ├── screenshot4.png   # 古典暗号の例タブ
+│       ├── screenshot5.png   # クイズタブ
+│       └── screenshot6.png   # ダーク表示
 ├── test/                     # node:testのテスト
 │   ├── core.test.js          # 計算部
 │   ├── quiz.test.js          # クイズのデータ
@@ -464,6 +476,7 @@ classical-cipher-structure-trainer/
 │   ├── html.test.js          # index.html（CSP・ARIA・読み込むスクリプト）
 │   ├── contrast.test.js      # 配色のコントラスト比
 │   ├── messages.test.js      # 文言の辞書
+│   ├── i18n.test.js          # 日英の切り替えと英語の文言・クイズ・カタログ
 │   ├── format.test.js        # ファイルの書式
 │   └── readme.test.js        # READMEの例・数値・構造
 ├── tools/                    # 作業用のスクリプト
@@ -473,6 +486,7 @@ classical-cipher-structure-trainer/
 │       └── test.yml          # pushとpull requestでnpm test
 ├── package.json              # npm testの定義（依存なし）
 ├── README.md                 # 本ドキュメント
+├── README.en.md              # 英語版のREADME
 ├── TECHNICAL.md              # 実装の説明
 ├── SECURITY.md               # セキュリティ対策
 ├── CLAUDE.md                 # Claude Code向けの案内
@@ -485,7 +499,7 @@ classical-cipher-structure-trainer/
 
 ## 💻 動作環境
 
-- ブラウザー：Chrome・Edge・Firefoxの最新版で確認した。Safariとスマートフォンの実機は未確認である。
+- ブラウザー：PlaywrightのChromium（ChromeとEdgeと同じエンジン）とFirefoxで確認した。Safari・Edge・スマートフォンの実機は未確認である。
 - `index.html`をファイルから直接開いても、すべての機能が動く（クイズの問題もスクリプトとして読む）。
 - ローカルのサーバーで試す場合は、リポジトリのフォルダーで`python -m http.server 8000`を実行し、`http://localhost:8000/`を開く。
 

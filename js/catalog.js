@@ -121,9 +121,70 @@
       name: '2回で元に戻る操作', desc: '換字・転置・ビット反転で、同じ操作を2回掛けると元に戻る性質を学ぶ' },
   ];
 
+
+  // 英語の名前と説明（slug → [名前, 説明]）。title は README の YAML のまま英語なので訳さない
+  const EN = Object.freeze({
+    'caesar-cipher-wheel': ['Caesar cipher', 'Shifts every letter by the same amount; the shift sets the table'],
+    'japanese-caesar-cipher': ['Japanese Caesar cipher', 'Shifts hiragana by the same amount in gojuon or iroha order'],
+    'affine-cipherlab': ['Affine cipher', 'Maps each letter number with the linear function ax + b'],
+    'pigpen-cipherlab': ['Pigpen cipher', 'Replaces letters with symbols made of grid lines and dots'],
+    'dancingmen-cipherlab': ['Dancing Men', 'From a Sherlock Holmes story; replaces letters with stick figures'],
+    'polybius-cipherlab': ['Polybius square', 'Replaces each letter with its row and column numbers in a square'],
+    'uesugi-cipher': ['Uesugi cipher', 'Replaces the 48 iroha kana with row and column numbers of a table'],
+    'shinobi_iroha_cipher': ['Shinobi iroha', 'Replaces hiragana with kanji-like characters built from radicals'],
+    'bacon-cipherlab': ['Bacon cipher', 'Replaces each letter with five a/b symbols and hides them as two typefaces in a text'],
+    'zigzag-cipherlab': ['Zigzag cipher', 'Replaces letters with column positions of a key and draws a line; '
+      + 'different from the English “zigzag cipher” (rail fence)'],
+    'rot13-encoder': ['ROT13', 'Shifts letters by 13; applying it twice restores the text'],
+    'quick-rot47': ['ROT47', 'Shifts the 94 printable ASCII characters, including digits and symbols, by 47'],
+    'crypto-emoji-translator': ['Emoji cipher', 'Replaces ciphertext characters with emoji; the frequency skew remains'],
+    'classic-js-obfuscator': ['Caesar obfuscation', 'Obfuscates JavaScript with a Caesar cipher and restores it when running'],
+    'vigenere-cipher-tool': ['Vigenère cipher', 'Uses a different shift table for each key letter in turn'],
+    'beaufort-cipherlab': ['Beaufort cipher',
+      'Polyalphabetic cipher that subtracts the plaintext from the key; encryption and decryption are the same'],
+    'strip-cipherlab': ['Strip cipher', 'Lines up many alphabet strips and reads a row other than the plaintext row'],
+    'otp-animation': ['One-time pad', 'XORs with a single-use key as long as the plaintext; the key never repeats'],
+    'playfair-cipherlab': ['Playfair cipher', 'Replaces each pair of letters with another pair using a 5×5 table'],
+    'porta-cipherlab': ['Porta digraphic cipher', 'Replaces each pair of letters with one cell (symbol) of a 1563 table'],
+    'hill-cipherlab': ['Hill cipher', 'Replaces n letters at once with n letters by matrix multiplication'],
+    'scytale-cipher-visualizer': ['Scytale', 'Writes on a strip wound around a rod and reads it unwound'],
+    'permutation-cipherlab': ['Permutation cipher', 'Reorders every block of letters with the same permutation'],
+    'railfence-cipherlab': ['Rail fence cipher', 'Writes letters in a zigzag and reads them row by row'],
+    'columnar-cipherlab': ['Columnar transposition', 'Writes in rows and reads the columns in key order'],
+    'grille-cipherlab': ['Turning grille', 'Fills a table by writing through a perforated card while turning it'],
+    'mirror-cipherlab': ['Mirror cipher (reversal)',
+      'Reverses the order of letters (whole text, words, lines, and so on) and combines it with mirrored glyphs'],
+    'toyspn-builder': ['SPN (repeated substitution and permutation)', 'Repeats S-boxes (substitution) and a P-layer (transposition) with key mixing; '
+      + 'the skeleton of modern block ciphers'],
+    'hidden-message-challenge': ['Concealment cipher', 'Hides the letters of a message at fixed positions in an ordinary text'],
+    'trevanion-cipherlab': ['Trevanion cipher', 'Reads the third letter after each punctuation mark of a letter (a null cipher)'],
+    'epigraph-chronogrammer': ['Chronogram', 'Adds up the letters that are Roman numerals in a sentence to express a year'],
+    'book-code-builder': ['Book code', 'A code that represents words by their position in a book (page, line, word)'],
+    'cipher-clairvoyance': ['Cipher identification', 'Estimates which classical cipher was used from the features of a ciphertext'],
+    'frequency-analyzer': ['Frequency analysis', 'Solves simple substitutions by hand with English frequencies, the IC, and n-grams'],
+    'caesar-cipher-breaker': ['Caesar brute force', 'Tries all 25 shifts and ranks candidates by English words and frequencies'],
+    'cipherclimb': ['Hill climbing', 'Changes the table little by little toward more English-like text'],
+    'ic-learning-visualizer': ['Index of coincidence',
+      'Tells simple from polyalphabetic ciphers by the IC and estimates key lengths with per-period IC'],
+    'repeatseq-analyzer': ['Repeated sequences (Kasiski)',
+      'Estimates the key length of a polyalphabetic cipher from repeat distances and column ICs'],
+    'modular-text-divider': ['Splitting into columns',
+      'Splits a ciphertext into columns by period, turning a polyalphabetic cipher into simple substitutions'],
+    'alphaloom': ['Key candidate search', 'Ranks key candidates of a polyalphabetic cipher by likely letters per position and dictionary words'],
+    'anagram-hunter': ['Anagram search', 'Finds words and phrases made by reordering letters; useful for solving transpositions by hand'],
+    'involution-studio': ['Operations that undo themselves',
+      'Learn with substitution, transposition and bit flips how applying an operation twice restores the input'],
+  });
+
+  /** 表示する言語の名前と説明 */
+  function textOf(tool, lang) {
+    if (lang === 'en' && EN[tool.slug]) return { name: EN[tool.slug][0], desc: EN[tool.slug][1] };
+    return { name: tool.name, desc: tool.desc };
+  }
+
   const url = slug => `https://ipusiron.github.io/${slug}/`;
 
-  const api = { KINDS, SUBS, tools, url };
+  const api = { KINDS, SUBS, tools, url, EN, textOf };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Catalog = api;

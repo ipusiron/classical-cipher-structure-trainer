@@ -64,6 +64,7 @@
     'lab.count.letter': '文字',
     'lab.count.plain': '平文',
     'lab.count.cipher': '暗号文',
+    'lab.result': '結果',
     'mix.same': '✓ 2つの順番で結果が同じになりました。',
     'mix.diff': '✗ 2つの順番で結果が違います（{pos}文字目から食い違う）。',
     'mix.note.profileKept': '回数を多い順に並べた形は、平文と同じまま残っています。単一換字と転置を重ねても、頻度の形は崩れません。この弱さを避ける方式に、文字を2つに分けてから並べ替えるADFGVX暗号や、置き換えと並べ替えに鍵を挟んで繰り返すSPN（Day094）があります。',
@@ -96,8 +97,10 @@
     'detect.acc.letters': '{n}文字',
     'detect.limits': '鍵の短いヴィジュネル暗号は頻度の偏りが残るので、単一換字と出ることがあります。英語以外の言語、数字や記号の暗号、プレイフェアなどの多字換字は、この表の対象外です。詳しい推定はCipher Clairvoyance（Day044）を使います。',
 
-    // 配色
+    // 配色と言語
     'theme.label': 'ダーク表示',
+    'lang.switch': 'English',
+    'list.sep': '・',
 
     // 古典暗号の例
     'catalog.kind.substitution': '🔤 換字式暗号（Substitution）',
@@ -159,7 +162,173 @@
     'quiz.error.field': '{n}問目の {field}',
   };
 
-  const dict = { ja };
+  const en = {
+    // 換字（マッピング）
+    'map.kind.shift': 'shift {offset}',
+    'map.kind.random': 'random table',
+    'map.key': 'Table ({kind}): {pairs}',
+    'map.pair': '{from}→{to}',
+    'map.figure': 'Diagram of lines connecting the plaintext letters A to H (top) with the ciphertext letters (bottom). {pairs}',
+    'map.inverse': 'Inverse table (used to decrypt): {pairs}',
+    'map.count': 'There are {n}! = {total} one-to-one tables for {n} letters. Shifts are only {n} of them.',
+    'map.charset.letters': 'Ciphertext letters: A to H',
+    'map.charset.numbers': 'Ciphertext letters: 1 to 8',
+
+    // 転置（シャッフル）
+    'shuffle.now': 'Current order: {word}',
+    'shuffle.block': '{ch} (originally {from}, now {to})',
+    'shuffle.key': 'Reordering key (position i takes original letter number): {order}',
+    'shuffle.inverse': 'Key to restore (original position i takes current letter number): {order}',
+    'shuffle.count': '{word} ({n} different letters) can be arranged in {n}! = {total} ways.',
+    'shuffle.grabbed': 'Picked up {ch}, now at position {pos}. Move it with the arrow keys and press Space to drop it. Press Escape to cancel.',
+    'shuffle.moved': '{ch}: position {pos}',
+    'shuffle.dropped': 'Dropped {ch} at position {pos}. Current order: {word}',
+    'shuffle.cancelled': 'Cancelled. Current order: {word}',
+    'shuffle.changed': 'Reordered. Current order: {word}',
+
+    // 実験室
+    'lab.count': '{letters} letters (input {chars} characters, limit {max})',
+    'lab.empty': 'Enter English text that contains letters (A to Z).',
+    'lab.more': '… ({n} more letters)',
+    'lab.none': 'none',
+    'lab.error.shift': 'Enter a shift between 1 and 25.',
+    'lab.error.rails': 'Enter a number of rails between 2 and 10.',
+    'lab.error.keyEmpty': 'Enter a keyword (key).',
+    'lab.error.keyChars': 'Use only letters (A to Z) for the keyword (key).',
+    'lab.error.keyShort': 'The keyword needs at least {min} letters.',
+    'lab.error.keyLong': 'The keyword (key) can have up to {max} letters.',
+    'lab.key.sub': 'Substitution table: plaintext {plain} → ciphertext {cipher}',
+    'lab.key.vig': 'Key: {key} (each key letter selects a different shift, used in turn)',
+    'lab.key.trans': 'Reordering (ciphertext letter i comes from plaintext letter number): {order}',
+    'lab.row.counts': 'Count of each letter (top 3)',
+    'lab.row.profile': 'Counts sorted in descending order (top 5)',
+    'lab.row.pattern': 'Pattern of repeated letters',
+    'lab.row.ic': 'Index of coincidence (IC)',
+    'lab.row.chi': 'Chi-squared against English',
+    'lab.kept.yes': '✓ Same',
+    'lab.kept.no': '✗ Changed',
+    'lab.explain.substitution': 'A simple substitution always turns the same letter into the same letter, so the pattern of repeated letters '
+      + 'and the counts sorted in descending order are preserved. The letters themselves change, so the count of each letter '
+      + '(which letter is frequent) changes.',
+    'lab.explain.transposition': 'A transposition does not change the letters, so the count of each letter is preserved and the chi-squared '
+      + 'against English stays the same as the plaintext. The positions change, so the pattern of repeated letters is broken.',
+    'lab.explain.polyalphabetic': 'A polyalphabetic cipher uses a different table at each position, so the same letter can become different letters. '
+      + 'The counts are flattened and the index of coincidence (IC) drops. None of the properties is preserved.',
+    'lab.bars.plain': 'Plaintext',
+    'lab.bars.cipher': 'Ciphertext',
+    'lab.bars.tip': '{ch}: {c}',
+    'lab.bars.aria': 'Bar chart of letter counts in the {label}. Most frequent: {top}',
+    'lab.count.letter': 'Letter',
+    'lab.count.plain': 'Plaintext',
+    'lab.count.cipher': 'Ciphertext',
+    'lab.result': 'Result',
+    'mix.same': '✓ Both orders give the same result.',
+    'mix.diff': '✗ The two orders give different results (from letter {pos}).',
+    'mix.note.profileKept': 'The counts sorted in descending order are still the same as the plaintext. Combining a simple substitution '
+      + 'with a transposition does not break the shape of the frequencies. Ciphers that avoid this weakness include ADFGVX, '
+      + 'which splits each letter into two before transposing, and SPN (Day094), which repeats substitution and permutation with key mixing.',
+    'mix.note.profileBroken': 'The counts sorted in descending order also changed. With a polyalphabetic cipher, whose table changes '
+      + 'with the position, the result depends on the order and the shape of the frequencies is broken.',
+
+    // 見分ける
+    'detect.count': '{letters} letters (at least {min} are needed)',
+    'detect.empty': 'Enter a ciphertext or press one of the example buttons.',
+    'detect.kind.short': 'Too few letters to tell.',
+    'detect.kind.transposition': 'Likely a transposition (the letter frequencies match ordinary English; plain English text gives the same result)',
+    'detect.kind.mono': 'Likely a simple substitution (as skewed as English, but different letters are frequent)',
+    'detect.kind.poly': 'Likely a polyalphabetic cipher or similar, whose table changes with the position (the frequencies are flattened)',
+    'detect.step.n': 'Letters: {n} (at least {min} are used)',
+    'detect.step.chiLow': 'Chi-squared against English: {chi} (below {max} = close to ordinary English) → transposition',
+    'detect.step.chiHigh': 'Chi-squared against English: {chi} ({max} or more = unlike ordinary English) → letters are substituted',
+    'detect.step.icHigh': 'Index of coincidence (IC): {ic} ({min} or more = strongly skewed) → simple substitution',
+    'detect.step.icLow': 'Index of coincidence (IC): {ic} (below {min} = flattened) → polyalphabetic or similar',
+    'detect.top': 'Most frequent letters: {letters}',
+    'detect.caution': 'The result can be wrong for short texts, non-English plaintexts, and ciphers that combine substitution '
+      + 'and transposition (they look like a simple substitution). Treat the result as a likelihood.',
+    'detect.link.name': '{title} (Day{day})',
+    'detect.link.withText': 'opens with the ciphertext',
+    'detect.link.page': 'opens the page (paste the ciphertext)',
+    'detect.method': 'The thresholds (transposition below chi-squared {chi}; simple substitution at IC {ic} or more) were chosen '
+      + 'on English text from {train}. The table shows accuracy measured on text from another book ({test}), '
+      + '3 cipher types × {per} samples per length. Transposition is a columnar transposition with a 5 to 9 letter keyword, '
+      + 'simple substitution uses a random table, and polyalphabetic is a Vigenère cipher with a 3 to 8 letter key.',
+    'detect.book': 'Project Gutenberg #{ebook} “{title}”',
+    'detect.acc.length': 'Length',
+    'detect.acc.transposition': 'Transposition',
+    'detect.acc.mono': 'Simple substitution',
+    'detect.acc.poly': 'Polyalphabetic',
+    'detect.acc.letters': '{n} letters',
+    'detect.limits': 'A Vigenère cipher with a short key keeps some skew and may be reported as a simple substitution. '
+      + 'Other languages, ciphers made of digits or symbols, and polygraphic ciphers such as Playfair are outside this table. '
+      + 'For a detailed estimate, use Cipher Clairvoyance (Day044).',
+
+    // 配色と言語
+    'theme.label': 'Dark mode',
+    'lang.switch': '日本語',
+    'list.sep': ', ',
+
+    // 古典暗号の例
+    'catalog.kind.substitution': '🔤 Substitution ciphers',
+    'catalog.kind.substitution.desc': 'Methods that map each letter to another letter or symbol (mapping). {count} tools',
+    'catalog.kind.transposition': '🔀 Transposition ciphers',
+    'catalog.kind.transposition.desc': 'Methods that keep the letters and reorder their positions (shuffle). {count} tools',
+    'catalog.kind.product': '🧩 Product (substitution + transposition)',
+    'catalog.kind.product.desc': 'Methods that combine and repeat substitution and transposition. {count} tool(s)',
+    'catalog.kind.other': '🔍 Others',
+    'catalog.kind.other.desc': 'Neither substitution nor transposition: hiding a message inside a text, '
+      + 'or codes that replace words with symbols. {count} tools',
+    'catalog.kind.tools': '🛠️ Solve, analyze, learn',
+    'catalog.kind.tools.desc': 'Tools that analyze and solve ciphertexts, and tools for learning cipher properties. {count} tools',
+    'catalog.sub.product': 'Product',
+    'catalog.sub.code': 'Code',
+    'catalog.sub.analysis': 'Analysis',
+    'catalog.sub.study': 'Learning',
+    'catalog.filter.legend': 'Filter by category',
+    'catalog.filter.option': '{label} ({count})',
+    'catalog.filter.status': 'Showing {count} tools in {label}.',
+    'catalog.filter.all': 'All',
+    'catalog.filter.substitution': 'Substitution',
+    'catalog.filter.transposition': 'Transposition',
+    'catalog.filter.product': 'Product',
+    'catalog.filter.other': 'Others',
+    'catalog.filter.tools': 'Solve & learn',
+    'catalog.sub.mono': 'Simple substitution',
+    'catalog.sub.poly': 'Polyalphabetic',
+    'catalog.sub.polygraphic': 'Polygraphic',
+    'catalog.sub.transposition': 'Transposition',
+    'catalog.sub.concealment': 'Concealment',
+    'catalog.tool': 'Day{day} {title}',
+    'catalog.newTab': ' (opens in a new tab)',
+
+    // クイズ
+    'quiz.progress': 'Question {n} / {total} ({score} correct) · {cat}',
+    'quiz.cat.definition': 'Definition',
+    'quiz.cat.basic': 'Basics',
+    'quiz.cat.classification': 'Classification',
+    'quiz.cat.invariant': 'Properties',
+    'quiz.cat.mixed': 'Mixed',
+    'quiz.review.title': 'Review (questions you missed)',
+    'quiz.review.none': 'All answers were correct.',
+    'quiz.review.yours': 'Your answer: {answer}',
+    'quiz.review.correct': 'Correct answer: {answer}',
+    'quiz.next': 'Next',
+    'quiz.finish': 'See results',
+    'quiz.correct': 'Correct',
+    'quiz.incorrect': 'Incorrect',
+    'quiz.answerIs': 'The answer is “{answer}”',
+    'quiz.mark.correct': '(correct)',
+    'quiz.mark.chosen': '(your answer)',
+    'quiz.result': 'Result: {score} of {total} correct ({percent}%)',
+    'quiz.retry': 'Try again',
+    'quiz.grade.low': 'Almost there. Go back to the diagrams in the Concepts tab and check “lines = mapping” and “blocks = reordering”.',
+    'quiz.grade.mid': 'Good progress. Try the tools in the Classical Ciphers tab and see what the key is (a table or a reordering).',
+    'quiz.grade.high': 'Well done. Classical ciphers can be organized as substitution, transposition, and their combinations.',
+    'quiz.error.load': 'Could not load the quiz questions ({detail})',
+    'quiz.error.empty': 'No questions',
+    'quiz.error.field': 'question {n}: {field}',
+  };
+
+  const dict = { ja, en };
   let lang = 'ja';
 
   function t(key, params = {}) {

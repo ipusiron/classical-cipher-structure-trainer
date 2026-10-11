@@ -165,6 +165,8 @@ html,body{
   margin: 0 auto 8px;
   display:flex;
   justify-content:flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 h1{
   margin: 0;
@@ -801,6 +803,30 @@ textarea.text-input{
 }
 .count-table{
   max-width: 22em;
+}
+
+/* 保たれたものの表: 狭い画面では、項目名を1行目に、平文・暗号文・結果をその下に並べる */
+@media (max-width: 560px){
+  #lab-table thead{
+    display: none;
+  }
+  #lab-table tr{
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    border-bottom: 1px solid var(--border);
+  }
+  #lab-table th[scope="row"]{
+    grid-column: 1 / -1;
+    background: var(--card);
+  }
+  #lab-table td::before{
+    content: attr(data-label);
+    display: block;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+  }
 }
 .count-details{
   margin-top: 10px;

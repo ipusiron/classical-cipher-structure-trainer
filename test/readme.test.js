@@ -199,3 +199,65 @@ test('クイズの節の数（20問・区分）', () => {
   const Q = require('../js/quiz-data.js').ja;
   assert.ok(part.includes(`問題数：${Q.length}問（定義3・基礎4・分類6・性質3・混合4）`));
 });
+
+// ------------------------------------------------------------
+// 英語版 README.en.md
+// ------------------------------------------------------------
+const readmeEn = fs.readFileSync(path.join(root, 'README.en.md'), 'utf8');
+const I18nMod = require('../js/i18n.js');
+
+test('英語版: 1行目と相互のリンク、見出しの階層と数が日本語版と同じ', () => {
+  assert.equal(readmeEn.split('\n')[0], 'English · [日本語](README.md)');
+  assert.ok(readme.includes('\n[English](README.en.md) · 日本語\n'));
+  const levels = md => md.replace(/```[\s\S]*?```/g, '').split('\n').filter(l => /^#{1,4} /.test(l)).map(l => l.match(/^#+/)[0].length);
+  assert.deepEqual(levels(readmeEn), levels(readme));
+  assert.ok(!readmeEn.includes('<!--'), 'YAML は README.md だけに置く');
+  assert.ok(readmeEn.includes('**Day097 - 100 Security Tools with Generative AI**'));
+  assert.ok(readmeEn.includes('https://akademeia.info/?page_id=42163'));
+});
+
+test('英語版: 1行目のほかに日本語がない', () => {
+  const lines = readmeEn.split('\n').slice(1);
+  const ja = lines.filter(l => I18nMod.hasJapanese(l));
+  assert.deepEqual(ja, []);
+});
+
+test('英語版: 古典暗号の例の表・正答率の表・ユースケースの数値が計算部と同じ', () => {
+  const rows = readmeEn.split('\n').filter(l => /^\| .* \| \[.+\]\(https:\/\/ipusiron\.github\.io\//.test(l));
+  assert.equal(rows.length, Cat.tools.length);
+  Cat.tools.forEach((t, i) => {
+    const en = Cat.textOf(t, 'en');
+    assert.ok(rows[i].includes(`| ${en.name} | ${en.desc} | [${t.title}](${Cat.url(t.slug)}) (Day${String(t.day).padStart(3, '0')}) |`), t.slug);
+  });
+  const acc = readmeEn.split('\n').filter(l => /^\| \d+ letters \|/.test(l));
+  assert.deepEqual(acc, Object.entries(ACC.evaluation).map(([n, v]) => `| ${n} letters | ${v.transposition}% | ${v.mono}% | ${v.poly}% |`));
+  assert.ok(readmeEn.includes(`HELLO with the keyword ZEBRA becomes ${L.apply('HELLO', { type: 'keyword', key: 'ZEBRA' })}`));
+  const lab = L.letters(L.SAMPLES.LAB);
+  const mix = L.commute(lab, { type: 'vigenere', key: 'LEMON' }, { type: 'columnar', key: 'KEY' });
+  let i = 0;
+  while (mix.ab[i] === mix.ba[i]) i++;
+  assert.ok(readmeEn.includes(`differs from letter ${i + 1}.`));
+  const g = n => C.groupDigits(C.factorial(n));
+  for (const s of [`8! = ${g(8)}`, `9! = ${g(9)}`, `26! = ${g(26)}`]) assert.ok(readmeEn.includes(s), s);
+  assert.ok(readmeEn.includes(`below ${L.THRESHOLDS.chiMax}`) && readmeEn.includes(`of ${L.THRESHOLDS.icMin} or more`));
+});
+
+test('英語版: 画像は assets/en/ にあり、assets/en/ の PNG はすべて参照される', () => {
+  const refs = [...readmeEn.matchAll(/!\[[^\]]*\]\((assets\/[^)]+)\)/g)].map(m => m[1]);
+  assert.equal(refs.length, 6);
+  for (const r of refs) {
+    assert.match(r, /^assets\/en\//);
+    assert.ok(fs.existsSync(path.join(root, r)), r);
+  }
+  const pngs = fs.readdirSync(path.join(root, 'assets', 'en')).filter(f => f.endsWith('.png')).map(f => `assets/en/${f}`);
+  assert.deepEqual(pngs.sort(), [...refs].sort());
+});
+
+test('英語版: ディレクトリー構造に全ファイルが載り、全行に説明がある', () => {
+  const tree = readmeEn.slice(readmeEn.indexOf('## 📁')).match(/```\n([\s\S]*?)\n```/)[1].split('\n');
+  for (const line of tree.slice(1)) assert.match(line, /\S\s+# \S/, line);
+  const listed = new Set(tree.slice(1).map(l => l.replace(/^[│├└─\s]+/, '').split(/\s+#/)[0].trim()));
+  const ja = section(readme, '📁 ディレクトリー構造').match(/```\n([\s\S]*?)\n```/)[1].split('\n');
+  const listedJa = new Set(ja.slice(1).map(l => l.replace(/^[│├└─\s]+/, '').split(/\s+#/)[0].trim()));
+  assert.deepEqual([...listed].sort(), [...listedJa].sort());
+});

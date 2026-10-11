@@ -29,7 +29,12 @@ test('script.js に日本語の文字列リテラルがない（文言は辞書�
   // コメントを除いてから、引用符の中の日本語を探す
   const code = script.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
   const literals = [...code.matchAll(/(['"`])((?:\\.|(?!\1).)*)\1/g)].map(m => m[2]);
-  const ja = literals.filter(s => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(s));
+  // 全角の句読点・中点・全角形（Unicode の文字種では Common に入るので別に見る）
+  const wide = s => [...s].some(ch => {
+    const cp = ch.codePointAt(0);
+    return (cp >= 0x3000 && cp <= 0x303f) || cp === 0x30fb || (cp >= 0xff00 && cp <= 0xffef);
+  });
+  const ja = literals.filter(s => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(s) || wide(s));
   assert.deepEqual(ja, []);
 });
 

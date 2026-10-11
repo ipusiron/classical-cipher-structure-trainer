@@ -27,13 +27,15 @@
 | ファイル | 役割 |
 |------|------|
 | `js/structure-core.js` | 計算部。DOMに依存しない純粋関数（対応表・順列・乱数・図の配置・差し込み位置・クイズの検査） |
-| `js/messages.js` | `script.js`が組み立てる文言の辞書。キーで引き、`{name}`の置き場所を埋める |
+| `js/messages.js` | `script.js`が組み立てる文言の辞書（日本語と英語）。キーで引き、`{name}`の置き場所を埋める |
 | `js/lab-core.js` | 実験室の計算部（単一換字・ヴィジュネル・転置3種・統計・保たれるもの・順番の入れ替え・見分け） |
 | `js/english-freq.js` | 英語の文字の出現回数（Project Gutenberg #1342のA〜Z） |
 | `js/classify-accuracy.js` | 見分けの当たり具合（`tools/eval-classify.js`が書き出す。手で直さない） |
 | `js/quiz-data.js` | クイズの20問 |
 | `js/catalog.js` | 古典暗号の例のツール42本の一覧 |
 | `js/theme.js` | 配色。`<head>`で読み、描画の前に`<html data-theme>`を決める |
+| `js/i18n.js` | 日英の切り替え。index.htmlの日本語を控えて入れ替える |
+| `js/i18n-en.js` | index.htmlの日本語の原文をキーにした英語の対応表 |
 | `script.js` | 画面の処理（タブ・対応図・並べ替え・実験室・見分ける・カード・クイズ） |
 | `tools/eval-classify.js` | 見分けのしきい値を決め、当たり具合を測る（英文は同梱しない） |
 
@@ -241,6 +243,14 @@ meta要素のCSPでは`frame-ancestors`が無視され、GitHub Pagesでは応�
 - 文字と背景の組は4.5:1以上、枠・フォーカス・図の線は3:1以上で、`test/contrast.test.js`がライトとダークの両方を計算して確かめる。
 - `prefers-reduced-motion: reduce`では、動きのある効果を止める。
 
+### 日英の切り替え
+
+- 初めの言語は、`?lang=ja`・`?lang=en`、保存した選択（localStorageの`ccst-lang`）、ブラウザーの言語（`ja`で始まれば日本語、それ以外は英語）の順で決める。
+- index.htmlは日本語で書く。`script.js`が画面を描く前に、`I18n.collect`が本文の日本語のテキストノードと属性（aria-label・title・label）を控える。英語では`js/i18n-en.js`の対応表で入れ替え、日本語に戻すときは控えた原文に戻す。控えた時と同じ文字列の所だけを入れ替えるので、JavaScriptが書き換えた所は触らない（Permutation CipherLab〈Day095〉と同じ方式）。
+- JavaScriptが描く部分は`messages.js`の`ja`・`en`の文言で描き直す。区切り記号（「・」と「, 」）も辞書に持つ。切り替えても計算はし直さない（実験室の設定、見分けるの入力、カタログの絞り込み、クイズの進み具合・点数・答えた状態をそのまま描き直す）。
+- クイズの問題（`QuizData.ja`・`QuizData.en`）とカタログの名前・説明（`Catalog.textOf`）も言語ごとに持つ。クイズの20問は日英でid・区分・正解の添字・選択肢の数が同じ（テストで確かめる）。
+- `test/i18n.test.js`は、辞書のキーと置き場所の一致、英語の文言・クイズ・カタログに日本語が残らないこと、index.htmlの日本語がすべて対応表にあることを確かめる。
+
 ---
 
 ## 11. テスト
@@ -255,9 +265,10 @@ meta要素のCSPでは`frame-ancestors`が無視され、GitHub Pagesでは応�
 | `test/catalog.test.js` | 一覧の形、分類、区分の件数、各READMEのtitle、見分けるタブの案内先 |
 | `test/html.test.js` | CSP、referrer、インラインの禁止、読み込むスクリプト、タブのARIA、id |
 | `test/contrast.test.js` | ライトとダークのコントラスト比 |
-| `test/messages.test.js` | 文言のキー、`script.js`に日本語の文字列リテラルがないこと |
+| `test/messages.test.js` | 文言のキー、`script.js`に日本語の文字列リテラル（全角の記号を含む）がないこと |
+| `test/i18n.test.js` | 初めの言語、辞書の日英の対応、index.htmlの日本語の訳、英語のクイズとカタログ |
 | `test/format.test.js` | 行の長さ、行数の下限、改行（LF）、見えない文字 |
-| `test/readme.test.js` | READMEのYAML、古典暗号の例・実験室・見分けの例・正答率の表、鍵の数、実例、ユースケースの数値、ディレクトリー構造、画像、表記 |
+| `test/readme.test.js` | README（日本語・英語）のYAML、古典暗号の例・実験室・見分けの例・正答率の表、鍵の数、実例、ユースケースの数値、ディレクトリー構造、画像、表記、見出しの対応 |
 
 ---
 

@@ -33,6 +33,7 @@ GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on push and pull r
 | `js/quiz-data.js` | 20 quiz questions (`id`, `category`, `prompt`, `choices`, `answer`, `explanation`) |
 | `js/catalog.js` | 42 tools of the series shown in the Examples tab (`day`, `slug`, `title` copied from each tool's README YAML, `kind`, `sub`, `name`, `desc`); kinds: substitution, transposition, product, other, tools |
 | `js/theme.js` | Loaded in `<head>`; sets `<html data-theme>` from localStorage (`ccst-theme`) before paint |
+| `js/i18n.js` / `js/i18n-en.js` | Japanese/English switching: index.html stays Japanese; `I18n.collect` records its Japanese text before rendering and `I18n.apply` swaps it using the English table keyed by the original text |
 | `script.js` | DOM: tabs (APG), mapping SVG, shuffle (Pointer Events + keyboard), lab, detect, catalog cards with filter, quiz (optional shuffle, review) |
 | `style.css` | CSS variables for light and dark themes (dark values appear twice: media query and `[data-theme="dark"]`, must stay identical) |
 
@@ -58,5 +59,5 @@ Files in `js/` are classic scripts: they set a global in the browser and `module
 ## Notes
 
 - Part of the "100 Security Tools with Generative AI" project (Day097).
-- UI text is Japanese.
+- UI is Japanese and English (`?lang=ja|en`, saved choice `ccst-lang`, browser language). `js/messages.js` has `ja` and `en`; quiz and catalog carry English too. When you add or change Japanese text in index.html, add the English to `js/i18n-en.js` (tested). README.en.md mirrors README.md heading by heading (tested).
 - See `TECHNICAL.md` for implementation details and `SECURITY.md` for security measures and limits.

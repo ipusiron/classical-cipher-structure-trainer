@@ -180,7 +180,172 @@
     },
   ];
 
-  const api = { ja };
+  // 英語（id・区分・正解の添字・選択肢の数は日本語と同じ。test/i18n.test.js で確かめる）
+  const KINDS_EN = ['Substitution (simple)', 'Substitution (polyalphabetic)', 'Transposition', 'Product (substitution + transposition)'];
+
+  const en = [
+    {
+      id: 'q001', category: 'definition',
+      prompt: 'Which method replaces each letter with another letter according to a mapping?',
+      choices: ['Transposition', 'Substitution', 'Compression', 'Steganography'],
+      answer: 1,
+      explanation: 'Substitution = mapping. The key is the correspondence table. The table is itself a permutation of the kinds of letters, '
+        + 'the same form as a transposition key, which permutes positions.',
+    },
+    {
+      id: 'q002', category: 'definition',
+      prompt: 'Which method keeps the letters unchanged and only reorders them?',
+      choices: ['Substitution', 'Encoding', 'Hashing', 'Transposition'],
+      answer: 3,
+      explanation: 'Transposition = shuffle. The key is the way of reordering (a permutation). '
+        + 'The letters used and their counts stay the same as the plaintext.',
+    },
+    {
+      id: 'q003', category: 'basic',
+      prompt: 'What is closest to the essence of the key of a substitution cipher?',
+      choices: ['A sequence of random numbers', 'A product of huge primes', 'A table (which letter becomes which)', 'A counter that increases over time'],
+      answer: 2,
+      explanation: 'In a substitution, the table itself is the key. The shift of the Caesar cipher is just a number that selects one table.',
+    },
+    {
+      id: 'q004', category: 'basic',
+      prompt: 'What is closest to the essence of the key of a transposition cipher?',
+      choices: ['The way of reordering (a permutation)', 'The image resolution', 'The key length in bits', 'A CRC polynomial'],
+      answer: 0,
+      explanation: 'A transposition only changes the positions of the letters. The permutation that says where each letter goes is the key.',
+    },
+    {
+      id: 'q005', category: 'classification',
+      prompt: 'How is the Caesar cipher classified?',
+      choices: KINDS_EN,
+      answer: 0,
+      explanation: 'It uses one table that shifts every letter by the same amount: a simple substitution. There are only 26 shifts (8 for A to H).',
+    },
+    {
+      id: 'q006', category: 'classification',
+      prompt: 'How is the Vigenère cipher classified?',
+      choices: KINDS_EN,
+      answer: 1,
+      explanation: 'It uses a different shift table for each key letter in turn: a polyalphabetic substitution. '
+        + 'The same plaintext letter can become different letters depending on its position.',
+    },
+    {
+      id: 'q007', category: 'classification',
+      prompt: 'How is the rail fence cipher classified?',
+      choices: KINDS_EN,
+      answer: 2,
+      explanation: 'It writes the letters in a zigzag and reads them row by row without changing them: a transposition.',
+    },
+    {
+      id: 'q008', category: 'classification',
+      prompt: 'The World War I ADFGVX cipher replaces each letter with a pair of symbols from a table, then reorders them with a columnar transposition. '
+        + 'How is it classified?',
+      choices: KINDS_EN,
+      answer: 3,
+      explanation: 'A substitution followed by a transposition: a product cipher. Because each letter is split into two before reordering, '
+        + 'it also breaks the shape of the frequencies that survives a plain combination of simple substitution and transposition.',
+    },
+    {
+      id: 'q009', category: 'mixed',
+      prompt: 'Comparing a plaintext and its ciphertext, the letters used and their counts are exactly the same; only the order differs. What is likely?',
+      choices: ['Substitution', 'Product (substitution + transposition)', 'Neither', 'Transposition'],
+      answer: 3,
+      explanation: 'Same letters and counts = an anagram = transposition. A substitution would change the letters themselves.',
+    },
+    {
+      id: 'q010', category: 'mixed',
+      prompt: 'An English ciphertext has letter counts almost the same as ordinary English (E, T and A are frequent). '
+        + 'The plaintext is not available. What is likely?',
+      choices: ['Simple substitution', 'Polyalphabetic substitution', 'Transposition', 'Cannot tell'],
+      answer: 2,
+      explanation: 'A transposition keeps the letter frequencies (Shannon 1949). A simple substitution keeps the shape of the frequencies, '
+        + 'but the frequent letters are no longer E, T and A. A polyalphabetic cipher flattens the frequencies.',
+    },
+    {
+      id: 'q011', category: 'classification',
+      prompt: 'The zigzag cipher (Day072) replaces each letter with a column position of the key and connects the positions with a line. How is it classified?',
+      choices: KINDS_EN,
+      answer: 0,
+      explanation: 'Each letter is replaced by one position (symbol), so it is a kind of simple substitution. '
+        + 'In English, “zigzag cipher” often means the rail fence cipher (a transposition), so do not classify by the name.',
+    },
+    {
+      id: 'q012', category: 'classification',
+      prompt: 'The Playfair cipher replaces each pair of letters with another pair using a 5×5 table. How is it classified?',
+      choices: ['Substitution (simple)', 'Substitution (polygraphic)', 'Transposition', 'Product (substitution + transposition)'],
+      answer: 1,
+      explanation: 'It replaces several letters at once: a polygraphic substitution. '
+        + 'This is a different distinction from polyalphabetic ciphers (such as Vigenère), which change the table by position.',
+    },
+    {
+      id: 'q013', category: 'invariant',
+      prompt: 'In a transposition ciphertext, what stays the same as in the plaintext?',
+      choices: ['The count of each letter', 'The pattern of repeated letters', 'The order of the letters', 'Everything changes'],
+      answer: 0,
+      explanation: 'A transposition does not change the letters, so how many times each letter appears stays the same. '
+        + 'The positions change, so the order and the pattern of repeated letters are broken.',
+    },
+    {
+      id: 'q014', category: 'invariant',
+      prompt: 'In a simple substitution ciphertext, what stays the same as in the plaintext?',
+      choices: ['Which letters are frequent (such as E)', 'The pattern of repeated letters (such as the LL in HELLO)',
+        'The letters themselves', 'Everything changes'],
+      answer: 1,
+      explanation: 'The same letter always becomes the same letter, so the repetition pattern survives '
+        + '(HELLO and KHOOR both repeat the 3rd and 4th letters). Which letters are frequent changes.',
+    },
+    {
+      id: 'q015', category: 'invariant',
+      prompt: 'Compared with plain English, the index of coincidence (IC) of a Vigenère ciphertext is usually:',
+      choices: ['Higher', 'About the same', 'Lower', 'Zero'],
+      answer: 2,
+      explanation: 'A different table is used at each position, so the frequencies are flattened and the IC drops. '
+        + 'For simple substitution and transposition, the IC stays the same as the plaintext.',
+    },
+    {
+      id: 'q016', category: 'mixed',
+      prompt: 'The same simple substitution and the same transposition are applied in two orders: '
+        + '“substitution → transposition” and “transposition → substitution”. What happens?',
+      choices: ['The results are the same', 'The results are always different', 'The length changes', 'The plaintext comes back'],
+      answer: 0,
+      explanation: 'A simple substitution changes only the letters and a transposition changes only the positions, '
+        + 'so the order does not matter (Shannon 1949). The shape of the frequencies also survives the combination.',
+    },
+    {
+      id: 'q017', category: 'mixed',
+      prompt: 'What happens if you swap the order of a Vigenère cipher and a transposition?',
+      choices: ['The results are always the same', 'The length changes', 'The plaintext comes back', 'The results are generally different'],
+      answer: 3,
+      explanation: 'In a Vigenère cipher, the result depends on which key letter meets which position, so moving the positions first gives a different result. '
+        + 'You can check this in “Combine” in the Lab.',
+    },
+    {
+      id: 'q018', category: 'basic',
+      prompt: 'How many one-to-one tables (substitution keys) are there for the 8 letters A to H?',
+      choices: ['8', '64', '40,320', '16,777,216'],
+      answer: 2,
+      explanation: '8! = 40,320. Shifts are only 8 of them. 16,777,216 is 8 to the 8th power, '
+        + 'which also counts mappings that send two letters to the same letter.',
+    },
+    {
+      id: 'q019', category: 'basic',
+      prompt: 'A simple substitution on 26 letters has 26! (about 4×10^26) keys. Why has it been broken since long ago?',
+      choices: ['Its keys are always short', 'The skew of the letter frequencies remains', 'The ciphertext is longer than the plaintext', 'It uses no digits'],
+      answer: 1,
+      explanation: 'However many keys there are, the shape of the frequencies and the repetition patterns remain, '
+        + 'so frequency analysis solves it without trying every key. The number of keys and security are different matters.',
+    },
+    {
+      id: 'q020', category: 'definition',
+      prompt: 'Which statement about the word “permutation” is correct?',
+      choices: ['It describes only substitution', 'It describes only transposition',
+        'A substitution table is a permutation of the letters, and a transposition key is a permutation of positions', 'It is not used in cryptography'],
+      answer: 2,
+      explanation: 'Both keys are permutations. Substitution permutes the kinds of letters and transposition permutes their positions.',
+    },
+  ];
+
+  const api = { ja, en };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.QuizData = api;
